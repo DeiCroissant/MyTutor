@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dashboard - Tìm Gia Sư</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="dashboard-container">
+    <div class="header">
+      <h1>Xin chào, Learner!</h1>
+      <nav class="nav">
+        <a href="#profile" class="active">Hồ sơ</a>
+        <a href="#find-tutor">Tìm gia sư</a>
+        <a href="#register">Đăng ký lịch học</a>
+        <a href="#review">Đánh giá Tutor</a>
+      </nav>
+    </div>
+    <div id="profile" class="section">
+      <h2>Hồ sơ của bạn</h2>
+      <div id="learnerProfile">
+        <!-- Thông tin hồ sơ sẽ được render bằng JS -->
+      </div>
+    </div>
+    <div id="find-tutor" class="section">
+      <h2>Tìm gia sư</h2>
+      <div class="filter-group">
+        <select id="filterStatus">
+          <option value="">Tất cả trạng thái</option>
+          <option value="available">Đang rảnh</option>
+          <option value="busy">Đang bận</option>
+        </select>
+        <input type="text" id="filterName" placeholder="Tìm theo tên">
+        <input type="text" id="filterSubject" placeholder="Tìm theo môn học">
+        <input type="number" id="filterPrice" placeholder="Tìm theo giá tối đa">
+        <button onclick="filterTutors()">Lọc</button>
+      </div>
+      <div class="tutor-list" id="tutorList">
+        <!-- Danh sách gia sư sẽ được render bằng JS -->
+      </div>
+    </div>
+    <div id="register" class="section">
+      <h2>Đăng ký lịch học</h2>
+      <p>Chức năng này đang được phát triển. Vui lòng quay lại sau!</p>
+    </div>
+    <div id="review" class="section">
+      <h2>Đánh giá Tutor</h2>
+      <p>Chức năng này đang được phát triển. Vui lòng quay lại sau!</p>
+    </div>
+  </div>
+  <script src="data.js"></script>
+  <script src="script.js"></script>
+</body>
+</html> 
