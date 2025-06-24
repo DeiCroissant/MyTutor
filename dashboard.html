@@ -3,26 +3,83 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Dashboard - Tìm Gia Sư</title>
-  <link rel="stylesheet" href="style.css">
+  <title>Dashboard - MyTutor Văn Lang</title>
+  <link rel="stylesheet" href="./css/style.css">
 </head>
 <body>
   <div class="dashboard-container">
     <div class="header">
-      <h1>Xin chào, Learner!</h1>
+      <div class="user-info">
+        <div class="avatar" id="userAvatar">👨‍🎓</div>
+        <div>
+          <h1 id="userGreeting">Xin chào!</h1>
+          <p class="user-role" id="userRole">Sinh viên Văn Lang</p>
+        </div>
+      </div>
       <nav class="nav">
         <a href="#profile" class="active">Hồ sơ</a>
+        <a href="#schedule">Lịch học</a>
         <a href="#find-tutor">Tìm gia sư</a>
-        <a href="#register">Đăng ký lịch học</a>
-        <a href="#review">Đánh giá Tutor</a>
+        <a href="#statistics">Thống kê</a>
+        <a href="#reviews">Đánh giá</a>
+        <a href="#settings">Cài đặt</a>
       </nav>
     </div>
+
+    <!-- Tab Hồ sơ -->
     <div id="profile" class="section">
-      <h2>Hồ sơ của bạn</h2>
-      <div id="learnerProfile">
-        <!-- Thông tin hồ sơ sẽ được render bằng JS -->
+      <h2>Hồ sơ cá nhân</h2>
+      <div class="profile-grid">
+        <div class="profile-card main-info">
+          <h3>Thông tin cơ bản</h3>
+          <div id="learnerProfile">
+            <!-- Thông tin hồ sơ sẽ được render bằng JS -->
+          </div>
+        </div>
+        <div class="profile-card academic-info">
+          <h3>Thông tin học tập</h3>
+          <div id="academicInfo">
+            <!-- Thông tin học tập sẽ được render bằng JS -->
+          </div>
+        </div>
+        <div class="profile-card contact-info">
+          <h3>Liên hệ khẩn cấp</h3>
+          <div id="emergencyContact">
+            <!-- Thông tin liên hệ khẩn cấp sẽ được render bằng JS -->
+          </div>
+        </div>
       </div>
     </div>
+
+    <!-- Tab Lịch học -->
+    <div id="schedule" class="section">
+      <h2>Lịch học của bạn</h2>
+      <div class="schedule-header">
+        <div class="schedule-stats">
+          <div class="stat-item">
+            <span class="stat-number" id="totalHours">0</span>
+            <span class="stat-label">Giờ học</span>
+          </div>
+          <div class="stat-item">
+            <span class="stat-number" id="completedLessons">0</span>
+            <span class="stat-label">Buổi hoàn thành</span>
+          </div>
+          <div class="stat-item">
+            <span class="stat-number" id="totalSubjects">0</span>
+            <span class="stat-label">Môn học</span>
+          </div>
+          <div class="stat-item">
+            <span class="stat-number" id="onlineMeetings">0</span>
+            <span class="stat-label">Buổi online</span>
+          </div>
+        </div>
+      </div>
+      <div class="schedule-list" id="scheduleList">
+        <!-- Danh sách lịch học sẽ được render bằng JS -->
+      </div>
+    </div>
+
+    <!-- Tab Tìm gia sư -->
     <div id="find-tutor" class="section">
       <h2>Tìm gia sư</h2>
       <div class="filter-group">
@@ -30,6 +87,11 @@
           <option value="">Tất cả trạng thái</option>
           <option value="available">Đang rảnh</option>
           <option value="busy">Đang bận</option>
+        </select>
+        <select id="filterMeetingType">
+          <option value="">Tất cả hình thức</option>
+          <option value="1-1">Buổi học 1-1</option>
+          <option value="online">Hỗ trợ online</option>
         </select>
         <input type="text" id="filterName" placeholder="Tìm theo tên">
         <input type="text" id="filterSubject" placeholder="Tìm theo môn học">
@@ -40,16 +102,176 @@
         <!-- Danh sách gia sư sẽ được render bằng JS -->
       </div>
     </div>
-    <div id="register" class="section">
-      <h2>Đăng ký lịch học</h2>
-      <p>Chức năng này đang được phát triển. Vui lòng quay lại sau!</p>
+
+    <!-- Tab Thống kê -->
+    <div id="statistics" class="section">
+      <h2>Thống kê học tập</h2>
+      <div class="stats-grid">
+        <div class="stats-card">
+          <h3>GPA trung bình</h3>
+          <div class="score-display">
+            <span class="score" id="averageGPA">0</span>
+            <span class="score-label">/4.0</span>
+          </div>
+          <div class="improvement">
+            <span class="improvement-arrow">↗</span>
+            <span id="improvementRate">+0% so với tháng trước</span>
+          </div>
+        </div>
+        <div class="stats-card">
+          <h3>Tiến độ theo môn</h3>
+          <div id="subjectProgress">
+            <!-- Tiến độ môn học sẽ được render bằng JS -->
+          </div>
+        </div>
+        <div class="stats-card">
+          <h3>Phân bố điểm GPA</h3>
+          <div id="gpaDistribution">
+            <!-- Biểu đồ phân bố GPA sẽ được render bằng JS -->
+          </div>
+        </div>
+        <div class="stats-card">
+          <h3>Biểu đồ tiến độ</h3>
+          <div id="progressChart">
+            <!-- Biểu đồ sẽ được render bằng JS -->
+          </div>
+        </div>
+      </div>
     </div>
-    <div id="review" class="section">
-      <h2>Đánh giá Tutor</h2>
-      <p>Chức năng này đang được phát triển. Vui lòng quay lại sau!</p>
+
+    <!-- Tab Đánh giá -->
+    <div id="reviews" class="section">
+      <h2>Đánh giá gia sư</h2>
+      <div class="reviews-list" id="reviewsList">
+        <!-- Danh sách đánh giá sẽ được render bằng JS -->
+      </div>
+      <div class="add-review">
+        <h3>Thêm đánh giá mới</h3>
+        <form id="reviewForm">
+          <select id="reviewTutor" required>
+            <option value="">Chọn gia sư</option>
+            <option value="Nguyễn Văn A">Nguyễn Văn A - Lập trình hướng đối tượng</option>
+            <option value="Lê Văn C">Lê Văn C - Toán rời rạc</option>
+            <option value="Phạm Thị D">Phạm Thị D - Lập trình web nâng cao</option>
+          </select>
+          <div class="rating-input">
+            <label>Đánh giá:</label>
+            <div class="stars">
+              <span class="star" data-rating="1">★</span>
+              <span class="star" data-rating="2">★</span>
+              <span class="star" data-rating="3">★</span>
+              <span class="star" data-rating="4">★</span>
+              <span class="star" data-rating="5">★</span>
+            </div>
+          </div>
+          <textarea id="reviewComment" placeholder="Nhận xét của bạn..." required></textarea>
+          <button type="submit">Gửi đánh giá</button>
+        </form>
+      </div>
+    </div>
+
+    <!-- Tab Cài đặt -->
+    <div id="settings" class="section">
+      <h2>Cài đặt tài khoản</h2>
+      <div class="settings-grid">
+        <div class="settings-card">
+          <h3>Thông tin cá nhân</h3>
+          <form id="profileForm">
+            <div class="avatar-upload-section">
+              <div class="current-avatar">
+                <span id="currentAvatarDisplay">👨‍🎓</span>
+              </div>
+              <div class="avatar-options">
+                <label>Chọn ảnh đại diện:</label>
+                <div class="avatar-grid">
+                  <div class="avatar-option" data-avatar="👨‍🎓">👨‍🎓</div>
+                  <div class="avatar-option" data-avatar="👩‍🎓">👩‍🎓</div>
+                  <div class="avatar-option" data-avatar="👨‍🏫">👨‍🏫</div>
+                  <div class="avatar-option" data-avatar="👩‍🏫">👩‍🏫</div>
+                  <div class="avatar-option" data-avatar="😊">😊</div>
+                  <div class="avatar-option" data-avatar="🤓">🤓</div>
+                  <div class="avatar-option" data-avatar="🎯">🎯</div>
+                  <div class="avatar-option" data-avatar="⭐">⭐</div>
+                </div>
+              </div>
+            </div>
+            <label>Tên đầy đủ:</label>
+            <input type="text" id="profileName" value="">
+            <label>Email:</label>
+            <input type="email" id="profileEmail" value="">
+            <label>Số điện thoại:</label>
+            <input type="tel" id="profilePhone" value="">
+            <button type="submit">Cập nhật</button>
+          </form>
+        </div>
+        <div class="settings-card">
+          <h3>Thông tin học tập</h3>
+          <form id="academicForm">
+            <label>Khóa:</label>
+            <select id="profileGrade">
+              <option value="Khóa 2021">Khóa 2021</option>
+              <option value="Khóa 2022">Khóa 2022</option>
+              <option value="Khóa 2023">Khóa 2023</option>
+              <option value="Khóa 2024">Khóa 2024</option>
+            </select>
+            <label>Khoa/Ngành:</label>
+            <input type="text" id="profileSchool" value="">
+            <label>Địa chỉ:</label>
+            <input type="text" id="profileAddress" value="">
+            <button type="submit">Cập nhật</button>
+          </form>
+        </div>
+        <div class="settings-card">
+          <h3>Thông báo</h3>
+          <div class="notification-settings">
+            <label>
+              <input type="checkbox" checked> Nhắc nhở lịch học
+            </label>
+            <label>
+              <input type="checkbox" checked> Thông báo tin nhắn mới
+            </label>
+            <label>
+              <input type="checkbox"> Thông báo khuyến mãi
+            </label>
+            <label>
+              <input type="checkbox" checked> Báo cáo tiến độ hàng tuần
+            </label>
+          </div>
+        </div>
+        <div class="settings-card">
+          <h3>Tài khoản</h3>
+          <div class="account-actions">
+            <button class="btn-change-password" onclick="changePassword()">Đổi mật khẩu</button>
+            <button class="btn-logout" onclick="logout()">Đăng xuất</button>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
-  <script src="data.js"></script>
-  <script src="script.js"></script>
+  
+  <!-- Modal đổi mật khẩu -->
+  <div class="modal-overlay" id="passwordModal">
+    <div class="password-modal">
+      <h3>Đổi mật khẩu</h3>
+      <form id="passwordForm">
+        <label for="currentPassword">Mật khẩu hiện tại:</label>
+        <input type="password" id="currentPassword" required>
+        
+        <label for="newPassword">Mật khẩu mới:</label>
+        <input type="password" id="newPassword" required>
+        
+        <label for="confirmPassword">Xác nhận mật khẩu mới:</label>
+        <input type="password" id="confirmPassword" required>
+        
+        <div class="modal-actions">
+          <button type="button" class="btn-cancel" onclick="closePasswordModal()">Hủy</button>
+          <button type="submit" class="btn-save">Lưu thay đổi</button>
+        </div>
+      </form>
+    </div>
+  </div>
+  
+  <script src="./js/data.js"></script>
+  <script src="./js/script.js"></script>
 </body>
 </html> 

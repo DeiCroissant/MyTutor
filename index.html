@@ -3,12 +3,12 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Đăng nhập - Tìm Gia Sư</title>
-  <link rel="stylesheet" href="style.css">
+  <title>Đăng nhập - MyTutor Văn Lang</title>
+  <link rel="stylesheet" href="./css/style.css">
 </head>
 <body>
   <div class="login-container">
-    <h2>Đăng nhập hệ thống Tìm Gia Sư</h2>
+    <h2>Đăng nhập hệ thống MyTutor Văn Lang</h2>
     <form id="loginForm">
       <label for="username">Tên đăng nhập:</label>
       <input type="text" id="username" required>
@@ -16,10 +16,10 @@
       <input type="password" id="password" required>
       <label for="role">Chọn vai trò:</label>
       <select id="role">
-        <option value="learner">Learner</option>
-        <option value="tutor">Tutor</option>
-        <option value="support">Van Lang Support Center</option>
-        <option value="admin">System Administrator</option>
+        <option value="learner">Sinh Viên</option>
+        <option value="tutor">Gia Sư</option>
+        <option value="support">Trung tâm hỗ trợ Văn Lang</option>
+        <option value="admin">Quản trị viên hệ thống</option>
       </select>
       <button type="submit">Đăng nhập</button>
     </form>
@@ -27,8 +27,8 @@
   <script>
     document.getElementById('loginForm').onsubmit = function(e) {
       e.preventDefault();
-      window.location.href = 'dashboard.html';
+      window.location.href = './dashboard.html';
     }
   </script>
 </body>
-</html> 
+</html> S
