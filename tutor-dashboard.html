@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MyTutor - Gia sư Dashboard</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/tutor.css">
+</head>
+<body class="tutor-dashboard">
+    <div class="tutor-container">
+        <!-- Header -->
+        <header class="tutor-header">
+            <div class="tutor-avatar" id="tutor-avatar"></div>
+            <div class="tutor-welcome">
+                <span id="tutor-greeting">Chào, <b>Gia sư</b></span>
+                <span class="tutor-role">(Gia sư)</span>
+            </div>
+        </header>
+
+        <!-- Navbar -->
+        <nav class="tutor-navbar">
+            <a href="#" id="nav-profile" class="active">Hồ sơ</a>
+            <a href="#" id="nav-schedule">Lịch dạy</a>
+            <a href="#" id="nav-reviews">Đánh giá học viên</a>
+            <a href="#" id="nav-reschedule">Đổi/Huỷ lịch</a>
+            <a href="#" id="nav-settings">Đổi mật khẩu</a>
+        </nav>
+
+        <!-- Main Content Sections -->
+        <main class="tutor-sections">
+            <section id="section-profile" class="tutor-section">
+                <div class="profile-grid">
+                  <div class="profile-card">
+                    <h3>Thông tin cơ bản</h3>
+                    <div class="profile-item"><span class="profile-label">Họ tên:</span> <span class="profile-value" id="tutorName"></span></div>
+                    <div class="profile-item"><span class="profile-label">Email:</span> <span class="profile-value" id="tutorEmail"></span></div>
+                    <div class="profile-item"><span class="profile-label">Số điện thoại:</span> <span class="profile-value" id="tutorPhone"></span></div>
+                    <div class="profile-item"><span class="profile-label">Chuyên môn:</span> <span class="profile-value" id="tutorSubject"></span></div>
+                  </div>
+                  <div class="profile-card">
+                    <h3>Thông tin dạy học</h3>
+                    <div class="profile-item"><span class="profile-label">Giá/buổi:</span> <span class="profile-value" id="tutorPrice"></span></div>
+                    <div class="profile-item"><span class="profile-label">Mô tả:</span> <span class="profile-value" id="tutorDesc"></span></div>
+                    <div class="profile-item"><span class="profile-label">Đánh giá:</span> <span class="profile-value" id="tutorRating"></span></div>
+                    <div class="profile-item"><span class="profile-label">Trạng thái:</span> <span class="profile-value" id="tutorStatus"></span></div>
+                  </div>
+                  <div class="profile-card">
+                    <h3>Khác</h3>
+                    <div class="profile-item"><span class="profile-label">Hỗ trợ online:</span> <span class="profile-value" id="tutorOnline"></span></div>
+                  </div>
+                </div>
+            </section>
+            <section id="section-schedule" class="tutor-section" style="display:none;">
+                <!-- Lịch dạy sẽ được render ở đây, dùng tutor-card -->
+            </section>
+            <section id="section-reviews" class="tutor-section" style="display:none;">
+                <!-- Đánh giá học viên sẽ được render ở đây, dùng tutor-card -->
+            </section>
+            <section id="section-reschedule" class="tutor-section" style="display:none;">
+                <!-- Giao diện đổi/huỷ lịch sẽ được render ở đây, dùng tutor-card -->
+            </section>
+            <section id="section-settings" class="tutor-section" style="display:none;">
+                <!-- Đổi mật khẩu sẽ được render ở đây, dùng tutor-card -->
+            </section>
+        </main>
+    </div>
+    <script src="js/data.js"></script>
+    <script src="js/tutor-scripts.js"></script>
+</body>
+</html> 
