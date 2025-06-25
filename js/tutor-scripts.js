@@ -29,11 +29,9 @@ function renderTeachingSchedule() {
     const scheduleSection = document.getElementById('section-schedule');
     if (!scheduleSection || !tutors || !schedule) return;
 
-    // Lấy tutor hiện tại (tạm thời là tutors[0])
     const tutor = tutors[0];
     if (!tutor) return;
 
-    // Lọc các buổi dạy của tutor này
     const tutorLessons = schedule.filter(lesson => lesson.tutor === tutor.name);
 
     if (tutorLessons.length === 0) {
@@ -41,27 +39,49 @@ function renderTeachingSchedule() {
         return;
     }
 
-    // Tạo HTML danh sách lịch dạy
-    scheduleSection.innerHTML = tutorLessons.map(lesson => `
-        <div class="schedule-item ${lesson.status}">
+    scheduleSection.innerHTML = tutorLessons.map(lesson => {
+        let courseStatus = window['courseStatus_' + lesson.subject] || 'Sắp tới';
+        let btnClass = 'btn-status-upcoming';
+        let itemClass = '';
+        if (courseStatus === 'Đang thực hiện') {
+            btnClass = 'btn-status-progress';
+            itemClass = 'schedule-item-progress';
+        } else if (courseStatus === 'Đã hoàn thành') {
+            btnClass = 'btn-status-done';
+            itemClass = 'schedule-item-done';
+        } else {
+            itemClass = 'schedule-item-upcoming';
+        }
+        return `
+        <div class="schedule-item ${lesson.status} ${itemClass}">
             <div class="schedule-date">
                 <div class="date">${lesson.date}</div>
                 <div class="time">${lesson.time}</div>
             </div>
             <div class="schedule-info">
-                <div class="subject">Môn: ${lesson.subject}</div>
+                <div class="subject">Môn: ${lesson.subject}
+                  <button onclick="cycleCourseStatus('${lesson.subject}', this)" class="btn-status ${btnClass}" style="margin-left:12px;">${courseStatus}</button>
+                </div>
                 <div class="notes">Ghi chú: ${lesson.notes || ''}</div>
                 ${lesson.onlineMeeting ? `<div class="online-indicator">🖥️ Online</div>` : ''}
             </div>
             <div class="schedule-status">
-                <span class="status-badge ${lesson.status}">
-                    ${lesson.status === 'completed' ? 'Đã hoàn thành' : 'Sắp tới'}
-                </span>
-                ${lesson.onlineMeeting && lesson.status === 'upcoming' ? 
-                  `<a class="btn-join-meeting" href="${lesson.meetingLink}" target="_blank">Tham gia meeting</a>` : ''}
+                ${courseStatus !== 'Đã hoàn thành' ? `
+                  ${lesson.onlineMeeting ? `<a class="btn-join-meeting" href="${lesson.meetingLink}" target="_blank">Tham gia meeting</a>` : ''}
+                  <button class="btn-secondary" onclick="openRescheduleModal('reschedule', ${lesson.id})">Đổi lịch</button>
+                  <button class="btn-danger" onclick="openRescheduleModal('cancel', ${lesson.id})">Huỷ lịch</button>
+                ` : ''}
             </div>
         </div>
-    `).join('');
+        `;
+    }).join('');
+}
+
+// Hàm chuyển trạng thái khoá học
+function setCourseStatus(subject, status) {
+    window['courseStatus_' + subject] = status;
+    const el = document.getElementById('courseStatus_' + subject);
+    if (el) el.textContent = status;
 }
 
 // 3. Hiển thị form đánh giá học viên
@@ -161,11 +181,9 @@ function handleRescheduleRequest() {
     const rescheduleSection = document.getElementById('section-reschedule');
     if (!rescheduleSection || !tutors || !schedule) return;
 
-    // Lấy tutor hiện tại (tạm thời là tutors[0])
     const tutor = tutors[0];
     if (!tutor) return;
 
-    // Lọc các buổi dạy sắp tới
     const upcomingLessons = schedule.filter(lesson => lesson.tutor === tutor.name && lesson.status === 'upcoming');
 
     if (upcomingLessons.length === 0) {
@@ -173,7 +191,6 @@ function handleRescheduleRequest() {
         return;
     }
 
-    // Tạo HTML danh sách buổi dạy với nút Đổi/Huỷ
     rescheduleSection.innerHTML = `
         <h3>Đổi/Huỷ lịch dạy</h3>
         <div class="reschedule-list">
@@ -197,6 +214,15 @@ function handleRescheduleRequest() {
                     <div class="form-row" id="makeupRow" style="display:none;">
                         <label>Chọn ngày bù:</label>
                         <input type="date" id="makeupDate" />
+                        <input type="time" id="makeupTime" />
+                    </div>
+                    <div class="form-row" id="makeupOptionRow" style="display:none;">
+                        <label><input type="checkbox" id="makeupOption"> Lên lịch dạy bù cho sinh viên</label>
+                    </div>
+                    <div class="form-row" id="makeupInputRow" style="display:none;">
+                        <label>Ngày dạy bù:</label>
+                        <input type="date" id="makeupDate2" />
+                        <input type="time" id="makeupTime2" />
                     </div>
                     <button type="submit" class="btn-primary">Xác nhận</button>
                 </form>
@@ -204,14 +230,12 @@ function handleRescheduleRequest() {
         </div>
     `;
 
-    // Gắn sự kiện cho nút Đổi/Huỷ
     document.querySelectorAll('.btn-secondary, .btn-danger').forEach(btn => {
         btn.addEventListener('click', function() {
             const action = this.dataset.action;
             const lessonId = parseInt(this.dataset.id);
             const lesson = schedule.find(l => l.id === lessonId);
             if (!lesson) return;
-            // Kiểm tra >=24h
             const now = new Date();
             const lessonDate = new Date(lesson.date + 'T' + lesson.time.split('-')[0]);
             const diffHours = (lessonDate - now) / (1000 * 60 * 60);
@@ -219,36 +243,84 @@ function handleRescheduleRequest() {
                 alert('Chỉ được đổi/huỷ lịch trước ít nhất 24 giờ!');
                 return;
             }
-            // Mở modal
             const modal = document.getElementById('rescheduleModal');
             const modalTitle = document.getElementById('modalTitle');
             const makeupRow = document.getElementById('makeupRow');
+            const makeupOptionRow = document.getElementById('makeupOptionRow');
+            const makeupInputRow = document.getElementById('makeupInputRow');
             modal.style.display = 'block';
             modalTitle.textContent = action === 'reschedule' ? 'Đổi lịch' : 'Huỷ lịch';
             makeupRow.style.display = action === 'reschedule' ? 'block' : 'none';
-            // Xử lý submit form
+            makeupOptionRow.style.display = action === 'cancel' ? 'block' : 'none';
+            makeupInputRow.style.display = 'none';
+            if (action === 'cancel') {
+                document.getElementById('makeupOption').checked = false;
+                document.getElementById('makeupOption').onchange = function() {
+                    makeupInputRow.style.display = this.checked ? 'block' : 'none';
+                };
+            }
             const form = document.getElementById('rescheduleForm');
             form.onsubmit = function(e) {
                 e.preventDefault();
                 const reason = document.getElementById('reason').value.trim();
-                const makeupDate = document.getElementById('makeupDate').value;
-                if (!reason || (action === 'reschedule' && !makeupDate)) {
+                if (!reason) {
                     alert('Vui lòng nhập đầy đủ thông tin!');
                     return;
                 }
-                // Cập nhật trạng thái buổi học
                 if (action === 'reschedule') {
-                    lesson.date = makeupDate;
-                    lesson.notes = `Đã đổi lịch. Lý do: ${reason}`;
-                } else {
+                    const makeupDate = document.getElementById('makeupDate').value;
+                    const makeupTime = document.getElementById('makeupTime').value;
+                    if (!makeupDate || !makeupTime) {
+                        alert('Vui lòng chọn ngày và giờ mới!');
+                        return;
+                    }
+                    if (confirm(`Bạn có chắc muốn đổi lịch sang ngày ${makeupDate}, giờ ${makeupTime}?`)) {
+                        lesson.date = makeupDate;
+                        lesson.time = makeupTime;
+                        lesson.notes = `Đã đổi lịch. Lý do: ${reason}`;
+                        modal.style.display = 'none';
+                        handleRescheduleRequest();
+                        notifyLearner(`Gia sư đã đổi lịch dạy: ${lesson.subject} sang ngày ${makeupDate}, giờ ${makeupTime}`);
+                    }
+                } else if (action === 'cancel') {
                     lesson.status = 'cancelled';
                     lesson.notes = `Đã huỷ. Lý do: ${reason}`;
+                    let hasMakeup = document.getElementById('makeupOption').checked;
+                    let makeupDate2 = document.getElementById('makeupDate2').value;
+                    let makeupTime2 = document.getElementById('makeupTime2').value;
+                    let confirmMsg = `Bạn có chắc muốn huỷ lịch này?`;
+                    if (hasMakeup) {
+                        if (!makeupDate2 || !makeupTime2) {
+                            alert('Vui lòng chọn ngày và giờ dạy bù!');
+                            return;
+                        }
+                        confirmMsg += `\nLên lịch dạy bù vào ngày ${makeupDate2}, giờ ${makeupTime2}`;
+                    }
+                    if (confirm(confirmMsg)) {
+                        if (hasMakeup) {
+                            // Tạo lịch mới cho sinh viên
+                            const newId = Math.max(...schedule.map(l => l.id)) + 1;
+                            schedule.push({
+                                id: newId,
+                                date: makeupDate2,
+                                time: makeupTime2,
+                                subject: lesson.subject,
+                                tutor: lesson.tutor,
+                                status: 'upcoming',
+                                notes: `Buổi dạy bù cho lịch đã huỷ ngày ${lesson.date}`,
+                                meetingType: lesson.meetingType,
+                                onlineMeeting: lesson.onlineMeeting,
+                                meetingLink: lesson.meetingLink
+                            });
+                            notifyLearner(`Gia sư đã huỷ lịch dạy: ${lesson.subject} vào ngày ${lesson.date}, giờ ${lesson.time} và lên lịch dạy bù vào ngày ${makeupDate2}, giờ ${makeupTime2}`);
+                        } else {
+                            notifyLearner(`Gia sư đã huỷ lịch dạy: ${lesson.subject} vào ngày ${lesson.date}, giờ ${lesson.time}`);
+                        }
+                        modal.style.display = 'none';
+                        handleRescheduleRequest();
+                    }
                 }
-                modal.style.display = 'none';
-                handleRescheduleRequest();
-                notifyLearner('Lịch học đã được cập nhật!');
             };
-            // Đóng modal
             document.getElementById('closeRescheduleModal').onclick = function() {
                 modal.style.display = 'none';
             };
@@ -258,7 +330,12 @@ function handleRescheduleRequest() {
 
 // 5. Thông báo cho học viên khi có thay đổi
 function notifyLearner(message) {
-    // TODO: Hiển thị alert/thông báo
+    let notifications = JSON.parse(localStorage.getItem('learnerNotifications') || '[]');
+    notifications.push({
+        message,
+        time: new Date().toLocaleString()
+    });
+    localStorage.setItem('learnerNotifications', JSON.stringify(notifications));
 }
 
 // 6. Xử lý đổi mật khẩu
@@ -359,7 +436,6 @@ document.addEventListener('DOMContentLoaded', function() {
         { tab: 'nav-profile', section: 'section-profile', render: renderTutorProfile },
         { tab: 'nav-schedule', section: 'section-schedule', render: renderTeachingSchedule },
         { tab: 'nav-reviews', section: 'section-reviews', render: renderStudentReviewForm },
-        { tab: 'nav-reschedule', section: 'section-reschedule', render: handleRescheduleRequest },
         { tab: 'nav-settings', section: 'section-settings', render: renderTutorSettings }
     ];
 
@@ -468,4 +544,173 @@ function showPasswordModal() {
         alert('Đổi mật khẩu thành công!');
         document.body.removeChild(modal);
     };
+}
+
+// Modal chỉnh sửa lịch dạy
+function openEditScheduleModal(id) {
+    const lesson = schedule.find(l => l.id === id);
+    if (!lesson) return;
+    document.getElementById('editScheduleId').value = lesson.id;
+    document.getElementById('editScheduleDate').value = lesson.date;
+    document.getElementById('editScheduleTime').value = lesson.time;
+    document.getElementById('editScheduleModal').style.display = 'block';
+}
+
+function closeEditModal() {
+    document.getElementById('editScheduleModal').style.display = 'none';
+}
+
+if (document.getElementById('closeEditModal')) {
+    document.getElementById('closeEditModal').onclick = closeEditModal;
+}
+
+if (document.getElementById('editScheduleForm')) {
+    document.getElementById('editScheduleForm').onsubmit = function(e) {
+        e.preventDefault();
+        const id = parseInt(document.getElementById('editScheduleId').value);
+        const date = document.getElementById('editScheduleDate').value;
+        const time = document.getElementById('editScheduleTime').value;
+        const lesson = schedule.find(l => l.id === id);
+        if (lesson) {
+            if (confirm(`Bạn có chắc muốn thay đổi lịch dạy sang ngày ${date}, giờ ${time} không?`)) {
+                lesson.date = date;
+                lesson.time = time;
+                renderTeachingSchedule();
+                closeEditModal();
+                notifyLearner(`Gia sư đã thay đổi lịch dạy: ${lesson.subject} vào ngày ${date}, giờ ${time}`);
+            }
+        }
+    };
+}
+
+function deleteSchedule(id) {
+    if (confirm("Bạn có chắc muốn xoá lịch này không?")) {
+        const idx = schedule.findIndex(l => l.id === id);
+        if (idx !== -1) {
+            schedule.splice(idx, 1);
+            renderTeachingSchedule();
+        }
+    }
+}
+
+// Hàm mở modal đổi/huỷ lịch cho từng lịch dạy
+function openRescheduleModal(action, lessonId) {
+    const lesson = schedule.find(l => l.id === lessonId);
+    if (!lesson) return;
+    const modal = document.getElementById('rescheduleModal');
+    const modalTitle = document.getElementById('modalTitle');
+    const makeupRow = document.getElementById('makeupRow');
+    const makeupOptionRow = document.getElementById('makeupOptionRow');
+    const makeupInputRow = document.getElementById('makeupInputRow');
+    modal.style.display = 'block';
+    modalTitle.textContent = action === 'reschedule' ? 'Đổi lịch' : 'Huỷ lịch';
+    makeupRow.style.display = action === 'reschedule' ? 'block' : 'none';
+    makeupOptionRow.style.display = action === 'cancel' ? 'block' : 'none';
+    makeupInputRow.style.display = 'none';
+    if (action === 'cancel') {
+        document.getElementById('makeupOption').checked = false;
+        document.getElementById('makeupOption').onchange = function() {
+            makeupInputRow.style.display = this.checked ? 'block' : 'none';
+        };
+    }
+    document.getElementById('reason').value = '';
+    document.getElementById('makeupDate').value = '';
+    document.getElementById('makeupTime').value = '';
+    document.getElementById('makeupDate2').value = '';
+    document.getElementById('makeupTime2').value = '';
+
+    const form = document.getElementById('rescheduleForm');
+    form.onsubmit = function(e) {
+        e.preventDefault();
+        const reason = document.getElementById('reason').value.trim();
+        if (!reason) {
+            alert('Vui lòng nhập đầy đủ thông tin!');
+            return;
+        }
+        if (action === 'reschedule') {
+            const makeupDate = document.getElementById('makeupDate').value;
+            const makeupTime = document.getElementById('makeupTime').value;
+            if (!makeupDate || !makeupTime) {
+                alert('Vui lòng chọn ngày và giờ mới!');
+                return;
+            }
+            if (confirm(`Bạn có chắc muốn đổi lịch sang ngày ${makeupDate}, giờ ${makeupTime}?`)) {
+                lesson.date = makeupDate;
+                lesson.time = makeupTime;
+                lesson.notes = `Đã đổi lịch. Lý do: ${reason}`;
+                modal.style.display = 'none';
+                renderTeachingSchedule();
+                notifyLearner(`Gia sư đã đổi lịch dạy: ${lesson.subject} sang ngày ${makeupDate}, giờ ${makeupTime}`);
+            }
+        } else if (action === 'cancel') {
+            lesson.status = 'cancelled';
+            lesson.notes = `Đã huỷ. Lý do: ${reason}`;
+            let hasMakeup = document.getElementById('makeupOption').checked;
+            let makeupDate2 = document.getElementById('makeupDate2').value;
+            let makeupTime2 = document.getElementById('makeupTime2').value;
+            let confirmMsg = `Bạn có chắc muốn huỷ lịch này?`;
+            if (hasMakeup) {
+                if (!makeupDate2 || !makeupTime2) {
+                    alert('Vui lòng chọn ngày và giờ dạy bù!');
+                    return;
+                }
+                confirmMsg += `\nLên lịch dạy bù vào ngày ${makeupDate2}, giờ ${makeupTime2}`;
+            }
+            if (confirm(confirmMsg)) {
+                if (hasMakeup) {
+                    const newId = Math.max(...schedule.map(l => l.id)) + 1;
+                    schedule.push({
+                        id: newId,
+                        date: makeupDate2,
+                        time: makeupTime2,
+                        subject: lesson.subject,
+                        tutor: lesson.tutor,
+                        status: 'upcoming',
+                        notes: `Buổi dạy bù cho lịch đã huỷ ngày ${lesson.date}`,
+                        meetingType: lesson.meetingType,
+                        onlineMeeting: lesson.onlineMeeting,
+                        meetingLink: lesson.meetingLink
+                    });
+                    notifyLearner(`Gia sư đã huỷ lịch dạy: ${lesson.subject} vào ngày ${lesson.date}, giờ ${lesson.time} và lên lịch dạy bù vào ngày ${makeupDate2}, giờ ${makeupTime2}`);
+                } else {
+                    notifyLearner(`Gia sư đã huỷ lịch dạy: ${lesson.subject} vào ngày ${lesson.date}, giờ ${lesson.time}`);
+                }
+                modal.style.display = 'none';
+                renderTeachingSchedule();
+            }
+        }
+    };
+    document.getElementById('closeRescheduleModal').onclick = function() {
+        modal.style.display = 'none';
+    };
+}
+
+// Sửa hàm cycleCourseStatus để nhận thêm tham số button và đổi text trực tiếp
+function cycleCourseStatus(subject, btn) {
+    let statusArr = ['Sắp tới', 'Đang thực hiện', 'Đã hoàn thành'];
+    let current = window['courseStatus_' + subject] || 'Sắp tới';
+    let idx = statusArr.indexOf(current);
+    let next = statusArr[(idx + 1) % statusArr.length];
+    window['courseStatus_' + subject] = next;
+    if (btn) {
+        btn.textContent = next;
+        btn.classList.remove('btn-status-upcoming', 'btn-status-progress', 'btn-status-done');
+        if (next === 'Sắp tới') btn.classList.add('btn-status-upcoming');
+        if (next === 'Đang thực hiện') btn.classList.add('btn-status-progress');
+        if (next === 'Đã hoàn thành') btn.classList.add('btn-status-done');
+    }
+    // Ẩn/hiện các nút bên phải cho tất cả buổi cùng môn
+    document.querySelectorAll('.schedule-item').forEach(item => {
+        const subj = item.querySelector('.subject');
+        if (subj && subj.textContent.includes(subject)) {
+            const statusDiv = item.querySelector('.schedule-status');
+            if (statusDiv) {
+                if (next === 'Đã hoàn thành') {
+                    statusDiv.style.display = 'none';
+                } else {
+                    statusDiv.style.display = '';
+                }
+            }
+        }
+    });
 } 

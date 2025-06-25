@@ -616,6 +616,18 @@ function attachPasswordForm() {
   }
 }
 
+// Hiển thị thông báo từ localStorage
+function renderLearnerNotifications() {
+  const notiList = document.getElementById('learnerNotifications');
+  if (!notiList) return;
+  let notifications = JSON.parse(localStorage.getItem('learnerNotifications') || '[]');
+  if (notifications.length === 0) {
+    notiList.innerHTML = '<p>Không có thông báo mới.</p>';
+    return;
+  }
+  notiList.innerHTML = notifications.map(n => `<div class="notification-item">${n.time}: ${n.message}</div>`).join('');
+}
+
 // Khởi tạo
 window.onload = function() {
   // Khôi phục avatar từ localStorage nếu có
@@ -646,4 +658,5 @@ window.onload = function() {
   attachSettingsForms();
   attachAvatarEvents();
   attachPasswordForm();
+  renderLearnerNotifications();
 } 

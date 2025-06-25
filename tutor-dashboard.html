@@ -16,16 +16,13 @@
                 <span id="tutor-greeting">Chào, <b>Gia sư</b></span>
                 <span class="tutor-role">(Gia sư)</span>
             </div>
+            <nav class="tutor-navbar">
+                <a href="#" id="nav-profile" class="active">Hồ sơ</a>
+                <a href="#" id="nav-schedule">Lịch dạy</a>
+                <a href="#" id="nav-reviews">Đánh giá học viên</a>
+                <a href="#" id="nav-settings">Cài đặt</a>
+            </nav>
         </header>
-
-        <!-- Navbar -->
-        <nav class="tutor-navbar">
-            <a href="#" id="nav-profile" class="active">Hồ sơ</a>
-            <a href="#" id="nav-schedule">Lịch dạy</a>
-            <a href="#" id="nav-reviews">Đánh giá học viên</a>
-            <a href="#" id="nav-reschedule">Đổi/Huỷ lịch</a>
-            <a href="#" id="nav-settings">Cài đặt</a>
-        </nav>
 
         <!-- Main Content Sections -->
         <main class="tutor-sections">
@@ -93,6 +90,25 @@
                 <!-- Modal đổi mật khẩu sẽ được render động bằng JS khi bấm nút -->
             </section>
         </main>
+    </div>
+    <!-- Modal chỉnh sửa lịch dạy -->
+    <div id="editScheduleModal" class="modal" style="display:none;">
+      <div class="modal-content">
+        <span class="close" id="closeEditModal">&times;</span>
+        <h3>Chỉnh sửa lịch dạy</h3>
+        <form id="editScheduleForm">
+          <input type="hidden" id="editScheduleId">
+          <div class="form-row">
+            <label>Ngày:</label>
+            <input type="date" id="editScheduleDate" required>
+          </div>
+          <div class="form-row">
+            <label>Giờ:</label>
+            <input type="text" id="editScheduleTime" required placeholder="19:00-21:00">
+          </div>
+          <button type="submit" class="btn-primary">Lưu</button>
+        </form>
+      </div>
     </div>
     <script src="js/data.js"></script>
     <script src="js/tutor-scripts.js"></script>
