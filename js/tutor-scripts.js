@@ -140,18 +140,18 @@ function renderStudentReviewForm() {
 
     // Gắn sự kiện cho form và rating
     const form = document.getElementById('studentReviewForm');
-    const stars = document.querySelectorAll('#starRating .star');
+    const stars = document.querySelectorAll('#starRatings .star');
     let selectedRating = 0;
     stars.forEach(star => {
-        star.addEventListener('click', function() {
+        star.onclick = function() {
             selectedRating = parseInt(this.dataset.value);
             stars.forEach((s, idx) => {
                 s.classList.toggle('active', idx < selectedRating);
             });
-        });
+        };
     });
     if (form) {
-        form.addEventListener('submit', function(e) {
+        form.onsubmit = function(e) {
             e.preventDefault();
             const studentName = document.getElementById('studentName').value.trim();
             const subject = document.getElementById('reviewSubject').value.trim();
@@ -160,7 +160,6 @@ function renderStudentReviewForm() {
                 alert('Vui lòng điền đầy đủ thông tin và chọn số sao!');
                 return;
             }
-            // Thêm đánh giá mới vào mảng reviews
             reviews.push({
                 id: reviews.length + 1,
                 tutorName: tutor.name,
@@ -172,7 +171,7 @@ function renderStudentReviewForm() {
             });
             renderStudentReviewForm();
             alert('Đánh giá đã được gửi!');
-        });
+        };
     }
 }
 
@@ -456,6 +455,51 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Mặc định render hồ sơ khi load trang
     renderTutorProfile();
+
+    // Thêm logic cho nút Thêm buổi học
+    const addBtn = document.getElementById('addLessonBtn');
+    const addModal = document.getElementById('addLessonModal');
+    const closeAddModal = document.getElementById('closeAddLessonModal');
+    if (addBtn && addModal && closeAddModal) {
+        addBtn.onclick = function() { addModal.style.display = 'block'; };
+        closeAddModal.onclick = function() { addModal.style.display = 'none'; };
+        window.onclick = function(event) {
+            if (event.target === addModal) addModal.style.display = 'none';
+        };
+    }
+    // Xử lý submit form thêm buổi học
+    const addForm = document.getElementById('addLessonForm');
+    if (addForm) {
+        addForm.onsubmit = function(e) {
+            e.preventDefault();
+            const subject = document.getElementById('addSubject').value.trim();
+            const date = document.getElementById('addDate').value;
+            const time = document.getElementById('addTime').value.trim();
+            const notes = document.getElementById('addNotes').value.trim();
+            const meetingLink = document.getElementById('addMeetingLink').value.trim();
+            const onlineMeeting = document.getElementById('addOnlineMeeting').checked;
+            if (!subject || !date || !time) {
+                alert('Vui lòng nhập đầy đủ thông tin bắt buộc!');
+                return;
+            }
+            const newId = Math.max(...schedule.map(l => l.id)) + 1;
+            schedule.push({
+                id: newId,
+                date,
+                time,
+                subject,
+                tutor: tutors[0].name,
+                status: 'upcoming',
+                notes,
+                meetingType: '1-1',
+                onlineMeeting,
+                meetingLink
+            });
+            addModal.style.display = 'none';
+            addForm.reset();
+            renderTeachingSchedule();
+        };
+    }
 });
 
 function renderTutorSettings() {
@@ -618,9 +662,11 @@ function openRescheduleModal(action, lessonId) {
     document.getElementById('makeupTime').value = '';
     document.getElementById('makeupDate2').value = '';
     document.getElementById('makeupTime2').value = '';
-
-    const form = document.getElementById('rescheduleForm');
-    form.onsubmit = function(e) {
+    // Clear event cũ
+    const oldForm = document.getElementById('rescheduleForm');
+    const newForm = oldForm.cloneNode(true);
+    oldForm.parentNode.replaceChild(newForm, oldForm);
+    newForm.onsubmit = function(e) {
         e.preventDefault();
         const reason = document.getElementById('reason').value.trim();
         if (!reason) {
@@ -639,6 +685,7 @@ function openRescheduleModal(action, lessonId) {
                 lesson.time = makeupTime;
                 lesson.notes = `Đã đổi lịch. Lý do: ${reason}`;
                 modal.style.display = 'none';
+                saveScheduleToStorage();
                 renderTeachingSchedule();
                 notifyLearner(`Gia sư đã đổi lịch dạy: ${lesson.subject} sang ngày ${makeupDate}, giờ ${makeupTime}`);
             }
@@ -676,6 +723,7 @@ function openRescheduleModal(action, lessonId) {
                     notifyLearner(`Gia sư đã huỷ lịch dạy: ${lesson.subject} vào ngày ${lesson.date}, giờ ${lesson.time}`);
                 }
                 modal.style.display = 'none';
+                saveScheduleToStorage();
                 renderTeachingSchedule();
             }
         }
@@ -692,25 +740,95 @@ function cycleCourseStatus(subject, btn) {
     let idx = statusArr.indexOf(current);
     let next = statusArr[(idx + 1) % statusArr.length];
     window['courseStatus_' + subject] = next;
-    if (btn) {
-        btn.textContent = next;
-        btn.classList.remove('btn-status-upcoming', 'btn-status-progress', 'btn-status-done');
-        if (next === 'Sắp tới') btn.classList.add('btn-status-upcoming');
-        if (next === 'Đang thực hiện') btn.classList.add('btn-status-progress');
-        if (next === 'Đã hoàn thành') btn.classList.add('btn-status-done');
+    // Render lại toàn bộ lịch dạy để cập nhật đúng giao diện cho từng môn
+    if (typeof renderTeachingSchedule === 'function') {
+        renderTeachingSchedule();
+        return;
     }
-    // Ẩn/hiện các nút bên phải cho tất cả buổi cùng môn
-    document.querySelectorAll('.schedule-item').forEach(item => {
-        const subj = item.querySelector('.subject');
-        if (subj && subj.textContent.includes(subject)) {
-            const statusDiv = item.querySelector('.schedule-status');
-            if (statusDiv) {
-                if (next === 'Đã hoàn thành') {
-                    statusDiv.style.display = 'none';
-                } else {
-                    statusDiv.style.display = '';
-                }
+    // (Không cần thao tác DOM trực tiếp nữa)
+}
+
+// =============== LOCAL STORAGE SCHEDULE ===============
+function loadScheduleFromStorage() {
+    const saved = localStorage.getItem('tutorSchedule');
+    if (saved) {
+        try {
+            const arr = JSON.parse(saved);
+            if (Array.isArray(arr)) {
+                schedule.length = 0;
+                arr.forEach(l => schedule.push(l));
+            }
+        } catch (e) {}
+    }
+}
+function saveScheduleToStorage() {
+    localStorage.setItem('tutorSchedule', JSON.stringify(schedule));
+}
+// Gọi khi load trang
+if (typeof schedule !== 'undefined') loadScheduleFromStorage();
+
+// ================= THÊM/XOÁ/SỬA LỊCH: LƯU VÀO LOCALSTORAGE =================
+// Thêm buổi học
+if (document.getElementById('addLessonForm')) {
+    document.getElementById('addLessonForm').onsubmit = function(e) {
+        e.preventDefault();
+        const subject = document.getElementById('addSubject').value.trim();
+        const date = document.getElementById('addDate').value;
+        const time = document.getElementById('addTime').value.trim();
+        const notes = document.getElementById('addNotes').value.trim();
+        const meetingLink = document.getElementById('addMeetingLink').value.trim();
+        const onlineMeeting = document.getElementById('addOnlineMeeting').checked;
+        if (!subject || !date || !time) {
+            alert('Vui lòng nhập đầy đủ thông tin bắt buộc!');
+            return;
+        }
+        const newId = Math.max(0, ...schedule.map(l => l.id)) + 1;
+        schedule.push({
+            id: newId,
+            date,
+            time,
+            subject,
+            tutor: tutors[0].name,
+            status: 'upcoming',
+            notes,
+            meetingType: '1-1',
+            onlineMeeting,
+            meetingLink
+        });
+        document.getElementById('addLessonModal').style.display = 'none';
+        this.reset();
+        saveScheduleToStorage();
+        renderTeachingSchedule();
+    };
+}
+// Xoá lịch
+function deleteSchedule(id) {
+    if (confirm("Bạn có chắc muốn xoá lịch này không?")) {
+        const idx = schedule.findIndex(l => l.id === id);
+        if (idx !== -1) {
+            schedule.splice(idx, 1);
+            saveScheduleToStorage();
+            renderTeachingSchedule();
+        }
+    }
+}
+// Sửa lịch (modal chỉnh sửa)
+if (document.getElementById('editScheduleForm')) {
+    document.getElementById('editScheduleForm').onsubmit = function(e) {
+        e.preventDefault();
+        const id = parseInt(document.getElementById('editScheduleId').value);
+        const date = document.getElementById('editScheduleDate').value;
+        const time = document.getElementById('editScheduleTime').value;
+        const lesson = schedule.find(l => l.id === id);
+        if (lesson) {
+            if (confirm(`Bạn có chắc muốn thay đổi lịch dạy sang ngày ${date}, giờ ${time} không?`)) {
+                lesson.date = date;
+                lesson.time = time;
+                saveScheduleToStorage();
+                renderTeachingSchedule();
+                closeEditModal();
+                notifyLearner(`Gia sư đã thay đổi lịch dạy: ${lesson.subject} vào ngày ${date}, giờ ${time}`);
             }
         }
-    });
+    };
 } 

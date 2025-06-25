@@ -28,27 +28,30 @@
         <main class="tutor-sections">
             <section id="section-profile" class="tutor-section">
                 <div class="profile-grid">
-                  <div class="profile-card">
+                  <div class="profile-card profile-info">
                     <h3>Thông tin cơ bản</h3>
                     <div class="profile-item"><span class="profile-label">Họ tên:</span> <span class="profile-value" id="tutorName"></span></div>
                     <div class="profile-item"><span class="profile-label">Email:</span> <span class="profile-value" id="tutorEmail"></span></div>
                     <div class="profile-item"><span class="profile-label">Số điện thoại:</span> <span class="profile-value" id="tutorPhone"></span></div>
                     <div class="profile-item"><span class="profile-label">Chuyên môn:</span> <span class="profile-value" id="tutorSubject"></span></div>
                   </div>
-                  <div class="profile-card">
+                  <div class="profile-card profile-info">
                     <h3>Thông tin dạy học</h3>
                     <div class="profile-item"><span class="profile-label">Giá/buổi:</span> <span class="profile-value" id="tutorPrice"></span></div>
                     <div class="profile-item"><span class="profile-label">Mô tả:</span> <span class="profile-value" id="tutorDesc"></span></div>
                     <div class="profile-item"><span class="profile-label">Đánh giá:</span> <span class="profile-value" id="tutorRating"></span></div>
                     <div class="profile-item"><span class="profile-label">Trạng thái:</span> <span class="profile-value" id="tutorStatus"></span></div>
                   </div>
-                  <div class="profile-card">
+                  <div class="profile-card profile-info">
                     <h3>Khác</h3>
                     <div class="profile-item"><span class="profile-label">Hỗ trợ online:</span> <span class="profile-value" id="tutorOnline"></span></div>
                   </div>
                 </div>
             </section>
             <section id="section-schedule" class="tutor-section" style="display:none;">
+                <div style="text-align:center; margin-bottom: 20px;">
+                    <button id="addLessonBtn" class="btn-primary">Thêm môn học</button>
+                </div>
                 <!-- Lịch dạy sẽ được render ở đây, dùng tutor-card -->
             </section>
             <section id="section-reviews" class="tutor-section" style="display:none;">
@@ -59,35 +62,34 @@
             </section>
             <section id="section-settings" class="tutor-section" style="display:none;">
                 <div class="profile-grid">
-                  <div class="profile-card">
+                  <div class="profile-card settings-card">
                     <h3>Thông tin cá nhân</h3>
                     <div class="profile-item"><span class="profile-label">Họ tên:</span> <span class="profile-value" id="settingTutorName"></span></div>
                     <div class="profile-item"><span class="profile-label">Email:</span> <span class="profile-value" id="settingTutorEmail"></span></div>
                     <div class="profile-item"><span class="profile-label">Số điện thoại:</span> <span class="profile-value" id="settingTutorPhone"></span></div>
                     <div class="profile-item"><span class="profile-label">Avatar:</span> <span class="profile-value" id="settingTutorAvatar"></span></div>
                   </div>
-                  <div class="profile-card">
+                  <div class="profile-card settings-card">
                     <h3>Thông tin dạy học</h3>
                     <div class="profile-item"><span class="profile-label">Chuyên môn:</span> <span class="profile-value" id="settingTutorSubject"></span></div>
                     <div class="profile-item"><span class="profile-label">Giá/buổi:</span> <span class="profile-value" id="settingTutorPrice"></span></div>
                     <div class="profile-item"><span class="profile-label">Trạng thái:</span> <span class="profile-value" id="settingTutorStatus"></span></div>
                     <div class="profile-item"><span class="profile-label">Hỗ trợ online:</span> <span class="profile-value" id="settingTutorOnline"></span></div>
                   </div>
-                  <div class="profile-card">
+                  <div class="profile-card settings-card">
                     <h3>Thông báo</h3>
-                    <div class="profile-item"><label><input type="checkbox" checked disabled> Nhắc nhở lịch dạy</label></div>
-                    <div class="profile-item"><label><input type="checkbox" checked disabled> Thông báo tin nhắn mới</label></div>
-                    <div class="profile-item"><label><input type="checkbox"> Thông báo khuyến mãi</label></div>
-                    <div class="profile-item"><label><input type="checkbox" checked disabled> Báo cáo tiến độ hàng tuần</label></div>
+                    <div class="profile-item"><label><input type="checkbox" id="cb-reminder"> Nhắc nhở lịch dạy</label></div>
+                    <div class="profile-item"><label><input type="checkbox" id="cb-message"> Thông báo tin nhắn mới</label></div>
+                    <div class="profile-item"><label><input type="checkbox" id="cb-promo"> Thông báo khuyến mãi</label></div>
+                    <div class="profile-item"><label><input type="checkbox" id="cb-report"> Báo cáo tiến độ hàng tuần</label></div>
                   </div>
-                  <div class="profile-card">
+                  <div class="profile-card settings-card">
                     <h3>Tài khoản</h3>
                     <button id="changePasswordBtn" class="btn-primary" style="width:100%;margin-bottom:10px;">Đổi mật khẩu</button>
                     <button id="logoutBtn" class="btn-secondary" style="width:100%;margin-bottom:10px;">Đăng xuất</button>
                     <button id="swapRoleBtn" class="btn-primary" style="width:100%;">Chuyển sang giao diện Sinh viên</button>
                   </div>
                 </div>
-                <!-- Modal đổi mật khẩu sẽ được render động bằng JS khi bấm nút -->
             </section>
         </main>
     </div>
@@ -107,6 +109,66 @@
             <input type="text" id="editScheduleTime" required placeholder="19:00-21:00">
           </div>
           <button type="submit" class="btn-primary">Lưu</button>
+        </form>
+      </div>
+    </div>
+    <!-- Modal thêm buổi học -->
+    <div id="addLessonModal" class="modal" style="display:none;">
+      <div class="modal-content">
+        <span class="close" id="closeAddLessonModal">&times;</span>
+        <h3>Thêm buổi học mới</h3>
+        <form id="addLessonForm">
+          <div class="form-row">
+            <label>Tên môn:</label>
+            <input type="text" id="addSubject" required />
+          </div>
+          <div class="form-row">
+            <label>Ngày:</label>
+            <input type="date" id="addDate" required />
+          </div>
+          <div class="form-row">
+            <label>Giờ:</label>
+            <input type="text" id="addTime" placeholder="08:00-10:00" required />
+          </div>
+          <div class="form-row">
+            <label>Ghi chú:</label>
+            <input type="text" id="addNotes" />
+          </div>
+          <div class="form-row">
+            <label>Link meeting:</label>
+            <input type="text" id="addMeetingLink" />
+          </div>
+          <div class="form-row">
+            <label><input type="checkbox" id="addOnlineMeeting" checked /> Online</label>
+          </div>
+          <button type="submit" class="btn-primary">Thêm buổi học</button>
+        </form>
+      </div>
+    </div>
+    <!-- Modal đổi/huỷ lịch dạy -->
+    <div id="rescheduleModal" class="modal" style="display:none;">
+      <div class="modal-content">
+        <span class="close" id="closeRescheduleModal">&times;</span>
+        <h4 id="modalTitle">Đổi/Huỷ lịch</h4>
+        <form id="rescheduleForm">
+          <div class="form-row">
+            <label>Lý do:</label>
+            <input type="text" id="reason" required />
+          </div>
+          <div class="form-row" id="makeupRow" style="display:none;">
+            <label>Chọn ngày bù:</label>
+            <input type="date" id="makeupDate" />
+            <input type="time" id="makeupTime" />
+          </div>
+          <div class="form-row" id="makeupOptionRow" style="display:none;">
+            <label><input type="checkbox" id="makeupOption"> Lên lịch dạy bù cho sinh viên</label>
+          </div>
+          <div class="form-row" id="makeupInputRow" style="display:none;">
+            <label>Ngày dạy bù:</label>
+            <input type="date" id="makeupDate2" />
+            <input type="time" id="makeupTime2" />
+          </div>
+          <button type="submit" class="btn-primary">Xác nhận</button>
         </form>
       </div>
     </div>

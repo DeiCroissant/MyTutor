@@ -31,7 +31,7 @@ const learner = {
 
 // Dữ liệu lịch học
 const schedule = [
-  { id: 1, date: '2024-01-15', time: '19:00-21:00', subject: 'Lập trình hướng đối tượng', tutor: 'Nguyễn Văn A', status: 'completed', notes: 'Học về kế thừa và đa hình', meetingType: '1-1', onlineMeeting: true, meetingLink: 'https://teams.microsoft.com/l/meetup-join/example1' },
+  { id: 1, date: '2024-01-15', time: '19:00-21:00', subject: 'Lập trình OOP cơ bản', tutor: 'Nguyễn Văn A', status: 'completed', notes: 'Học về kế thừa và đa hình', meetingType: '1-1', onlineMeeting: true, meetingLink: 'https://teams.microsoft.com/l/meetup-join/example1' },
   { id: 2, date: '2024-01-17', time: '19:00-21:00', subject: 'Toán rời rạc', tutor: 'Lê Văn C', status: 'upcoming', notes: 'Ôn tập về logic và tập hợp', meetingType: '1-1', onlineMeeting: true, meetingLink: 'https://teams.microsoft.com/l/meetup-join/example2' },
   { id: 3, date: '2024-01-19', time: '19:00-21:00', subject: 'Lập trình web nâng cao', tutor: 'Phạm Thị D', status: 'upcoming', notes: 'Thực hành React và Node.js', meetingType: '1-1', onlineMeeting: true, meetingLink: 'https://teams.microsoft.com/l/meetup-join/example3' },
   { id: 4, date: '2024-01-22', time: '19:00-21:00', subject: 'Lập trình hướng đối tượng', tutor: 'Nguyễn Văn A', status: 'upcoming', notes: 'Thiết kế giao diện và trừu tượng', meetingType: '1-1', onlineMeeting: true, meetingLink: 'https://teams.microsoft.com/l/meetup-join/example4' },
