@@ -105,7 +105,7 @@ function renderStudentReviewForm() {
                 <input type="text" id="reviewSubject" placeholder="Môn học" required />
             </div>
             <div class="form-row">
-                <div class="star-rating" id="starRating">
+                <div class="star-rating" id="starRatings">
                     ${[1,2,3,4,5].map(i => `<span class="star" data-value="${i}">★</span>`).join('')}
                 </div>
             </div>
@@ -360,7 +360,7 @@ document.addEventListener('DOMContentLoaded', function() {
         { tab: 'nav-schedule', section: 'section-schedule', render: renderTeachingSchedule },
         { tab: 'nav-reviews', section: 'section-reviews', render: renderStudentReviewForm },
         { tab: 'nav-reschedule', section: 'section-reschedule', render: handleRescheduleRequest },
-        { tab: 'nav-settings', section: 'section-settings', render: attachPasswordModalEvents }
+        { tab: 'nav-settings', section: 'section-settings', render: renderTutorSettings }
     ];
 
     tabs.forEach(({ tab, section, render }) => {
@@ -380,4 +380,92 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Mặc định render hồ sơ khi load trang
     renderTutorProfile();
-}); 
+});
+
+function renderTutorSettings() {
+    const tutor = tutors && tutors.length > 0 ? tutors[0] : null;
+    if (!tutor) return;
+    // Render thông tin cá nhân
+    document.getElementById('settingTutorName').textContent = tutor.name;
+    document.getElementById('settingTutorEmail').textContent = tutor.email || '—';
+    document.getElementById('settingTutorPhone').textContent = tutor.phone || '—';
+    document.getElementById('settingTutorAvatar').textContent = tutor.avatar;
+    // Render thông tin dạy học
+    document.getElementById('settingTutorSubject').textContent = tutor.subject;
+    document.getElementById('settingTutorPrice').textContent = tutor.price ? tutor.price.toLocaleString() + 'đ' : '—';
+    document.getElementById('settingTutorStatus').textContent = tutor.status === 'available' ? 'Đang rảnh' : 'Đang bận';
+    document.getElementById('settingTutorOnline').textContent = tutor.onlineSupport ? 'Có' : 'Không';
+    // Nút Swap
+    const swapBtn = document.getElementById('swapRoleBtn');
+    if (swapBtn) {
+        swapBtn.onclick = function() {
+            window.location.href = 'dashboard.html';
+        };
+    }
+    // Nút Đăng xuất
+    const logoutBtn = document.getElementById('logoutBtn');
+    if (logoutBtn) {
+        logoutBtn.onclick = function() {
+            if (confirm('Bạn có chắc chắn muốn đăng xuất?')) {
+                window.location.href = 'index.html';
+            }
+        };
+    }
+    // Nút Đổi mật khẩu
+    const changePasswordBtn = document.getElementById('changePasswordBtn');
+    if (changePasswordBtn) {
+        changePasswordBtn.onclick = function() {
+            showPasswordModal();
+        };
+    }
+}
+
+function showPasswordModal() {
+    // Tạo modal đổi mật khẩu
+    let modal = document.createElement('div');
+    modal.className = 'modal';
+    modal.innerHTML = `
+      <div class="modal-content">
+        <span class="close" id="closePwdModal">&times;</span>
+        <h3>Đổi mật khẩu</h3>
+        <form id="modalPasswordForm" class="settings-form">
+          <div class="form-row">
+            <input type="password" id="modalOldPassword" placeholder="Mật khẩu cũ" required />
+          </div>
+          <div class="form-row">
+            <input type="password" id="modalNewPassword" placeholder="Mật khẩu mới" required />
+          </div>
+          <div class="form-row">
+            <input type="password" id="modalConfirmPassword" placeholder="Xác nhận mật khẩu mới" required />
+          </div>
+          <button type="submit" class="btn-primary">Đổi mật khẩu</button>
+        </form>
+      </div>
+    `;
+    document.body.appendChild(modal);
+    // Đóng modal
+    document.getElementById('closePwdModal').onclick = function() {
+        document.body.removeChild(modal);
+    };
+    // Xử lý submit
+    document.getElementById('modalPasswordForm').onsubmit = function(e) {
+        e.preventDefault();
+        const oldPass = document.getElementById('modalOldPassword').value;
+        const newPass = document.getElementById('modalNewPassword').value;
+        const confirmPass = document.getElementById('modalConfirmPassword').value;
+        if (!oldPass || !newPass || !confirmPass) {
+            alert('Vui lòng nhập đầy đủ thông tin!');
+            return;
+        }
+        if (newPass !== confirmPass) {
+            alert('Mật khẩu mới không khớp!');
+            return;
+        }
+        if (newPass.length < 6) {
+            alert('Mật khẩu mới phải có ít nhất 6 ký tự!');
+            return;
+        }
+        alert('Đổi mật khẩu thành công!');
+        document.body.removeChild(modal);
+    };
+} 

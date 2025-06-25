@@ -61,7 +61,36 @@
                 <!-- Giao diện đổi/huỷ lịch sẽ được render ở đây, dùng tutor-card -->
             </section>
             <section id="section-settings" class="tutor-section" style="display:none;">
-                <!-- Đổi mật khẩu sẽ được render ở đây, dùng tutor-card -->
+                <div class="profile-grid">
+                  <div class="profile-card">
+                    <h3>Thông tin cá nhân</h3>
+                    <div class="profile-item"><span class="profile-label">Họ tên:</span> <span class="profile-value" id="settingTutorName"></span></div>
+                    <div class="profile-item"><span class="profile-label">Email:</span> <span class="profile-value" id="settingTutorEmail"></span></div>
+                    <div class="profile-item"><span class="profile-label">Số điện thoại:</span> <span class="profile-value" id="settingTutorPhone"></span></div>
+                    <div class="profile-item"><span class="profile-label">Avatar:</span> <span class="profile-value" id="settingTutorAvatar"></span></div>
+                  </div>
+                  <div class="profile-card">
+                    <h3>Thông tin dạy học</h3>
+                    <div class="profile-item"><span class="profile-label">Chuyên môn:</span> <span class="profile-value" id="settingTutorSubject"></span></div>
+                    <div class="profile-item"><span class="profile-label">Giá/buổi:</span> <span class="profile-value" id="settingTutorPrice"></span></div>
+                    <div class="profile-item"><span class="profile-label">Trạng thái:</span> <span class="profile-value" id="settingTutorStatus"></span></div>
+                    <div class="profile-item"><span class="profile-label">Hỗ trợ online:</span> <span class="profile-value" id="settingTutorOnline"></span></div>
+                  </div>
+                  <div class="profile-card">
+                    <h3>Thông báo</h3>
+                    <div class="profile-item"><label><input type="checkbox" checked disabled> Nhắc nhở lịch dạy</label></div>
+                    <div class="profile-item"><label><input type="checkbox" checked disabled> Thông báo tin nhắn mới</label></div>
+                    <div class="profile-item"><label><input type="checkbox"> Thông báo khuyến mãi</label></div>
+                    <div class="profile-item"><label><input type="checkbox" checked disabled> Báo cáo tiến độ hàng tuần</label></div>
+                  </div>
+                  <div class="profile-card">
+                    <h3>Tài khoản</h3>
+                    <button id="changePasswordBtn" class="btn-primary" style="width:100%;margin-bottom:10px;">Đổi mật khẩu</button>
+                    <button id="logoutBtn" class="btn-secondary" style="width:100%;margin-bottom:10px;">Đăng xuất</button>
+                    <button id="swapRoleBtn" class="btn-primary" style="width:100%;">Chuyển sang giao diện Sinh viên</button>
+                  </div>
+                </div>
+                <!-- Modal đổi mật khẩu sẽ được render động bằng JS khi bấm nút -->
             </section>
         </main>
     </div>
