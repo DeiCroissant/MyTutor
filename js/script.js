@@ -623,7 +623,8 @@ window.onload = function() {
   if (savedAvatar && learner) {
     learner.avatar = savedAvatar;
   }
-  
+
+  // Gọi các hàm khởi tạo
   updateHeaderInfo();
   updateScheduleStats();
   updateScoreStats();

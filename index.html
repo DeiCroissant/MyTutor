@@ -27,8 +27,14 @@
   <script>
     document.getElementById('loginForm').onsubmit = function(e) {
       e.preventDefault();
-      window.location.href = './dashboard.html';
-    }
+      const vaiTroDachon = document.getElementById('role').value;
+      if (vaiTroDachon === 'learner'){
+        window.location.href = './dashboard-learner.html';
+      }
+      else if (vaiTroDachon === 'support'){
+        window.location.href = './trungtamhotro.html';
+      }
+  }
   </script>
 </body>
 </html> S
