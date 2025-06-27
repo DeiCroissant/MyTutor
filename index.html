@@ -27,8 +27,31 @@
   <script>
     document.getElementById('loginForm').onsubmit = function(e) {
       e.preventDefault();
-      window.location.href = './dashboard.html';
+      
+      const role = document.getElementById('role').value;
+      let targetPage = './dashboard.html'; // Mặc định là dashboard Learner
+      
+      // Kiểm tra vai trò và chuyển hướng đến dashboard phù hợp
+      switch(role) {
+        case 'tutor':
+          targetPage = './tutor-dashboard.html';
+          break;
+        case 'support':
+          // Có thể thêm dashboard cho support sau này
+          targetPage = './dashboard.html';
+          break;
+        case 'admin':
+          // Có thể thêm dashboard cho admin sau này
+          targetPage = './dashboard.html';
+          break;
+        case 'learner':
+        default:
+          targetPage = './dashboard.html';
+          break;
+      }
+      
+      window.location.href = targetPage;
     }
   </script>
 </body>
-</html> S
+</html>

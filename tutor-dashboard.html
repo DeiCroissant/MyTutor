@@ -27,6 +27,9 @@
         <!-- Main Content Sections -->
         <main class="tutor-sections">
             <section id="section-profile" class="tutor-section">
+                <div style="text-align:left; margin-bottom: 20px;">
+                    <button id="addLessonBtn" class="btn-primary">Đặt lịch học</button>
+                </div>
                 <div class="profile-grid">
                   <div class="profile-card profile-info">
                     <h3>Thông tin cơ bản</h3>
@@ -49,9 +52,6 @@
                 </div>
             </section>
             <section id="section-schedule" class="tutor-section" style="display:none;">
-                <div style="text-align:center; margin-bottom: 20px;">
-                    <button id="addLessonBtn" class="btn-primary">Thêm môn học</button>
-                </div>
                 <!-- Lịch dạy sẽ được render ở đây, dùng tutor-card -->
             </section>
             <section id="section-reviews" class="tutor-section" style="display:none;">
@@ -61,87 +61,113 @@
                 <!-- Giao diện đổi/huỷ lịch sẽ được render ở đây, dùng tutor-card -->
             </section>
             <section id="section-settings" class="tutor-section" style="display:none;">
-                <div class="profile-grid">
-                  <div class="profile-card settings-card">
-                    <h3>Thông tin cá nhân</h3>
-                    <div class="profile-item"><span class="profile-label">Họ tên:</span> <span class="profile-value" id="settingTutorName"></span></div>
-                    <div class="profile-item"><span class="profile-label">Email:</span> <span class="profile-value" id="settingTutorEmail"></span></div>
-                    <div class="profile-item"><span class="profile-label">Số điện thoại:</span> <span class="profile-value" id="settingTutorPhone"></span></div>
-                    <div class="profile-item"><span class="profile-label">Avatar:</span> <span class="profile-value" id="settingTutorAvatar"></span></div>
-                  </div>
-                  <div class="profile-card settings-card">
-                    <h3>Thông tin dạy học</h3>
-                    <div class="profile-item"><span class="profile-label">Chuyên môn:</span> <span class="profile-value" id="settingTutorSubject"></span></div>
-                    <div class="profile-item"><span class="profile-label">Giá/buổi:</span> <span class="profile-value" id="settingTutorPrice"></span></div>
-                    <div class="profile-item"><span class="profile-label">Trạng thái:</span> <span class="profile-value" id="settingTutorStatus"></span></div>
-                    <div class="profile-item"><span class="profile-label">Hỗ trợ online:</span> <span class="profile-value" id="settingTutorOnline"></span></div>
-                  </div>
-                  <div class="profile-card settings-card">
-                    <h3>Thông báo</h3>
-                    <div class="profile-item"><label><input type="checkbox" id="cb-reminder"> Nhắc nhở lịch dạy</label></div>
-                    <div class="profile-item"><label><input type="checkbox" id="cb-message"> Thông báo tin nhắn mới</label></div>
-                    <div class="profile-item"><label><input type="checkbox" id="cb-promo"> Thông báo khuyến mãi</label></div>
-                    <div class="profile-item"><label><input type="checkbox" id="cb-report"> Báo cáo tiến độ hàng tuần</label></div>
-                  </div>
-                  <div class="profile-card settings-card">
-                    <h3>Tài khoản</h3>
-                    <button id="changePasswordBtn" class="btn-primary" style="width:100%;margin-bottom:10px;">Đổi mật khẩu</button>
-                    <button id="logoutBtn" class="btn-secondary" style="width:100%;margin-bottom:10px;">Đăng xuất</button>
-                    <button id="swapRoleBtn" class="btn-primary" style="width:100%;">Chuyển sang giao diện Sinh viên</button>
-                  </div>
+                <h2>Cài đặt tài khoản</h2>
+                <div class="settings-grid">
+                    <div class="settings-card">
+                        <h3>Thông tin cá nhân</h3>
+                        <form id="profileForm">
+                            <div class="avatar-upload-section">
+                                <div class="current-avatar">
+                                    <span id="currentAvatarDisplay">👨‍🏫</span>
+                                </div>
+                                <div class="avatar-options">
+                                    <label>Chọn ảnh đại diện:</label>
+                                    <div class="avatar-grid">
+                                        <div class="avatar-option" data-avatar="👨‍🏫">👨‍🏫</div>
+                                        <div class="avatar-option" data-avatar="👩‍🏫">👩‍🏫</div>
+                                        <div class="avatar-option" data-avatar="👨‍💼">👨‍💼</div>
+                                        <div class="avatar-option" data-avatar="👩‍💼">👩‍💼</div>
+                                        <div class="avatar-option" data-avatar="👨‍🎓">👨‍🎓</div>
+                                        <div class="avatar-option" data-avatar="👩‍🎓">👩‍🎓</div>
+                                        <div class="avatar-option" data-avatar="👨‍🔬">👨‍🔬</div>
+                                        <div class="avatar-option" data-avatar="👩‍🔬">👩‍🔬</div>
+                                        <div class="avatar-option" data-avatar="👨‍💻">👨‍💻</div>
+                                        <div class="avatar-option" data-avatar="👩‍💻">👩‍💻</div>
+                                        <div class="avatar-option" data-avatar="🎭">🎭</div>
+                                        <div class="avatar-option" data-avatar="🎨">🎨</div>
+                                    </div>
+                                </div>
+                            </div>
+                            <label>Tên đầy đủ:</label>
+                            <input type="text" id="profileName" value="">
+                            <label>Email:</label>
+                            <input type="email" id="profileEmail" value="">
+                            <label>Số điện thoại:</label>
+                            <input type="tel" id="profilePhone" value="">
+                            <button type="submit">Cập nhật</button>
+                        </form>
+                    </div>
+                    <div class="settings-card">
+                        <h3>Thông tin dạy học</h3>
+                        <form id="academicForm">
+                            <label>Chuyên môn:</label>
+                            <input type="text" id="profileSubject" value="">
+                            <label>Giá/buổi (VNĐ):</label>
+                            <input type="number" id="profilePrice" value="">
+                            <label>Mô tả:</label>
+                            <textarea id="profileDesc" rows="3"></textarea>
+                            <button type="submit">Cập nhật</button>
+                        </form>
+                    </div>
+                    <div class="settings-card">
+                        <h3>Thông báo</h3>
+                        <div class="notification-settings">
+                            <label>
+                                <input type="checkbox" id="cb-reminder"> Nhắc nhở lịch dạy
+                            </label>
+                            <label>
+                                <input type="checkbox" id="cb-message"> Thông báo tin nhắn mới
+                            </label>
+                            <label>
+                                <input type="checkbox" id="cb-promo"> Thông báo khuyến mãi
+                            </label>
+                            <label>
+                                <input type="checkbox" id="cb-report"> Báo cáo tiến độ hàng tuần
+                            </label>
+                        </div>
+                    </div>
+                    <div class="settings-card">
+                        <h3>Tài khoản</h3>
+                        <div class="account-actions">
+                            <button class="btn-change-password" id="changePasswordBtn">Đổi mật khẩu</button>
+                            <button class="btn-logout" id="logoutBtn">Đăng xuất</button>
+                            <button class="btn-swap-role" id="swapRoleBtn">Chuyển sang giao diện Sinh viên</button>
+                        </div>
+                    </div>
                 </div>
             </section>
         </main>
     </div>
-    <!-- Modal chỉnh sửa lịch dạy -->
-    <div id="editScheduleModal" class="modal" style="display:none;">
-      <div class="modal-content">
-        <span class="close" id="closeEditModal">&times;</span>
-        <h3>Chỉnh sửa lịch dạy</h3>
-        <form id="editScheduleForm">
-          <input type="hidden" id="editScheduleId">
-          <div class="form-row">
-            <label>Ngày:</label>
-            <input type="date" id="editScheduleDate" required>
-          </div>
-          <div class="form-row">
-            <label>Giờ:</label>
-            <input type="text" id="editScheduleTime" required placeholder="19:00-21:00">
-          </div>
-          <button type="submit" class="btn-primary">Lưu</button>
-        </form>
-      </div>
-    </div>
-    <!-- Modal thêm buổi học -->
+    <!-- Modal đặt lịch học -->
     <div id="addLessonModal" class="modal" style="display:none;">
       <div class="modal-content">
         <span class="close" id="closeAddLessonModal">&times;</span>
-        <h3>Thêm buổi học mới</h3>
+        <h3>Đặt lịch học mới</h3>
         <form id="addLessonForm">
           <div class="form-row">
-            <label>Tên môn:</label>
+            <label>Môn học:</label>
             <input type="text" id="addSubject" required />
           </div>
           <div class="form-row">
-            <label>Ngày:</label>
+            <label>Chọn ngày:</label>
             <input type="date" id="addDate" required />
           </div>
           <div class="form-row">
-            <label>Giờ:</label>
-            <input type="text" id="addTime" placeholder="08:00-10:00" required />
+            <label>Chọn giờ:</label>
+            <input type="time" id="addTime" required />
           </div>
           <div class="form-row">
-            <label>Ghi chú:</label>
-            <input type="text" id="addNotes" />
+            <label>Ghi chú cho buổi meeting:</label>
+            <textarea id="addNotes" placeholder="Nhập thông tin buổi meeting..." rows="2"></textarea>
           </div>
           <div class="form-row">
-            <label>Link meeting:</label>
+            <label>Link meeting (nếu có):</label>
             <input type="text" id="addMeetingLink" />
           </div>
           <div class="form-row">
             <label><input type="checkbox" id="addOnlineMeeting" checked /> Online</label>
           </div>
-          <button type="submit" class="btn-primary">Thêm buổi học</button>
+          <button type="submit" class="btn-primary">Đặt lịch</button>
         </form>
       </div>
     </div>

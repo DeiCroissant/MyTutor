@@ -402,22 +402,29 @@ function attachPasswordModalEvents() {
 function attachAvatarChangeEvents() {
     const avatarOptions = document.querySelectorAll('.avatar-option');
     const avatarHeader = document.getElementById('tutor-avatar');
-    const profileAvatar = document.querySelector('.profile-avatar-large');
+    const currentAvatarDisplay = document.getElementById('currentAvatarDisplay');
+    
     if (!tutors) return;
     const tutor = tutors[0];
+    
     avatarOptions.forEach(option => {
         option.onclick = function() {
             const selected = this.dataset.avatar;
             tutor.avatar = selected;
+            
             // Cập nhật avatar ở header
             if (avatarHeader) avatarHeader.textContent = selected;
-            // Cập nhật avatar ở profile nếu đang ở tab hồ sơ
-            if (profileAvatar) profileAvatar.textContent = selected;
+            
+            // Cập nhật avatar hiện tại trong settings
+            if (currentAvatarDisplay) currentAvatarDisplay.textContent = selected;
+            
             // Highlight avatar đang chọn
             avatarOptions.forEach(opt => opt.classList.remove('selected'));
             this.classList.add('selected');
+            
             alert('Đổi avatar thành công!');
         };
+        
         // Đánh dấu avatar hiện tại
         if (option.dataset.avatar === tutor.avatar) {
             option.classList.add('selected');
@@ -505,24 +512,106 @@ document.addEventListener('DOMContentLoaded', function() {
 function renderTutorSettings() {
     const tutor = tutors && tutors.length > 0 ? tutors[0] : null;
     if (!tutor) return;
-    // Render thông tin cá nhân
-    document.getElementById('settingTutorName').textContent = tutor.name;
-    document.getElementById('settingTutorEmail').textContent = tutor.email || '—';
-    document.getElementById('settingTutorPhone').textContent = tutor.phone || '—';
-    document.getElementById('settingTutorAvatar').textContent = tutor.avatar;
-    // Render thông tin dạy học
-    document.getElementById('settingTutorSubject').textContent = tutor.subject;
-    document.getElementById('settingTutorPrice').textContent = tutor.price ? tutor.price.toLocaleString() + 'đ' : '—';
-    document.getElementById('settingTutorStatus').textContent = tutor.status === 'available' ? 'Đang rảnh' : 'Đang bận';
-    document.getElementById('settingTutorOnline').textContent = tutor.onlineSupport ? 'Có' : 'Không';
-    // Nút Swap
-    const swapBtn = document.getElementById('swapRoleBtn');
-    if (swapBtn) {
-        swapBtn.onclick = function() {
-            window.location.href = 'dashboard.html';
+    
+    // Cập nhật form thông tin cá nhân
+    const profileName = document.getElementById('profileName');
+    const profileEmail = document.getElementById('profileEmail');
+    const profilePhone = document.getElementById('profilePhone');
+    
+    if (profileName) profileName.value = tutor.name;
+    if (profileEmail) profileEmail.value = tutor.email || '';
+    if (profilePhone) profilePhone.value = tutor.phone || '';
+    
+    // Cập nhật form thông tin dạy học
+    const profileSubject = document.getElementById('profileSubject');
+    const profilePrice = document.getElementById('profilePrice');
+    const profileDesc = document.getElementById('profileDesc');
+    
+    if (profileSubject) profileSubject.value = tutor.subject;
+    if (profilePrice) profilePrice.value = tutor.price || '';
+    if (profileDesc) profileDesc.value = tutor.desc || '';
+    
+    // Cập nhật avatar hiện tại
+    const currentAvatarDisplay = document.getElementById('currentAvatarDisplay');
+    if (currentAvatarDisplay) currentAvatarDisplay.textContent = tutor.avatar;
+    
+    // Gắn sự kiện cho form thông tin cá nhân
+    const profileForm = document.getElementById('profileForm');
+    if (profileForm) {
+        profileForm.onsubmit = function(e) {
+            e.preventDefault();
+            
+            const newName = profileName.value.trim();
+            const newEmail = profileEmail.value.trim();
+            const newPhone = profilePhone.value.trim();
+            
+            if (!newName || !newEmail || !newPhone) {
+                alert('Vui lòng điền đầy đủ thông tin bắt buộc!');
+                return;
+            }
+            
+            // Cập nhật thông tin tutor
+            tutor.name = newName;
+            tutor.email = newEmail;
+            tutor.phone = newPhone;
+            
+            // Cập nhật hiển thị ở header
+            const greeting = document.getElementById('tutor-greeting');
+            if (greeting) greeting.innerHTML = `Chào, <b>${tutor.name}</b>`;
+            
+            // Cập nhật hiển thị ở profile
+            renderTutorProfile();
+            
+            alert('Cập nhật thông tin thành công!');
         };
     }
-    // Nút Đăng xuất
+    
+    // Gắn sự kiện cho form thông tin dạy học
+    const academicForm = document.getElementById('academicForm');
+    if (academicForm) {
+        academicForm.onsubmit = function(e) {
+            e.preventDefault();
+            
+            const newSubject = profileSubject.value.trim();
+            const newPrice = parseInt(profilePrice.value);
+            const newDesc = profileDesc.value.trim();
+            
+            if (!newSubject) {
+                alert('Vui lòng nhập chuyên môn!');
+                return;
+            }
+            
+            if (newPrice <= 0) {
+                alert('Giá/buổi phải lớn hơn 0!');
+                return;
+            }
+            
+            // Cập nhật thông tin tutor
+            tutor.subject = newSubject;
+            tutor.price = newPrice;
+            tutor.desc = newDesc;
+            
+            // Cập nhật hiển thị ở profile
+            renderTutorProfile();
+            
+            alert('Cập nhật thông tin dạy học thành công!');
+        };
+    }
+    
+    // Gắn sự kiện cho thay đổi avatar
+    attachAvatarChangeEvents();
+    
+    // Load cài đặt thông báo đã lưu
+    loadNotificationSettings();
+    
+    // Gắn sự kiện cho các nút
+    const changePasswordBtn = document.getElementById('changePasswordBtn');
+    if (changePasswordBtn) {
+        changePasswordBtn.onclick = function() {
+            showPasswordModal();
+        };
+    }
+    
     const logoutBtn = document.getElementById('logoutBtn');
     if (logoutBtn) {
         logoutBtn.onclick = function() {
@@ -531,12 +620,29 @@ function renderTutorSettings() {
             }
         };
     }
-    // Nút Đổi mật khẩu
-    const changePasswordBtn = document.getElementById('changePasswordBtn');
-    if (changePasswordBtn) {
-        changePasswordBtn.onclick = function() {
-            showPasswordModal();
+    
+    const swapBtn = document.getElementById('swapRoleBtn');
+    if (swapBtn) {
+        swapBtn.onclick = function() {
+            window.location.href = 'dashboard.html';
         };
+    }
+}
+
+// Hàm load cài đặt thông báo
+function loadNotificationSettings() {
+    const savedSettings = localStorage.getItem('tutorNotifications');
+    if (savedSettings) {
+        const settings = JSON.parse(savedSettings);
+        const reminder = document.getElementById('cb-reminder');
+        const message = document.getElementById('cb-message');
+        const promo = document.getElementById('cb-promo');
+        const report = document.getElementById('cb-report');
+        
+        if (reminder) reminder.checked = settings.reminder;
+        if (message) message.checked = settings.message;
+        if (promo) promo.checked = settings.promo;
+        if (report) report.checked = settings.report;
     }
 }
 

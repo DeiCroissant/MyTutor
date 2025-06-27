@@ -659,4 +659,13 @@ window.onload = function() {
   attachAvatarEvents();
   attachPasswordForm();
   renderLearnerNotifications();
-} 
+}
+
+document.addEventListener('DOMContentLoaded', function() {
+  const swapBtn = document.getElementById('swapRoleBtn');
+  if (swapBtn) {
+    swapBtn.onclick = function() {
+      window.location.href = 'tutor-dashboard.html';
+    };
+  }
+}); 
