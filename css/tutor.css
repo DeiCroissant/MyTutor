@@ -1140,3 +1140,48 @@ body.tutor-dashboard {
 }
 
 .navbar-btn, .navbar-tabs { display: none !important; }
+
+/* Hộp thư */
+.inbox-list {
+  width: 100%;
+  background: #fff;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+  padding: 0;
+  margin-top: 18px;
+}
+.inbox-item {
+  display: flex;
+  align-items: center;
+  border-bottom: 1px solid #eee;
+  padding: 12px 18px;
+  transition: background 0.2s;
+}
+.inbox-item:last-child {
+  border-bottom: none;
+}
+.inbox-item:hover {
+  background: #f6f8fc;
+}
+.inbox-sender {
+  flex: 0 0 180px;
+  font-weight: 600;
+  color: #3b3b3b;
+  white-space: nowrap;
+}
+.inbox-content {
+  flex: 1 1 auto;
+  color: #444;
+  font-size: 15px;
+  margin: 0 18px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.inbox-date {
+  flex: 0 0 70px;
+  text-align: right;
+  color: #888;
+  font-size: 14px;
+  white-space: nowrap;
+}

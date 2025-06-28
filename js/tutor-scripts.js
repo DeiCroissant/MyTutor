@@ -441,6 +441,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const tabs = [
         { tab: 'nav-profile', section: 'section-profile', render: renderTutorProfile },
         { tab: 'nav-schedule', section: 'section-schedule', render: renderTeachingSchedule },
+        { tab: 'nav-inbox', section: 'section-inbox', render: null },
         { tab: 'nav-reviews', section: 'section-reviews', render: renderStudentReviewForm },
         { tab: 'nav-settings', section: 'section-settings', render: renderTutorSettings }
     ];
@@ -505,6 +506,52 @@ document.addEventListener('DOMContentLoaded', function() {
             addModal.style.display = 'none';
             addForm.reset();
             renderTeachingSchedule();
+        };
+    }
+
+    // Đăng ký làm gia sư
+    const registerBtn = document.getElementById('registerTutorBtn');
+    const registerModal = document.getElementById('registerTutorModal');
+    const closeRegisterModal = document.getElementById('closeRegisterTutorModal');
+    if (registerBtn && registerModal && closeRegisterModal) {
+        registerBtn.onclick = function() { registerModal.style.display = 'block'; };
+        closeRegisterModal.onclick = function() { registerModal.style.display = 'none'; };
+        window.onclick = function(event) {
+            if (event.target === registerModal) registerModal.style.display = 'none';
+        };
+    }
+    // Xử lý submit form đăng ký
+    const regForm = document.getElementById('registerTutorForm');
+    if (regForm) {
+        regForm.onsubmit = function(e) {
+            e.preventDefault();
+            const name = document.getElementById('regTutorName').value.trim();
+            const gender = document.getElementById('regTutorGender').value;
+            const mssv = document.getElementById('regTutorMSSV').value.trim();
+            const gpa = document.getElementById('regTutorGPA').value.trim();
+            const interviewTime = document.getElementById('regTutorInterviewTime').value;
+            if (!name || !gender || !mssv || !gpa || !interviewTime) {
+                alert('Vui lòng nhập đầy đủ các trường bắt buộc!');
+                return;
+            }
+            // Có thể lưu vào localStorage hoặc gửi lên server ở đây
+            alert('Đăng ký thành công!\nTên: ' + name + '\nGiới tính: ' + gender + '\nMSSV: ' + mssv + '\nGPA: ' + gpa + '\nThời gian phỏng vấn: ' + interviewTime);
+            registerModal.style.display = 'none';
+            regForm.reset();
+        };
+    }
+
+    // Hộp thư: mở modal khi bấm vào thư SUPPORT CENTER
+    const supportMsg = document.getElementById('supportCenterMsg');
+    const inboxModal = document.getElementById('inboxDetailModal');
+    const closeInboxModal = document.getElementById('closeInboxDetailModal');
+    const confirmInboxBtn = document.getElementById('confirmInboxBtn');
+    if (supportMsg && inboxModal && closeInboxModal && confirmInboxBtn) {
+        supportMsg.onclick = function() { inboxModal.style.display = 'block'; };
+        closeInboxModal.onclick = function() { inboxModal.style.display = 'none'; };
+        confirmInboxBtn.onclick = function() { inboxModal.style.display = 'none'; };
+        window.onclick = function(event) {
+            if (event.target === inboxModal) inboxModal.style.display = 'none';
         };
     }
 });
