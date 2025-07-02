@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dashboard - Trung Tâm Hỗ Trợ Văn Lang</title>
+  <link rel="stylesheet" href="css/supportcenter.css">
+</head>
+<body>
+  <div class="dashboard-container">
+    <div class="header">
+      <div class="user-info">
+        <div class="avatar">TT</div>
+        <div>
+          <h1>Trung Tâm Hỗ Trợ Văn Lang</h1>
+          <p class="user-role">Nhân viên: Nguyễn Thiện D</p>
+        </div>
+      </div>
+      <nav class="nav">
+        <a href="#ho-so" class="active" onclick="switchTab(event)">Tổng quan</a>
+        <a href="#xet-duyet-gia-su" onclick="switchTab(event)">Xét duyệt Gia sư</a>
+        <a href="#lich-phong-van" onclick="switchTab(event)">Lịch phỏng vấn</a>
+        <a href="#xet-duyet-khoa-hoc" onclick="switchTab(event)">Xét duyệt Khóa học</a>
+      </nav>
+    </div>
+
+    <div id="ho-so" class="section active">
+        <h2>Tổng quan hoạt động</h2>
+        <div class="schedule-stats">
+          <div class="stat-item"><div class="stat-number">3</div><div class="stat-label">Hồ sơ chờ duyệt</div></div>
+          <div class="stat-item"><div class="stat-number">4</div><div class="stat-label">Khóa học cần xem xét</div></div>
+          <div class="stat-item"><div class="stat-number">47</div><div class="stat-label">Gia sư đang hoạt động</div></div>
+          <div class="stat-item"><div class="stat-number">113</div><div class="stat-label">Khóa học đã đăng tải</div></div>
+        </div>
+    </div>
+
+    <div id="xet-duyet-gia-su" class="section">
+      <h2>Xét duyệt hồ sơ đăng ký làm Gia sư</h2>
+      <div class="profile-card">
+        <h3>Danh sách ứng viên mới</h3>
+        <table>
+          <thead>
+            <tr><th>ID</th><th>Tên sinh viên</th><th>Môn đăng ký</th><th>Hành động</th></tr>
+          </thead>
+          <tbody id="tutor-approval-tbody"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <div id="lich-phong-van" class="section">
+      <h2>Danh sách Lịch phỏng vấn</h2>
+      <div class="profile-card">
+        <h3>Theo dõi lịch hẹn với các ứng viên</h3>
+        <table>
+          <thead>
+            <tr><th>Tên ứng viên</th><th>Môn đăng ký</th><th>Thời gian phỏng vấn</th><th>Trạng thái</th></tr>
+          </thead>
+          <tbody id="interview-schedule-tbody"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <div id="xet-duyet-khoa-hoc" class="section">
+      <h2>Xét duyệt nội dung Khóa học</h2>
+      <div class="profile-card">
+        <h3>Danh sách khóa học mới</h3>
+        <table>
+          <thead>
+            <tr><th>Tên khóa học</th><th>Gia sư</th><th>Học phí đề xuất</th><th>Trạng thái</th><th>Hành động</th></tr>
+          </thead>
+          <tbody id="course-approval-tbody"></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal-overlay" id="tutorModal">
+    <div class="modal-content">
+      <h3 id="tutorModalTitle">Hồ sơ ứng viên</h3>
+      <div id="tutorModalBody" class="modal-body"></div>
+      <div class="modal-actions" id="tutorModalActions"></div>
+    </div>
+  </div>
+
+  <div class="modal-overlay" id="scheduleModal">
+      <div class="modal-content">
+          <h3 id="scheduleModalTitle">Tạo lịch phỏng vấn</h3>
+          <div class="form-group">
+              <label for="interview-datetime">Chọn ngày và giờ phỏng vấn:</label>
+              <input type="datetime-local" id="interview-datetime" class="form-control">
+          </div>
+          <div class="modal-actions">
+              <button id="send-schedule-btn" class="btn-primary" onclick="sendInterviewSchedule()">Gửi lịch hẹn</button>
+              <button class="btn-secondary" onclick="closeModal('scheduleModal')">Hủy</button>
+          </div>
+      </div>
+  </div>
+  
+  <div class="modal-overlay" id="courseModal">
+    <div class="modal-content">
+      <h3 id="courseModalTitle">Xem xét khóa học</h3>
+      <div id="courseModalBody" class="modal-body"></div>
+      <div class="modal-actions">
+        <button class="btn-success" onclick="approveCourse()">Phê duyệt & Đăng tải</button>
+        <button class="btn-danger" onclick="requestRevision()">Yêu cầu Chỉnh sửa</button>
+        <button class="btn-secondary" onclick="closeModal('courseModal')">Đóng</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal-overlay" id="revisionModal">
+    <div class="modal-content">
+      <h3>Yêu cầu Chỉnh sửa Khóa học</h3>
+      <div class="form-group">
+        <label for="feedbackText">Nhập lý do hoặc các điểm cần sửa đổi:</label>
+        <textarea id="feedbackText" rows="5"></textarea>
+      </div>
+      <div class="modal-actions">
+        <button class="btn-primary" onclick="sendFeedback()">Gửi phản hồi</button>
+        <button class="btn-secondary" onclick="closeModal('revisionModal')">Hủy</button>
+      </div>
+    </div>
+  </div>
+  
+  <script src="js/data-trungtam.js"></script>
+  <script src="js/script-trungtam.js"></script>
+</body>
+</html>
