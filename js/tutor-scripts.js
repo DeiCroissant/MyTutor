@@ -4,24 +4,30 @@
 
 // 1. Hiển thị thông tin hồ sơ gia sư
 function renderTutorProfile() {
-    // Lấy tutor đầu tiên (sau này có thể lấy theo id đăng nhập)
-    const tutor = tutors && tutors.length > 0 ? tutors[0] : null;
-    if (!tutor) return;
+    // Thông tin cố định do nhà trường cấp
+    const fixedName = 'Trần Minh Khoa';
+    const fixedShortName = 'Minh Khoa';
+    const fixedEmail = 'khoa.2374802010241@vanlanguni.vn';
+    const fixedPhone = '0911728117';
     // Header
     const avatarHeader = document.getElementById('tutor-avatar');
     const greeting = document.getElementById('tutor-greeting');
-    if (avatarHeader) avatarHeader.textContent = tutor.avatar;
-    if (greeting) greeting.innerHTML = `Chào, <b>${tutor.name}</b>`;
+    if (avatarHeader && tutors && tutors.length > 0) avatarHeader.textContent = tutors[0].avatar;
+    if (greeting) greeting.innerHTML = `Chào, <b>${fixedShortName}</b>`;
     // Render vào các thẻ profile-value
-    document.getElementById('tutorName').textContent = tutor.name;
-    document.getElementById('tutorEmail').textContent = tutor.email || '—';
-    document.getElementById('tutorPhone').textContent = tutor.phone || '—';
-    document.getElementById('tutorSubject').textContent = tutor.subject;
-    document.getElementById('tutorPrice').textContent = tutor.price ? tutor.price.toLocaleString() + 'đ' : '—';
-    document.getElementById('tutorDesc').textContent = tutor.desc;
-    document.getElementById('tutorRating').innerHTML = `${'★'.repeat(Math.round(tutor.rating))}${'☆'.repeat(5-Math.round(tutor.rating))} (${tutor.rating}/5)`;
-    document.getElementById('tutorStatus').textContent = tutor.status === 'available' ? 'Đang rảnh' : 'Đang bận';
-    document.getElementById('tutorOnline').textContent = tutor.onlineSupport ? 'Có' : 'Không';
+    document.getElementById('tutorName').textContent = fixedName;
+    document.getElementById('tutorEmail').textContent = fixedEmail;
+    document.getElementById('tutorPhone').textContent = fixedPhone;
+    // Các thông tin còn lại lấy từ tutor như cũ
+    if (tutors && tutors.length > 0) {
+        const tutor = tutors[0];
+        document.getElementById('tutorSubject').textContent = tutor.subject;
+        document.getElementById('tutorPrice').textContent = tutor.price ? tutor.price.toLocaleString() + 'đ' : '—';
+        document.getElementById('tutorDesc').textContent = tutor.desc;
+        document.getElementById('tutorRating').innerHTML = `${'★'.repeat(Math.round(tutor.rating))}${'☆'.repeat(5-Math.round(tutor.rating))} (${tutor.rating}/5)`;
+        document.getElementById('tutorStatus').textContent = tutor.status === 'available' ? 'Đang rảnh' : 'Đang bận';
+        document.getElementById('tutorOnline').textContent = tutor.onlineSupport ? 'Có' : 'Không';
+    }
 }
 
 // 2. Hiển thị lịch dạy của gia sư
@@ -636,6 +642,16 @@ document.addEventListener('DOMContentLoaded', function() {
                 document.getElementById('registerTutorModal').style.display = 'none';
                 regForm.reset();
                 document.body.removeChild(reviewModal);
+                // Gửi thư xác nhận vào hộp thư
+                let inbox = JSON.parse(localStorage.getItem('tutorInbox') || '[]');
+                inbox.unshift({
+                    sender: 'SUPPORT CENTER',
+                    content: 'Trung tâm đã nhận được hồ sơ đăng ký của bạn. Vui lòng đợi kết quả xét duyệt.',
+                    date: new Date().toLocaleDateString('vi-VN', { month: 'short', day: 'numeric' })
+                });
+                localStorage.setItem('tutorInbox', JSON.stringify(inbox));
+                // Gọi hàm render lại hộp thư nếu có
+                if (typeof renderTutorInbox === 'function') renderTutorInbox();
             };
         };
     }
