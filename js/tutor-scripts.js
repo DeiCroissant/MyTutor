@@ -443,6 +443,18 @@ function attachAvatarChangeEvents() {
 // =============================
 
 document.addEventListener('DOMContentLoaded', function() {
+    // Thêm thư xác nhận vào hộp thư nếu chưa có
+    let inbox = JSON.parse(localStorage.getItem('tutorInbox') || '[]');
+    const confirmMsg = 'Xác nhận đã nhận được đơn đăng kí làm gia sư.';
+    const alreadyExists = inbox.some(msg => msg.content === confirmMsg);
+    if (!alreadyExists) {
+        inbox.unshift({
+            sender: 'SUPPORT CENTER',
+            content: confirmMsg,
+            date: new Date().toLocaleDateString('vi-VN', { month: 'short', day: 'numeric' })
+        });
+        localStorage.setItem('tutorInbox', JSON.stringify(inbox));
+    }
     // Danh sách các tab và section tương ứng
     const tabs = [
         { tab: 'nav-profile', section: 'section-profile', render: renderTutorProfile },
