@@ -57,7 +57,16 @@ function renderTeachingSchedule() {
     accordion.innerHTML = Object.keys(lessonsBySubject).map(subject => {
         const lessons = lessonsBySubject[subject];
         const firstLesson = lessons[0];
-        const courseStatus = firstLesson.courseStatus || 'Chưa bắt đầu';
+        let courseStatus = firstLesson.courseStatus || 'Chưa bắt đầu';
+
+        // Override statuses for specific courses
+        if (subject === 'Lập trình OOP cơ bản') {
+            courseStatus = 'Sắp tới';
+        } else if (subject === 'Lập trình hướng đối tượng') {
+            courseStatus = 'Đang thực hiện';
+        } else if (subject === 'Cấu trúc dữ liệu') {
+            courseStatus = 'Kết thúc';
+        }
 
         let statusClass = '';
         switch (courseStatus) {
@@ -85,11 +94,11 @@ function renderTeachingSchedule() {
                         <div class="schedule-item">
                             <div class="schedule-date">
                                 <div class="date">${lesson.date}</div>
-                                <div class="time">${lesson.time}</div>
+                                <div class="time">${lesson.time.split('-')[0]}</div>
                             </div>
                             <div class="schedule-info">
-                                <div class="notes">Ghi chú: ${lesson.notes || ''}</div>
                                 ${lesson.onlineMeeting ? `<div class="online-indicator">🖥️ Online</div>` : ''}
+                                <div class="notes">(The meeting time maximum is one hour)</div>
                             </div>
                             <div class="schedule-status">
                                 ${lesson.courseStatus === 'Sắp tới' || lesson.courseStatus === 'Đang thực hiện' ? `
