@@ -1076,6 +1076,8 @@ body.tutor-dashboard {
   width: 100%;
   position: relative;
   margin: 40px auto;
+  max-height: 90vh;
+  overflow-y: auto;
 }
 #addLessonForm .form-row {
   display: flex;
@@ -1184,4 +1186,116 @@ body.tutor-dashboard {
   color: #888;
   font-size: 14px;
   white-space: nowrap;
+}
+
+/* Accordion Styles */
+.accordion {
+  width: 100%;
+}
+
+.accordion-item {
+  border: 1px solid #e1e5e9;
+  border-radius: 8px;
+  margin-bottom: 10px;
+  overflow: hidden;
+}
+
+.accordion-header {
+  background-color: #f8f9fa;
+  padding: 15px 20px;
+  width: 100%;
+  border: none;
+  text-align: left;
+  cursor: pointer;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 16px;
+  font-weight: 600;
+  color: #333;
+}
+
+.accordion-header:hover {
+  background-color: #f1f3f5;
+}
+
+.accordion-content {
+  padding: 0 20px;
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.3s ease-out;
+}
+
+.accordion-item.active .accordion-content {
+  max-height: 500px; /* Adjust as needed */
+  padding: 15px 20px;
+}
+
+/* Status Badge Styles */
+.status-badge {
+  padding: 5px 10px;
+  border-radius: 15px;
+  font-size: 12px;
+  font-weight: bold;
+  color: #fff;
+}
+
+.status-not-started {
+  background-color: #6c757d;
+}
+
+.status-upcoming {
+  background-color: #ffc107;
+}
+
+.status-in-progress {
+  background-color: #17a2b8;
+}
+
+.status-finished {
+  background-color: #28a745;
+}
+
+.schedule-status .btn-secondary,
+.schedule-status .btn-danger,
+.schedule-status .btn-join-meeting {
+    border: none;
+    border-radius: 20px;
+    padding: 8px 16px;
+    font-weight: 600;
+    font-size: 14px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.schedule-status .btn-secondary {
+    background-color: #e9ecef;
+    color: #495057;
+}
+
+.schedule-status .btn-secondary:hover {
+    background-color: #dee2e6;
+}
+
+.schedule-status .btn-danger {
+    background-color: #f8d7da;
+    color: #721c24;
+}
+
+.schedule-status .btn-danger:hover {
+    background-color: #f1b0b7;
+}
+
+.schedule-status .btn-join-meeting {
+    background-color: #d1e7dd;
+    color: #0f5132;
+}
+
+.schedule-status .btn-join-meeting:hover {
+    background-color: #b9d7c8;
+}
+
+.status-text {
+    color: #6c757d;
+    font-style: italic;
 }

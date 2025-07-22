@@ -32,8 +32,8 @@ function renderTutorProfile() {
 
 // 2. Hiển thị lịch dạy của gia sư
 function renderTeachingSchedule() {
-    const scheduleSection = document.getElementById('section-schedule');
-    if (!scheduleSection || !tutors || !schedule) return;
+    const accordion = document.getElementById('schedule-accordion');
+    if (!accordion || !tutors || !schedule) return;
 
     const tutor = tutors[0];
     if (!tutor) return;
@@ -41,46 +41,78 @@ function renderTeachingSchedule() {
     const tutorLessons = schedule.filter(lesson => lesson.tutor === tutor.name);
 
     if (tutorLessons.length === 0) {
-        scheduleSection.innerHTML = '<p class="no-data">Chưa có lịch dạy nào cho gia sư này.</p>';
+        accordion.innerHTML = '<p class="no-data">Chưa có lịch dạy nào.</p>';
         return;
     }
 
-    scheduleSection.innerHTML = tutorLessons.map(lesson => {
-        let courseStatus = window['courseStatus_' + lesson.subject] || 'Sắp tới';
-        let btnClass = 'btn-status-upcoming';
-        let itemClass = '';
-        if (courseStatus === 'Đang thực hiện') {
-            btnClass = 'btn-status-progress';
-            itemClass = 'schedule-item-progress';
-        } else if (courseStatus === 'Đã hoàn thành') {
-            btnClass = 'btn-status-done';
-            itemClass = 'schedule-item-done';
-        } else {
-            itemClass = 'schedule-item-upcoming';
+    // Group lessons by subject
+    const lessonsBySubject = tutorLessons.reduce((acc, lesson) => {
+        if (!acc[lesson.subject]) {
+            acc[lesson.subject] = [];
         }
+        acc[lesson.subject].push(lesson);
+        return acc;
+    }, {});
+
+    accordion.innerHTML = Object.keys(lessonsBySubject).map(subject => {
+        const lessons = lessonsBySubject[subject];
+        const firstLesson = lessons[0];
+        const courseStatus = firstLesson.courseStatus || 'Chưa bắt đầu';
+
+        let statusClass = '';
+        switch (courseStatus) {
+            case 'Sắp tới':
+                statusClass = 'status-upcoming';
+                break;
+            case 'Đang thực hiện':
+                statusClass = 'status-in-progress';
+                break;
+            case 'Kết thúc':
+                statusClass = 'status-finished';
+                break;
+            default:
+                statusClass = 'status-not-started';
+        }
+
         return `
-        <div class="schedule-item ${lesson.status} ${itemClass}">
-            <div class="schedule-date">
-                <div class="date">${lesson.date}</div>
-                <div class="time">${lesson.time}</div>
-            </div>
-            <div class="schedule-info">
-                <div class="subject">Môn: ${lesson.subject}
-                  <button onclick="cycleCourseStatus('${lesson.subject}', this)" class="btn-status ${btnClass}" style="margin-left:12px;">${courseStatus}</button>
+            <div class="accordion-item">
+                <button class="accordion-header">
+                    <span class="accordion-title">${subject}</span>
+                    <span class="status-badge ${statusClass}">${courseStatus}</span>
+                </button>
+                <div class="accordion-content">
+                    ${lessons.map(lesson => `
+                        <div class="schedule-item">
+                            <div class="schedule-date">
+                                <div class="date">${lesson.date}</div>
+                                <div class="time">${lesson.time}</div>
+                            </div>
+                            <div class="schedule-info">
+                                <div class="notes">Ghi chú: ${lesson.notes || ''}</div>
+                                ${lesson.onlineMeeting ? `<div class="online-indicator">🖥️ Online</div>` : ''}
+                            </div>
+                            <div class="schedule-status">
+                                ${lesson.courseStatus === 'Sắp tới' || lesson.courseStatus === 'Đang thực hiện' ? `
+                                    <a class="btn-join-meeting" href="${lesson.meetingLink || '#'}" target="_blank">Tham gia meeting</a>
+                                ` : ''}
+                                ${lesson.courseStatus !== 'Kết thúc' ? `
+                                    <button class="btn-secondary" onclick="openRescheduleModal('reschedule', ${lesson.id})">Đổi lịch</button>
+                                    <button class="btn-danger" onclick="openRescheduleModal('cancel', ${lesson.id})">Huỷ lịch</button>
+                                ` : '<span class="status-text">Đã kết thúc</span>'}
+                            </div>
+                        </div>
+                    `).join('')}
                 </div>
-                <div class="notes">Ghi chú: ${lesson.notes || ''}</div>
-                ${lesson.onlineMeeting ? `<div class="online-indicator">🖥️ Online</div>` : ''}
             </div>
-            <div class="schedule-status">
-                ${courseStatus !== 'Đã hoàn thành' ? `
-                  ${lesson.onlineMeeting ? `<a class="btn-join-meeting" href="${lesson.meetingLink}" target="_blank">Tham gia meeting</a>` : ''}
-                  <button class="btn-secondary" onclick="openRescheduleModal('reschedule', ${lesson.id})">Đổi lịch</button>
-                  <button class="btn-danger" onclick="openRescheduleModal('cancel', ${lesson.id})">Huỷ lịch</button>
-                ` : ''}
-            </div>
-        </div>
         `;
     }).join('');
+
+    // Add event listeners for accordion functionality
+    document.querySelectorAll('.accordion-header').forEach(header => {
+        header.addEventListener('click', () => {
+            header.parentElement.classList.toggle('active');
+        });
+    });
 }
 
 // Hàm chuyển trạng thái khoá học

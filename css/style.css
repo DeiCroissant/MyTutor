@@ -1349,6 +1349,8 @@ input:focus, textarea:focus, select:focus {
   min-width: 320px;
   max-width: 90vw;
   position: relative;
+  max-height: 90vh;
+  overflow-y: auto;
 }
 .close {
   position: absolute;
@@ -1386,4 +1388,44 @@ input:focus, textarea:focus, select:focus {
   .dashboard-content { padding: 4px 0 16px 0; }
   .profile-card { padding: 16px 8px; }
 }
-/* === END TUTOR DASHBOARD CUSTOMIZATION === */ 
+/* === END TUTOR DASHBOARD CUSTOMIZATION === */
+
+#registerTutorForm .form-row {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 15px;
+}
+
+#registerTutorForm label {
+  margin-bottom: 5px;
+  font-weight: bold;
+  color: #333;
+}
+
+#registerTutorForm input[type="text"],
+#registerTutorForm input[type="number"],
+#registerTutorForm input[type="datetime-local"],
+#registerTutorForm select,
+#registerTutorForm textarea {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  box-sizing: border-box;
+}
+
+#registerTutorForm textarea {
+  resize: vertical;
+  min-height: 80px;
+}
+
+#registerTutorForm input[type="file"] {
+  padding: 5px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  background-color: #f9f9f9;
+}
+
+#registerTutorForm input[type="file"]:hover {
+  border-color: #764ba2;
+} 

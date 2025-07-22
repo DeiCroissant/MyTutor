@@ -53,7 +53,9 @@
                 </div>
             </section>
             <section id="section-schedule" class="tutor-section" style="display:none;">
-                <!-- Lịch dạy sẽ được render ở đây, dùng tutor-card -->
+                <div class="accordion" id="schedule-accordion">
+                    <!-- Lịch dạy sẽ được render ở đây -->
+                </div>
             </section>
             <section id="section-reviews" class="tutor-section" style="display:none;">
                 <!-- Đánh giá học viên sẽ được render ở đây, dùng tutor-card -->
@@ -176,10 +178,6 @@
             <textarea id="addNotes" placeholder="Nhập thông tin buổi meeting..." rows="2"></textarea>
           </div>
           <div class="form-row">
-            <label>Link meeting (nếu có):</label>
-            <input type="text" id="addMeetingLink" />
-          </div>
-          <div class="form-row">
             <label><input type="checkbox" id="addOnlineMeeting" checked /> Online</label>
           </div>
           <button type="submit" class="btn-primary">Đặt lịch</button>
@@ -231,8 +229,10 @@
           <div class="form-row"><label>MSSV <span style="color:red">*</span>:</label><input type="text" id="regTutorMSSV" required></div>
           <div class="form-row"><label>GPA <span style="color:red">*</span>:</label><input type="number" step="0.01" min="0" max="4" id="regTutorGPA" required></div>
           <div class="form-row"><label>Số điện thoại:</label><input type="text" id="regTutorPhone"></div>
-          <div class="form-row"><label>Sở thích:</label><input type="text" id="regTutorHobby"></div>
-          <div class="form-row"><label>Thành tựu cá nhân:</label><input type="text" id="regTutorAchievement"></div>
+          <div class="form-row"><label>Bio:</label><textarea id="regTutorBio" rows="3" placeholder="Giới thiệu về bản thân, kinh nghiệm, phong cách dạy..."></textarea></div>
+          <div class="form-row"><label>Media cho Bio (ảnh/video):</label><input type="file" id="regTutorBioMedia" accept="image/*,video/*" multiple></div>
+          <div class="form-row"><label>Chứng chỉ:</label><textarea id="regTutorAchievement" rows="3"></textarea></div>
+          <div class="form-row"><label>Bằng chứng (ảnh):</label><input type="file" id="regTutorProof" accept="image/*"></div>
           <div class="form-row"><label>Thời gian phỏng vấn <span style="color:red">*</span>:</label><input type="datetime-local" id="regTutorInterviewTime" required></div>
           <button type="submit" class="btn-primary" style="width:100%;margin-top:10px;">Gửi đăng ký</button>
         </form>
