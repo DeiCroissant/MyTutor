@@ -21,42 +21,68 @@
 </head>
 <body>
   <div class="admin-container">
-    <div class="admin-title">Quản lý môn học (System Administrator)</div>
-    <table class="course-table" id="courseTable">
-      <thead>
-        <tr>
-          <th>ID</th>
-          <th>Tên môn học</th>
-          <th>Mã môn</th>
-          <th>Mô tả</th>
-          <th>Hành động</th>
-        </tr>
-      </thead>
-      <tbody id="courseTableBody">
-        <!-- Dữ liệu sẽ được render bằng JS -->
-      </tbody>
-    </table>
-    <h3 id="formTitle">Thêm môn học mới</h3>
-    <form id="courseForm">
-      <div class="form-row">
-        <label for="courseName">Tên môn học</label>
-        <input type="text" id="courseName" required>
-      </div>
-      <div class="form-row">
-        <label for="courseCode">Mã môn</label>
-        <input type="text" id="courseCode" required>
-      </div>
-      <div class="form-row">
-        <label for="courseDesc">Mô tả</label>
-        <textarea id="courseDesc" rows="2"></textarea>
-      </div>
-      <div class="form-actions">
-        <button type="submit" id="submitBtn">Thêm môn học</button>
-        <button type="button" id="cancelEditBtn" style="display:none;">Huỷ</button>
-      </div>
-    </form>
+    <div class="admin-title">Quản lý môn học (Quản trị viên hệ thống)</div>
+    <div class="admin-tabs">
+      <button class="admin-tab-btn" id="tab-courses" onclick="showTab('courses')">Quản lý môn học</button>
+      <button class="admin-tab-btn" id="tab-students" onclick="showTab('students')">Lịch học đã đăng ký</button>
+    </div>
+    <div id="section-courses">
+      <table class="course-table" id="courseTable">
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Tên môn học</th>
+            <th>Mã môn</th>
+            <th>Mô tả</th>
+            <th>Hành động</th>
+          </tr>
+        </thead>
+        <tbody id="courseTableBody">
+          <!-- Dữ liệu sẽ được render bằng JS -->
+        </tbody>
+      </table>
+      <h3 id="formTitle">Thêm môn học mới</h3>
+      <form id="courseForm">
+        <div class="form-row">
+          <label for="courseName">Tên môn học</label>
+          <input type="text" id="courseName" required>
+        </div>
+        <div class="form-row">
+          <label for="courseCode">Mã môn</label>
+          <input type="text" id="courseCode" required>
+        </div>
+        <div class="form-row">
+          <label for="courseDesc">Mô tả</label>
+          <textarea id="courseDesc" rows="2"></textarea>
+        </div>
+        <div class="form-actions">
+          <button type="submit" id="submitBtn">Thêm môn học</button>
+          <button type="button" id="cancelEditBtn" style="display:none;">Huỷ</button>
+        </div>
+      </form>
+    </div>
+    <div id="section-students" style="display:none;">
+      <h3>Danh sách học sinh đã đăng ký lịch học / buổi meeting</h3>
+      <table class="course-table">
+        <thead>
+          <tr>
+            <th>Học sinh</th>
+            <th>Email</th>
+            <th>Môn học</th>
+            <th>Gia sư</th>
+            <th>Thời gian</th>
+            <th>Trạng thái</th>
+            <th>Meeting</th>
+          </tr>
+        </thead>
+        <tbody id="studentMeetingTableBody">
+          <!-- Dữ liệu sẽ được render bằng JS -->
+        </tbody>
+      </table>
+    </div>
   </div>
   <script src="./js/data.js"></script>
   <script src="./js/admin-courses.js"></script>
+  <script src="./js/admin-students.js"></script>
 </body>
 </html> 
