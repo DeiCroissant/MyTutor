@@ -1,77 +1,41 @@
-/* Tệp: style.css */
-body {
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  margin: 0;
-  padding: 20px;
-  color: #333;
-  min-height: 100vh;
-  box-sizing: border-box;
-}
-.dashboard-container {
-  max-width: 1200px;
-  margin: 0 auto;
-  background: #fff;
-  border-radius: 16px;
-  box-shadow: 0 10px 40px rgba(0,0,0,0.15);
-  padding: 32px 40px;
-}
-.header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 40px;
-  padding-bottom: 20px;
-  border-bottom: 2px solid #f0f2f5;
-}
-.user-info { display: flex; align-items: center; gap: 16px; }
-.avatar {
-  font-size: 24px;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  border-radius: 50%;
-  width: 60px;
-  height: 60px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: white;
-  font-weight: bold;
-}
-.user-info h1 { font-size: 22px; margin: 0; }
-.user-role { font-size: 14px; color: #666; }
-.nav { display: flex; gap: 8px; }
-.nav a {
-  text-decoration: none;
-  color: #555;
-  font-weight: 500;
-  padding: 10px 16px;
-  border-radius: 8px;
-  transition: all 0.3s;
-}
-.nav a.active, .nav a:hover {
-  background-color: #667eea;
-  color: white;
-}
-.section { display: none; }
-.section.active { display: block; }
-h2 { font-size: 28px; margin-bottom: 24px; color: #333; font-weight: 600; }
+/* Bỏ đi các định dạng body, .dashboard-container, .header, .nav v.v. vì đã kế thừa từ style.css */
 
+/* Làm cho các ô thống kê ("Tổng quan hoạt động") 
+  trông giống với các ô trên dashboard sinh viên 
+*/
 .schedule-stats {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
   gap: 24px;
   margin-bottom: 30px;
 }
+
 .stat-item {
-  background: #f8f9fa;
-  border: 1px solid #e9ecef;
-  color: #333;
-  padding: 24px;
-  border-radius: 12px;
   text-align: center;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); /* Áp dụng gradient nền */
+  color: white; /* Chữ màu trắng */
+  padding: 24px 20px;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
 }
-.stat-number { display: block; font-size: 36px; font-weight: 700; margin-bottom: 4px; color: #667eea; }
-.stat-label { font-size: 16px; color: #666; }
+
+.stat-number {
+  display: block;
+  font-size: 36px;
+  font-weight: 700;
+  margin-bottom: 4px;
+}
+
+.stat-label {
+  font-size: 16px;
+  opacity: 0.9; /* Chữ mờ hơn một chút cho đẹp */
+}
+
+
+/* Sử dụng lại lớp .profile-card đã có trong style.css 
+  nhưng có thể thêm một số điều chỉnh nhỏ nếu cần.
+  Hiện tại, .profile-card từ style.css đã đủ tốt.
+*/
 .profile-card {
     background: #fff;
     border-radius: 16px;
@@ -79,6 +43,7 @@ h2 { font-size: 28px; margin-bottom: 24px; color: #333; font-weight: 600; }
     border: 1px solid #e9ecef;
     box-shadow: 0 8px 24px rgba(0,0,0,0.05);
 }
+
 .profile-card h3 {
     margin: 0 0 20px 0;
     font-size: 20px;
@@ -86,43 +51,194 @@ h2 { font-size: 28px; margin-bottom: 24px; color: #333; font-weight: 600; }
     border-bottom: 1px solid #f0f2f5;
     padding-bottom: 16px;
 }
-table { width: 100%; border-collapse: collapse; }
-th, td { padding: 14px 16px; text-align: left; border-bottom: 1px solid #eef2f5; }
-th { font-weight: 600; font-size: 14px; color: #555; background-color: #f8f9fa; }
-td { font-size: 14px; }
-tr:last-child td { border-bottom: none; }
-tr:hover { background-color: #f8f9fa; }
-.status { padding: 4px 10px; border-radius: 16px; font-size: 12px; font-weight: 500; text-align: center; display: inline-block; }
-.status.pending { background-color: #fff3e0; color: #f57c00; }
-.btn-primary { padding: 8px 16px; border: none; border-radius: 8px; cursor: pointer; font-weight: 500; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; }
 
-.modal-overlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: rgba(0, 0, 0, 0.5);
-  
-  /* DÒNG QUAN TRỌNG: Mặc định ẩn modal đi */
-  display: none; 
-  
-  /* Các thuộc tính để căn giữa hộp thoại */
+/* Định dạng cho bảng để chuyên nghiệp hơn */
+table { 
+  width: 100%; 
+  border-collapse: collapse; 
+}
+
+th, td { 
+  padding: 14px 16px; 
+  text-align: left; 
+  border-bottom: 1px solid #eef2f5; 
+}
+
+th { 
+  font-weight: 600; 
+  font-size: 14px; 
+  color: #555; 
+  background-color: #f8f9fa; 
+}
+
+td { 
+  font-size: 14px; 
+  vertical-align: middle;
+}
+
+tr:last-child td { 
+  border-bottom: none; 
+}
+
+tr:hover { 
+  background-color: #f8f9fa; 
+}
+
+.status { 
+  padding: 4px 10px; 
+  border-radius: 16px; 
+  font-size: 12px; 
+  font-weight: 500; 
+  text-align: center; 
+  display: inline-block; 
+}
+
+.status.pending { 
+  background-color: #fff3e0; 
+  color: #f57c00; 
+}
+/* Huy hiệu trạng thái cho bảng môn học */
+.status-badge.available {
+  background-color: #e8f5e8;
+  color: #2e7d32;
+}
+
+.status-badge.busy {
+  background-color: #ffebee;
+  color: #c62828;
+}
+/* CSS for new settings components */
+
+/* === CSS TỐI ƯU CHO KHU VỰC CHỌN AVATAR === */
+/* Thay thế các đoạn CSS cũ của bạn bằng đoạn này */
+
+.avatar-upload-section {
+  margin-bottom: 20px;
+  padding: 16px;
+  background: #f8f9fa;
+  border-radius: 12px; /* Bo tròn góc hơn */
+  border: 1px solid #e9ecef;
+  text-align: center;
+}
+
+.current-avatar span {
+  font-size: 64px;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  border-radius: 50%;
+  width: 80px;
+  height: 80px;
+  display: inline-flex;
   align-items: center;
   justify-content: center;
-  z-index: 1000;
+  color: white;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+  margin-bottom: 16px;
 }
 
-/* Khi JavaScript thêm lớp .show (hoặc .active), modal sẽ hiện ra */
-.modal-overlay.show, .modal-overlay.active { 
+.avatar-options label {
+  display: block;
+  margin-bottom: 16px; /* Tăng khoảng cách */
+  font-weight: 600; /* In đậm chữ */
+  color: #333;
+  font-size: 15px;
+}
+
+.avatar-grid {
+  display: flex; /* << THAY ĐỔI QUAN TRỌNG NHẤT */
+  flex-wrap: wrap; /* Cho phép các icon tự xuống dòng */
+  justify-content: center; /* Căn giữa các icon */
+  gap: 16px; /* Tăng khoảng cách giữa các icon */
+  max-width: 320px; /* Tăng chiều rộng tối đa để bố cục thoáng hơn */
+  margin: 0 auto;
+}
+
+.avatar-option {
+  width: 52px; /* Tăng kích thước */
+  height: 52px; /* Tăng kích thước */
+  border-radius: 10px; /* Bo góc mềm mại hơn */
+  font-size: 26px; /* Tăng kích thước icon */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  border: 2px solid #e1e5e9;
+  transition: all 0.2s ease-in-out; /* Hiệu ứng chuyển động mượt hơn */
+  background: white;
+}
+
+.avatar-option:hover {
+  border-color: #764ba2; /* Đổi màu viền khi di chuột */
+  transform: translateY(-3px); /* Hiệu ứng nhấc lên */
+  box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+}
+
+.avatar-option.selected {
+  border-color: #667eea;
+  background: #edf0ff; /* Màu nền khi được chọn */
+  transform: translateY(-3px);
+  box-shadow: 0 4px 10px rgba(102, 126, 234, 0.3);
+}
+
+/* CSS cho các nút trong bảng xét duyệt */
+#tutor-approval-tbody button {
+  padding: 6px 12px;
+  font-size: 13px;
+  margin: 0 2px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+}
+#tutor-approval-tbody .btn-secondary { background-color: #e9ecef; color: #343a40; }
+#tutor-approval-tbody .btn-primary { background-color: #d1e7dd; color: #0f5132; }
+#tutor-approval-tbody .btn-danger { background-color: #f8d7da; color: #842029; }
+
+/* CSS cho modal chi tiết */
+#modalDetailContent .profile-item {
+  padding: 10px 0;
+  border-bottom: 1px solid #f0f2f5;
   display: flex;
 }
-
-.modal-content {
-  background: white;
-  border-radius: 12px;
-  padding: 24px;
-  width: 90%;
-  max-width: 600px;
-  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+#modalDetailContent .profile-item:last-child {
+  border-bottom: none;
 }
+#modalDetailContent .profile-label {
+  font-weight: 600;
+  color: #667eea;
+  min-width: 120px;
+}
+#modalDetailContent .profile-value {
+  color: #333;
+}
+
+/* CSS cho các huy hiệu trạng thái trong bảng lịch phỏng vấn */
+.status { 
+  padding: 5px 12px;
+  border-radius: 16px; 
+  font-size: 13px;
+  font-weight: 600;
+  text-align: center; 
+  display: inline-block;
+  white-space: nowrap;
+}
+
+.status.status-scheduled { 
+  background-color: #e3f2fd; /* Màu xanh dương nhạt */
+  color: #1565c0; 
+}
+
+.status.status-completed { 
+  background-color: #e8f5e9; /* Màu xanh lá nhạt */
+  color: #2e7d32; 
+}
+
+/* Căn giữa nội dung trong các ô của bảng */
+#interview-schedule-tbody td {
+    vertical-align: middle;
+}
+/* Các nút bấm sẽ tự động kế thừa từ style.css, 
+  không cần định dạng lại trừ khi có yêu cầu đặc biệt.
+*/
+
+/* Modal overlay cũng sẽ được kế thừa từ style.css.
+  Đảm bảo script chuyển đổi lớp 'active' hoặc 'show' hoạt động đúng.
+*/
