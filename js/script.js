@@ -215,7 +215,6 @@ function renderTutors(list) {
       <div class="tutor-actions">
         <button class="btn-primary" onclick="bookTutor(${t.id})">Đặt lịch</button>
         <button class="btn-secondary" onclick="viewTutorDetail(${t.id})">Chi tiết</button>
-        ${t.onlineSupport ? `<button class="btn-online" onclick="checkDeviceAndJoinMeeting(${t.id})">Tham gia meeting</button>` : ''}
       </div>
     </div>
   `).join('');

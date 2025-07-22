@@ -31,14 +31,11 @@ const learner = {
 
 // Dữ liệu lịch học
 const schedule = [
-  { id: 1, date: '2024-01-15', time: '19:00-21:00', subject: 'Lập trình OOP cơ bản', tutor: 'Nguyễn Văn A', status: 'completed', notes: 'Học về kế thừa và đa hình', meetingType: '1-1', onlineMeeting: true, meetingLink: 'https://teams.microsoft.com/l/meetup-join/example1' },
-  { id: 2, date: '2024-01-17', time: '19:00-21:00', subject: 'Toán rời rạc', tutor: 'Lê Văn C', status: 'upcoming', notes: 'Ôn tập về logic và tập hợp', meetingType: '1-1', onlineMeeting: true, meetingLink: 'https://teams.microsoft.com/l/meetup-join/example2' },
-  { id: 3, date: '2024-01-19', time: '19:00-21:00', subject: 'Lập trình web nâng cao', tutor: 'Phạm Thị D', status: 'upcoming', notes: 'Thực hành React và Node.js', meetingType: '1-1', onlineMeeting: true, meetingLink: 'https://teams.microsoft.com/l/meetup-join/example3' },
-  { id: 4, date: '2024-01-22', time: '19:00-21:00', subject: 'Lập trình hướng đối tượng', tutor: 'Nguyễn Văn A', status: 'upcoming', notes: 'Thiết kế giao diện và trừu tượng', meetingType: '1-1', onlineMeeting: true, meetingLink: 'https://teams.microsoft.com/l/meetup-join/example4' },
-  // Buổi meeting mới cho Nguyễn Văn A
-  { id: 5, date: '2024-01-24', time: '08:00-10:00', subject: 'Cấu trúc dữ liệu', tutor: 'Nguyễn Văn A', status: 'upcoming', notes: 'Học về danh sách liên kết và cây', meetingType: '1-1', onlineMeeting: true, meetingLink: 'https://teams.microsoft.com/l/meetup-join/example5' },
-  { id: 6, date: '2024-01-26', time: '10:00-12:00', subject: 'Phân tích thiết kế hệ thống', tutor: 'Nguyễn Văn A', status: 'upcoming', notes: 'Học về UML và use case', meetingType: '1-1', onlineMeeting: true, meetingLink: 'https://teams.microsoft.com/l/meetup-join/example6' },
-  { id: 7, date: '2024-01-28', time: '13:00-15:00', subject: 'Mạng máy tính', tutor: 'Nguyễn Văn A', status: 'upcoming', notes: 'Học về TCP/IP và mô hình OSI', meetingType: '1-1', onlineMeeting: true, meetingLink: 'https://teams.microsoft.com/l/meetup-join/example7' }
+  { id: 1, date: '2025-01-17', time: '10:30-11:30', subject: 'Lập trình OOP cơ bản', tutor: 'Nguyễn Văn A', status: 'upcoming', notes: 'Đã đổi lịch. Lý do: ngủ', meetingType: '1-1', onlineMeeting: true, meetingLink: 'https://teams.microsoft.com/l/meetup-join/example1', courseStatus: 'Sắp tới' },
+  { id: 2, date: '2024-01-22', time: '19:00-20:00', subject: 'Lập trình hướng đối tượng', tutor: 'Nguyễn Văn A', status: 'upcoming', notes: 'Thiết kế giao diện và trừu tượng', meetingType: '1-1', onlineMeeting: true, meetingLink: 'https://teams.microsoft.com/l/meetup-join/example4', courseStatus: 'Đang thực hiện' },
+  { id: 3, date: '2024-01-24', time: '08:00-09:00', subject: 'Cấu trúc dữ liệu', tutor: 'Nguyễn Văn A', status: 'upcoming', notes: 'Học về danh sách liên kết và cây', meetingType: '1-1', onlineMeeting: true, meetingLink: 'https://teams.microsoft.com/l/meetup-join/example5', courseStatus: 'Kết thúc' },
+  { id: 4, date: '2024-01-26', time: '10:00-11:00', subject: 'Phân tích thiết kế hệ thống', tutor: 'Nguyễn Văn A', status: 'upcoming', notes: 'Học về UML và use case', meetingType: '1-1', onlineMeeting: true, meetingLink: 'https://teams.microsoft.com/l/meetup-join/example6', courseStatus: 'Chưa bắt đầu' },
+  { id: 5, date: '2024-01-28', time: '13:00-14:00', subject: 'Mạng máy tính', tutor: 'Nguyễn Văn A', status: 'upcoming', notes: 'Học về TCP/IP và mô hình OSI', meetingType: '1-1', onlineMeeting: true, meetingLink: 'https://teams.microsoft.com/l/meetup-join/example7', courseStatus: 'Chưa bắt đầu' }
 ];
 
 // Dữ liệu thống kê học tập với GPA
@@ -75,4 +72,12 @@ const reviews = [
   { id: 1, tutorName: 'Nguyễn Văn A', subject: 'Lập trình hướng đối tượng', rating: 5, comment: 'Anh dạy rất dễ hiểu, phương pháp tốt', date: '2024-01-10' },
   { id: 2, tutorName: 'Lê Văn C', subject: 'Toán rời rạc', rating: 4, comment: 'Anh nhiệt tình, giúp em tiến bộ nhiều', date: '2024-01-08' },
   { id: 3, tutorName: 'Phạm Thị D', subject: 'Lập trình web nâng cao', rating: 5, comment: 'Chị phát âm chuẩn, dạy rất hay', date: '2024-01-05' }
+];
+
+// Danh sách môn học (dành cho System Administrator)
+let courses = [
+  { id: 1, name: 'Lập trình hướng đối tượng', code: 'OOP', description: 'Học về các khái niệm OOP, kế thừa, đa hình, đóng gói.' },
+  { id: 2, name: 'Toán rời rạc', code: 'DISMATH', description: 'Logic, tập hợp, quan hệ, đồ thị, tổ hợp.' },
+  { id: 3, name: 'Lập trình web nâng cao', code: 'WEB2', description: 'React, Node.js, RESTful API, bảo mật web.' },
+  { id: 4, name: 'Cơ sở dữ liệu', code: 'DB', description: 'SQL, thiết kế CSDL, truy vấn, tối ưu.' }
 ]; 

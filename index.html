@@ -19,7 +19,7 @@
         <option value="learner">Sinh Viên</option>
         <option value="tutor">Gia Sư</option>
         <option value="support">Trung tâm hỗ trợ Văn Lang</option>
-        <option value="admin">Quản trị viên hệ thống</option>
+        <option value="sysadmin">Quản trị viên hệ thống</option>
       </select>
       <button type="submit">Đăng nhập</button>
     </form>
@@ -37,12 +37,10 @@
           targetPage = './tutor-dashboard.html';
           break;
         case 'support':
-          // Có thể thêm dashboard cho support sau này
           targetPage = './dashboard.html';
           break;
-        case 'admin':
-          // Có thể thêm dashboard cho admin sau này
-          targetPage = './dashboard.html';
+        case 'sysadmin':
+          targetPage = './admin-dashboard.html';
           break;
         case 'learner':
         default:

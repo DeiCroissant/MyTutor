@@ -1076,6 +1076,8 @@ body.tutor-dashboard {
   width: 100%;
   position: relative;
   margin: 40px auto;
+  max-height: 90vh;
+  overflow-y: auto;
 }
 #addLessonForm .form-row {
   display: flex;
@@ -1184,4 +1186,123 @@ body.tutor-dashboard {
   color: #888;
   font-size: 14px;
   white-space: nowrap;
+}
+
+/* Accordion Styles */
+.accordion {
+  width: 100%;
+}
+
+.accordion-item {
+  border: 1px solid #e1e5e9;
+  border-radius: 8px;
+  margin-bottom: 10px;
+  overflow: hidden;
+}
+
+.accordion-header {
+  background-color: #f8f9fa;
+  padding: 15px 20px;
+  width: 100%;
+  border: none;
+  text-align: left;
+  cursor: pointer;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 16px;
+  font-weight: 600;
+  color: #333;
+}
+
+.accordion-header:hover {
+  background-color: #f1f3f5;
+}
+
+.accordion-content {
+  padding: 0 20px;
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.3s ease-out;
+}
+
+.accordion-item.active .accordion-content {
+  max-height: 500px; /* Adjust as needed */
+  padding: 15px 20px;
+}
+
+/* Status Badge Styles */
+.status-badge {
+  padding: 5px 10px;
+  border-radius: 15px;
+  font-size: 12px;
+  font-weight: bold;
+  color: #fff;
+}
+
+.status-not-started {
+  background-color: #6c757d;
+}
+
+.status-upcoming {
+  background-color: #ffc107;
+}
+
+.status-in-progress {
+  background-color: #17a2b8;
+}
+
+.status-finished {
+  background-color: #28a745;
+}
+
+.schedule-status {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 20px;
+    margin-top: 18px;
+    margin-bottom: 8px;
+}
+
+.schedule-status .btn-secondary,
+.schedule-status .btn-danger {
+    min-width: 120px;
+    height: 44px;
+    border-radius: 24px;
+    font-size: 16px;
+    font-weight: 600;
+    box-shadow: 0 2px 8px rgba(80,80,160,0.08);
+    transition: all 0.2s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    letter-spacing: 0.5px;
+}
+
+.schedule-status .btn-secondary {
+    background: linear-gradient(90deg, #ede7f6, #fff);
+    color: #5e35b1;
+    border: 1.5px solid #d1c4e9;
+}
+.schedule-status .btn-secondary:hover {
+    background: linear-gradient(90deg, #d1c4e9, #ede7f6);
+    color: #4527a0;
+    box-shadow: 0 4px 16px rgba(94,53,177,0.10);
+}
+
+.schedule-status .btn-danger {
+    background: linear-gradient(90deg, #ffcdd2, #fff);
+    color: #c62828;
+    border: 1.5px solid #ef9a9a;
+}
+.schedule-status .btn-danger:hover {
+    background: linear-gradient(90deg, #ef9a9a, #ffcdd2);
+    color: #b71c1c;
+    box-shadow: 0 4px 16px rgba(198,40,40,0.10);
+}
+
+.status-text {
+    color: #6c757d;
+    font-style: italic;
 }
