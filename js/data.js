@@ -75,4 +75,12 @@ const reviews = [
   { id: 1, tutorName: 'Nguyễn Văn A', subject: 'Lập trình hướng đối tượng', rating: 5, comment: 'Anh dạy rất dễ hiểu, phương pháp tốt', date: '2024-01-10' },
   { id: 2, tutorName: 'Lê Văn C', subject: 'Toán rời rạc', rating: 4, comment: 'Anh nhiệt tình, giúp em tiến bộ nhiều', date: '2024-01-08' },
   { id: 3, tutorName: 'Phạm Thị D', subject: 'Lập trình web nâng cao', rating: 5, comment: 'Chị phát âm chuẩn, dạy rất hay', date: '2024-01-05' }
+];
+
+// Danh sách môn học (dành cho System Administrator)
+let courses = [
+  { id: 1, name: 'Lập trình hướng đối tượng', code: 'OOP', description: 'Học về các khái niệm OOP, kế thừa, đa hình, đóng gói.' },
+  { id: 2, name: 'Toán rời rạc', code: 'DISMATH', description: 'Logic, tập hợp, quan hệ, đồ thị, tổ hợp.' },
+  { id: 3, name: 'Lập trình web nâng cao', code: 'WEB2', description: 'React, Node.js, RESTful API, bảo mật web.' },
+  { id: 4, name: 'Cơ sở dữ liệu', code: 'DB', description: 'SQL, thiết kế CSDL, truy vấn, tối ưu.' }
 ]; 
