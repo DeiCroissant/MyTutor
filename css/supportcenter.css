@@ -235,6 +235,12 @@ tr:hover {
 #interview-schedule-tbody td {
     vertical-align: middle;
 }
+
+/* CSS cho nút Lên lịch phỏng vấn */
+#tutor-approval-tbody .btn-schedule {
+    background-color: #e0e7ff; /* Màu xanh tím nhạt */
+    color: #4338ca;
+}
 /* Các nút bấm sẽ tự động kế thừa từ style.css, 
   không cần định dạng lại trừ khi có yêu cầu đặc biệt.
 */

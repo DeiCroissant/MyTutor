@@ -18,13 +18,13 @@
         </div>
       </div>
       <nav class="nav">
-        <a href="#tong-quan" class="active" onclick="switchTab(event)">Tổng quan</a>
-        <a href="#xet-duyet-gia-su" onclick="switchTab(event)">Xét duyệt Gia sư</a>
-        <a href="#lich-phong-van" onclick="switchTab(event)">Lịch phỏng vấn</a>
-        <a href="#danh-sach-mon-hoc" onclick="switchTab(event)">Môn học</a>
-        <a href="#ho-so" onclick="switchTab(event)">Hồ sơ</a>
-        <a href="#cai-dat" onclick="switchTab(event)">Cài đặt</a>
-      </nav>
+    <a href="#tong-quan" class="active">Tổng quan</a>
+    <a href="#xet-duyet-gia-su">Xét duyệt Gia sư</a>
+    <a href="#lich-phong-van">Lịch phỏng vấn</a>
+    <a href="#danh-sach-mon-hoc">Môn học</a>
+    <a href="#ho-so">Hồ sơ</a>
+    <a href="#cai-dat">Cài đặt</a>
+</nav>
     </div>
 
     <div id="tong-quan" class="section active">
@@ -50,17 +50,40 @@
         </div>
     </div>
     <div id="lich-phong-van" class="section">
-        <h2>Danh sách Lịch phỏng vấn</h2>
-        <div class="profile-card">
-            <h3>Theo dõi lịch hẹn với các ứng viên</h3>
-            <table>
-              <thead>
-                <tr><th>Tên ứng viên</th><th>Môn đăng ký</th><th>Thời gian phỏng vấn</th><th>Trạng thái</th></tr>
-              </thead>
-              <tbody id="interview-schedule-tbody"></tbody>
-            </table>
-        </div>
+    <h2>Quản lý Lịch phỏng vấn</h2>
+
+    <div class="profile-card" style="margin-bottom: 30px;">
+        <h3>Ứng viên chờ lên lịch</h3>
+        <table>
+          <thead>
+            <tr>
+                <th>Tên ứng viên</th>
+                <th>Môn đăng ký</th>
+                <th>Ngày nộp hồ sơ</th>
+                <th>Hành động</th>
+            </tr>
+          </thead>
+          <tbody id="unscheduled-tutors-tbody">
+            </tbody>
+        </table>
     </div>
+
+    <div class="profile-card">
+        <h3>Lịch phỏng vấn đã tạo</h3>
+        <table>
+          <thead>
+            <tr>
+                <th>Tên ứng viên</th>
+                <th>Môn đăng ký</th>
+                <th>Thời gian phỏng vấn</th>
+                <th>Trạng thái</th>
+            </tr>
+          </thead>
+          <tbody id="interview-schedule-tbody">
+            </tbody>
+        </table>
+    </div>
+</div>
 
     <div id="danh-sach-mon-hoc" class="section">
       <h2>Quản lý Môn học</h2>
@@ -187,7 +210,29 @@
   <div class="modal-overlay" id="courseModal">...</div>
   <div class="modal-overlay" id="revisionModal">...</div>
   
-  <script src="js/data-trungtam.js"></script>
-  <script src="js/script-trungtam.js"></script>
+  <div class="modal-overlay" id="scheduleInterviewModal">
+  <div class="password-modal" style="max-width: 450px;">
+    <h3>Lên lịch phỏng vấn</h3>
+    <form id="scheduleInterviewForm">
+      <input type="hidden" id="scheduleTutorId">
+
+      <div class="form-row">
+        <label for="scheduleDate">Chọn ngày phỏng vấn:</label>
+        <input type="date" id="scheduleDate" required style="width: 100%; padding: 10px; border-radius: 6px; border: 1px solid #ccc;">
+      </div>
+      <div class="form-row" style="margin-top: 15px;">
+        <label for="scheduleTime">Chọn giờ phỏng vấn:</label>
+        <input type="time" id="scheduleTime" required style="width: 100%; padding: 10px; border-radius: 6px; border: 1px solid #ccc;">
+      </div>
+      <div class="modal-actions" style="margin-top: 25px;">
+        <button type="button" class="btn-secondary" onclick="closeScheduleModal()">Hủy</button>
+        <button type="submit" class="btn-primary">Xác nhận</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+  <script src="js/data-trungtam.js" defer></script>
+  <script src="js/script-trungtam.js" defer></script>
 </body>
 </html>

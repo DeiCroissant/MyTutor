@@ -1,4 +1,6 @@
-// --- Dữ liệu mẫu cho cài đặt ---
+// js/script-trungtam.js
+
+// DỮ LIỆU CÀI ĐẶT (Phần này nhỏ nên có thể giữ lại ở đây)
 const supportCenterSettings = {
     avatar: 'TT',
     name: 'Nguyễn Thiện D',
@@ -7,197 +9,50 @@ const supportCenterSettings = {
     supportEmail: 'support.mytutor@vanlanguni.edu.vn'
 };
 
-// --- CÁC HÀM XỬ LÝ CHÍNH ---
-
-// Hàm chuyển tab
-function switchTab(event) {
-  event.preventDefault();
-  
-  // Bỏ active ở tất cả các link
-  document.querySelectorAll('.nav a').forEach(link => link.classList.remove('active'));
-  // Thêm active cho link được click
-  event.currentTarget.classList.add('active');
-  
-  // Ẩn tất cả các section
-  document.querySelectorAll('.section').forEach(sec => sec.style.display = 'none');
-  
-  // Hiển thị section tương ứng
-  const targetId = event.currentTarget.getAttribute('href').substring(1);
-  const targetSection = document.getElementById(targetId);
-  if (targetSection) {
-    targetSection.style.display = 'block';
-  }
-}
-
-// Hiển thị modal đổi mật khẩu
-function changePassword() {
-  const modal = document.getElementById('passwordModal');
-  if (modal) {
-    modal.classList.add('show');
-  }
-}
-
-// Đóng modal đổi mật khẩu
-function closePasswordModal() {
-  const modal = document.getElementById('passwordModal');
-  if (modal) {
-    modal.classList.remove('show');
-    const form = document.getElementById('passwordForm');
-    if(form) form.reset();
-  }
-}
-
-// Đăng xuất
-function logout() {
-  if (confirm('Bạn có chắc chắn muốn đăng xuất?')) {
-    window.location.href = './index.html'; // Chuyển về trang đăng nhập
-  }
-}
-
-// --- CÁC HÀM MỚI CHO TAB CÀI ĐẶT ---
-
-// Hàm thay đổi avatar
-function handleAvatarChange(newAvatar) {
-    supportCenterSettings.avatar = newAvatar;
-    
-    // Cập nhật hiển thị
-    const currentAvatarDisplay = document.getElementById('currentAvatarDisplay');
-    if (currentAvatarDisplay) currentAvatarDisplay.textContent = newAvatar;
-    
-    // Cập nhật avatar ở header
-    const headerAvatar = document.querySelector('.header .avatar');
-    if (headerAvatar) headerAvatar.textContent = newAvatar;
-    
-    // Cập nhật trạng thái selected
-    document.querySelectorAll('.avatar-option').forEach(option => {
-        option.classList.remove('selected');
-        if (option.dataset.avatar === newAvatar) {
-            option.classList.add('selected');
-        }
-    });
-    
-    alert('Ảnh đại diện đã được cập nhật!');
-}
-
-// Gắn các sự kiện cho tab Cài đặt
-function attachSettingsEvents() {
-    // Sự kiện cho form thông tin cá nhân
-    const profileForm = document.getElementById('profileForm');
-    if (profileForm) {
-        profileForm.addEventListener('submit', function(e) {
-            e.preventDefault();
-            supportCenterSettings.name = document.getElementById('profileName').value;
-            supportCenterSettings.phone = document.getElementById('profilePhone').value;
-            alert('Cập nhật thông tin cá nhân thành công!');
-        });
-    }
-
-    // Sự kiện cho form cài đặt hệ thống
-    const systemSettingsForm = document.getElementById('systemSettingsForm');
-    if(systemSettingsForm) {
-        systemSettingsForm.addEventListener('submit', function(e) {
-            e.preventDefault();
-            supportCenterSettings.itemsPerPage = document.getElementById('itemsPerPage').value;
-            supportCenterSettings.supportEmail = document.getElementById('supportEmail').value;
-            alert('Cập nhật cài đặt hệ thống thành công!');
-        });
-    }
-
-    // Sự kiện cho các lựa chọn avatar
-    const avatarOptions = document.querySelectorAll('.avatar-option');
-    avatarOptions.forEach(option => {
-        option.addEventListener('click', function() {
-            handleAvatarChange(this.dataset.avatar);
-        });
-    });
-
-    // Sự kiện cho nút chuyển đổi vai trò
-    const switchRoleBtn = document.getElementById('switchRoleBtn');
-    if (switchRoleBtn) {
-        switchRoleBtn.addEventListener('click', function() {
-            const roleSwitcher = document.getElementById('role-switcher');
-            const selectedRole = roleSwitcher.value;
-            let targetPage = '';
-
-            if (selectedRole === 'learner') {
-                targetPage = './dashboard.html';
-            } else if (selectedRole === 'tutor') {
-                targetPage = './tutor-dashboard.html';
-            }
-
-            if (targetPage) {
-                if (confirm(`Bạn có muốn chuyển sang giao diện ${selectedRole === 'learner' ? 'Sinh Viên' : 'Gia Sư'}?`)) {
-                    window.open(targetPage, '_blank');
-                }
-            }
-        });
-    }
-}
-
-// --- KHỞI TẠO KHI TẢI TRANG ---
-document.addEventListener('DOMContentLoaded', function() {
-    // --- Gắn các sự kiện cho các thành phần chính ---
-
-    // Xử lý đổi mật khẩu
-    const passwordForm = document.getElementById('passwordForm');
-    if (passwordForm) {
-        passwordForm.addEventListener('submit', function(e) {
-            e.preventDefault();
-            const newPassword = document.getElementById('newPassword').value;
-            const confirmPassword = document.getElementById('confirmPassword').value;
-
-            if (newPassword !== confirmPassword) {
-                alert('Mật khẩu xác nhận không khớp!');
-                return;
-            }
-            alert('Mật khẩu đã được thay đổi thành công!');
-            closePasswordModal();
-        });
-    }
-    
-    // Đóng modal khi click ra ngoài
-    const passwordModal = document.getElementById('passwordModal');
-    if (passwordModal) {
-        passwordModal.addEventListener('click', function(e) {
-            if (e.target === passwordModal) {
-                closePasswordModal();
-            }
-        });
-    }
-
-    // Gắn các sự kiện cho tab cài đặt
-    attachSettingsEvents();
-    
-    // --- Hiển thị dữ liệu ban đầu cho các bảng ---
-
-    // Hiển thị danh sách chờ duyệt
-    renderTutorApprovalList();
-    
-    // Hiển thị lịch phỏng vấn
-    renderInterviewSchedule();
-
-    // Thiết lập trạng thái ban đầu cho avatar được chọn trong Cài đặt
-    const initialAvatar = document.querySelector(`.avatar-option[data-avatar="${supportCenterSettings.avatar}"]`);
-    if (initialAvatar) {
-        initialAvatar.classList.add('selected');
-    }
-});
-// --- LOGIC MỚI CHO CHỨC NĂNG XÉT DUYỆT GIA SƯ ---
+// =================================================================
+// ĐỊNH NGHĨA CÁC HÀM
+// =================================================================
 
 /**
- * Hiển thị danh sách các gia sư đang chờ duyệt ra bảng
+ * Chuyển đổi giữa các tab (section)
+ * @param {string} targetId ID của section cần hiển thị
  */
+function switchTab(targetId) {
+    document.querySelectorAll('.section').forEach(sec => {
+        sec.style.display = 'none';
+    });
+    const targetSection = document.getElementById(targetId);
+    if (targetSection) {
+        targetSection.style.display = 'block';
+    }
+}
+
+// ... (Toàn bộ các hàm xử lý khác như changePassword, renderTutorApprovalList, renderInterviewSchedule, v.v... giữ nguyên như phiên bản trước)
+// --- CÁC HÀM XỬ LÝ CHUNG ---
+function changePassword() {
+  const modal = document.getElementById('passwordModal');
+  if (modal) modal.classList.add('show');
+}
+
+function closePasswordModal() {
+  const modal = document.getElementById('passwordModal');
+  if (modal) modal.classList.remove('show');
+}
+
+function logout() {
+  if (confirm('Bạn có chắc chắn muốn đăng xuất?')) {
+    window.location.href = './index.html';
+  }
+}
+
+// --- CÁC HÀM XỬ LÝ CHO TAB "XÉT DUYỆT GIA SƯ" ---
 function renderTutorApprovalList() {
     const tbody = document.getElementById('tutor-approval-tbody');
     if (!tbody) return;
-
-    // Kiểm tra xem có hồ sơ chờ duyệt không
-    if (pendingTutors.length === 0) {
+    if (typeof pendingTutors === 'undefined' || pendingTutors.length === 0) {
         tbody.innerHTML = `<tr><td colspan="4" style="text-align:center; padding: 20px;">Không có hồ sơ mới nào.</td></tr>`;
         return;
     }
-
-    // Tạo các hàng của bảng từ dữ liệu
     tbody.innerHTML = pendingTutors.map(tutor => `
         <tr>
             <td>${tutor.id}</td>
@@ -212,17 +67,11 @@ function renderTutorApprovalList() {
     `).join('');
 }
 
-/**
- * Hiển thị thông tin chi tiết của một ứng viên trong modal
- * @param {number} tutorId ID của gia sư cần xem
- */
 function viewTutorDetails(tutorId) {
     const tutor = pendingTutors.find(t => t.id === tutorId);
     if (!tutor) return;
-
     const modal = document.getElementById('approvalDetailModal');
     const modalContent = document.getElementById('modalDetailContent');
-
     if (modal && modalContent) {
         modalContent.innerHTML = `
             <h3>Chi tiết hồ sơ ứng viên</h3>
@@ -238,101 +87,108 @@ function viewTutorDetails(tutorId) {
     }
 }
 
-/**
- * Đóng modal chi tiết
- */
 function closeDetailModal() {
-    const modal = document.getElementById('approvalDetailModal');
-    if (modal) {
-        modal.classList.remove('show');
-    }
+    document.getElementById('approvalDetailModal').classList.remove('show');
 }
 
-/**
- * Xử lý khi duyệt một hồ sơ
- * @param {number} tutorId ID của gia sư được duyệt
- */
 function approveTutor(tutorId) {
-    if (confirm('Bạn có chắc chắn muốn DUYỆT hồ sơ này? \nHồ sơ sẽ được chuyển sang danh sách gia sư chính thức.')) {
-        const index = pendingTutors.findIndex(t => t.id === tutorId);
-        if (index > -1) {
-            // Lấy thông tin gia sư được duyệt
-            const approvedTutorData = pendingTutors[index];
-            
-            // Xóa khỏi danh sách chờ duyệt
-            pendingTutors.splice(index, 1);
-            
-            // Thêm vào danh sách gia sư chính thức (biến `tutors` từ file data.js)
-            tutors.push({
-                id: tutors.length + 1, // Tạo ID mới
-                name: approvedTutorData.name,
-                status: 'available',
-                subject: approvedTutorData.subject,
-                price: 150000, // Giá mặc định, có thể thay đổi sau
-                desc: `Gia sư mới, GPA: ${approvedTutorData.gpa}.`,
-                rating: 0,
-                students: 0,
-                avatar: '🧑‍🏫',
-                meetingType: '1-1',
-                onlineSupport: true
-            });
-
-            alert('Đã duyệt hồ sơ thành công!');
-            renderTutorApprovalList(); // Cập nhật lại bảng
-        }
+    if (!confirm('Bạn có chắc chắn muốn DUYỆT hồ sơ này?')) return;
+    const index = pendingTutors.findIndex(t => t.id === tutorId);
+    if (index > -1) {
+        const approvedTutorData = pendingTutors.splice(index, 1)[0];
+        tutors.push({
+            id: tutors.length + 1, name: approvedTutorData.name, status: 'available',
+            subject: approvedTutorData.subject, price: 150000, desc: `Gia sư mới, GPA: ${approvedTutorData.gpa}.`,
+            rating: 0, students: 0, avatar: '🧑‍🏫', meetingType: '1-1', onlineSupport: true
+        });
+        alert('Đã duyệt hồ sơ thành công!');
+        renderTutorApprovalList();
     }
+    renderUnscheduledTutors(); // THÊM DÒNG NÀY
 }
 
-/**
- * Xử lý khi từ chối một hồ sơ
- * @param {number} tutorId ID của gia sư bị từ chối
- */
 function rejectTutor(tutorId) {
     const reason = prompt('Vui lòng nhập lý do từ chối hồ sơ này:');
     if (reason) {
         const index = pendingTutors.findIndex(t => t.id === tutorId);
         if (index > -1) {
-            // Xóa hồ sơ khỏi danh sách chờ duyệt
             pendingTutors.splice(index, 1);
             alert(`Đã từ chối hồ sơ. Lý do: ${reason}`);
-            renderTutorApprovalList(); // Cập nhật lại bảng
+            renderTutorApprovalList();
         }
+    }
+    renderUnscheduledTutors(); // THÊM DÒNG NÀY
+}
+
+/**
+ * Mở modal để lên lịch phỏng vấn cho một ứng viên
+ * @param {number} tutorId ID của ứng viên
+ */
+function openScheduleModal(tutorId) {
+    const modal = document.getElementById('scheduleInterviewModal');
+    if (modal) {
+        // Gán ID của gia sư vào một trường ẩn trong form
+        document.getElementById('scheduleTutorId').value = tutorId;
+        modal.classList.add('show');
     }
 }
 
-// --- LOGIC MỚI CHO CHỨC NĂNG LỊCH PHỎNG VẤN ---
+/**
+ * Đóng modal lên lịch phỏng vấn
+ */
+function closeScheduleModal() {
+    const modal = document.getElementById('scheduleInterviewModal');
+    if (modal) {
+        modal.classList.remove('show');
+        // Xóa các giá trị đã nhập trong form
+        document.getElementById('scheduleInterviewForm').reset();
+    }
+}
 
 /**
- * Hiển thị danh sách các lịch phỏng vấn đã lên lịch ra bảng
+ * Hiển thị danh sách các ứng viên chưa được lên lịch phỏng vấn
  */
-function renderInterviewSchedule() {
-    const tbody = document.getElementById('interview-schedule-tbody');
+function renderUnscheduledTutors() {
+    const tbody = document.getElementById('unscheduled-tutors-tbody');
     if (!tbody) return;
 
-    // Kiểm tra xem có dữ liệu phỏng vấn không
-    if (!window.interviews || interviews.length === 0) {
-        tbody.innerHTML = `<tr><td colspan="4" style="text-align:center; padding: 20px;">Chưa có lịch phỏng vấn nào.</td></tr>`;
+    // Lấy ID của tất cả các ứng viên đã có lịch phỏng vấn
+    const scheduledTutorIds = interviews.map(interview => interview.tutorId);
+
+    // Lọc ra những ứng viên trong danh sách chờ duyệt NHƯNG chưa có trong danh sách đã lên lịch
+    const unscheduledTutors = pendingTutors.filter(tutor => !scheduledTutorIds.includes(tutor.id));
+
+    if (unscheduledTutors.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="4" style="text-align:center; padding: 20px;">Tất cả ứng viên đã được lên lịch.</td></tr>`;
         return;
     }
 
-    // Sắp xếp các cuộc phỏng vấn theo ngày gần nhất trước
-    const sortedInterviews = interviews.sort((a, b) => new Date(a.interviewDate) - new Date(b.interviewDate));
+    tbody.innerHTML = unscheduledTutors.map(tutor => `
+        <tr>
+            <td>${tutor.name}</td>
+            <td>${tutor.subject}</td>
+            <td>${tutor.applyDate}</td>
+            <td>
+                <button class="btn-schedule" onclick="openScheduleModal(${tutor.id})">Lên lịch</button>
+            </td>
+        </tr>
+    `).join('');
+}
 
-    // Tạo các hàng của bảng từ dữ liệu
+// --- CÁC HÀM XỬ LÝ CHO TAB "LỊCH PHỎNG VẤN" ---
+function renderInterviewSchedule() {
+    const tbody = document.getElementById('interview-schedule-tbody');
+    if (!tbody) return;
+    if (typeof interviews === 'undefined' || interviews.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="4" style="text-align:center; padding: 20px;">Chưa có lịch phỏng vấn nào.</td></tr>`;
+        return;
+    }
+    const sortedInterviews = [...interviews].sort((a, b) => new Date(a.interviewDate) - new Date(b.interviewDate));
     tbody.innerHTML = sortedInterviews.map(interview => {
         const interviewDate = new Date(interview.interviewDate);
-        // Định dạng ngày và giờ theo kiểu Việt Nam
         const formattedDate = interviewDate.toLocaleDateString('vi-VN');
         const formattedTime = interviewDate.toLocaleTimeString('vi-VN', { hour: '2-digit', minute: '2-digit' });
-
-        // Xác định class cho trạng thái để tạo màu sắc khác nhau
-        let statusClass = '';
-        if (interview.status === 'Đã hoàn thành') {
-            statusClass = 'status-completed';
-        } else if (interview.status === 'Đã lên lịch') {
-            statusClass = 'status-scheduled';
-        }
-
+        let statusClass = interview.status === 'Đã hoàn thành' ? 'status-completed' : 'status-scheduled';
         return `
             <tr>
                 <td>${interview.tutorName}</td>
@@ -343,3 +199,98 @@ function renderInterviewSchedule() {
         `;
     }).join('');
 }
+
+// --- CÁC HÀM XỬ LÝ CHO TAB "CÀI ĐẶT" ---
+function handleAvatarChange(newAvatar) {
+    supportCenterSettings.avatar = newAvatar;
+    document.getElementById('currentAvatarDisplay').textContent = newAvatar;
+    document.querySelector('.header .avatar').textContent = newAvatar;
+    document.querySelectorAll('.avatar-option').forEach(option => {
+        option.classList.remove('selected');
+        if (option.dataset.avatar === newAvatar) {
+            option.classList.add('selected');
+        }
+    });
+}
+
+function attachSettingsEvents() {
+    document.querySelectorAll('.avatar-option').forEach(option => {
+        option.addEventListener('click', () => handleAvatarChange(option.dataset.avatar));
+    });
+
+    document.getElementById('switchRoleBtn').addEventListener('click', function() {
+        const selectedRole = document.getElementById('role-switcher').value;
+        const targetPage = selectedRole === 'learner' ? './dashboard.html' : './tutor-dashboard.html';
+        if (confirm(`Bạn có muốn chuyển sang giao diện ${selectedRole === 'learner' ? 'Sinh Viên' : 'Gia Sư'}?`)) {
+            window.open(targetPage, '_blank');
+        }
+    });
+}
+
+// =================================================================
+// SỰ KIỆN CHÍNH KHI TRANG ĐƯỢC TẢI
+// =================================================================
+document.addEventListener('DOMContentLoaded', function() {
+    const navLinks = document.querySelectorAll('.nav a');
+    navLinks.forEach(link => {
+        link.addEventListener('click', function(event) {
+            event.preventDefault();
+            navLinks.forEach(l => l.classList.remove('active'));
+            this.classList.add('active');
+            const targetId = this.getAttribute('href').substring(1);
+            switchTab(targetId);
+        });
+    });
+
+    const firstTab = document.querySelector('.nav a.active');
+    if (firstTab) {
+        switchTab(firstTab.getAttribute('href').substring(1));
+    }
+
+    attachSettingsEvents();
+    renderTutorApprovalList();
+    renderInterviewSchedule();
+    renderUnscheduledTutors();
+
+    const initialAvatar = document.querySelector(`.avatar-option[data-avatar="${supportCenterSettings.avatar}"]`);
+    if (initialAvatar) initialAvatar.classList.add('selected');
+    // Xử lý sự kiện submit form lên lịch phỏng vấn
+    const scheduleForm = document.getElementById('scheduleInterviewForm');
+    if (scheduleForm) {
+        scheduleForm.addEventListener('submit', function(event) {
+            event.preventDefault(); // Ngăn form tải lại trang
+
+            const tutorId = parseInt(document.getElementById('scheduleTutorId').value);
+            const scheduleDate = document.getElementById('scheduleDate').value;
+            const scheduleTime = document.getElementById('scheduleTime').value;
+
+            if (!scheduleDate || !scheduleTime) {
+                alert('Vui lòng chọn đầy đủ ngày và giờ phỏng vấn.');
+                return;
+            }
+
+            // Tìm thông tin ứng viên từ danh sách chờ
+            const tutorInfo = pendingTutors.find(t => t.id === tutorId);
+            if (!tutorInfo) {
+                alert('Không tìm thấy thông tin ứng viên!');
+                return;
+            }
+
+            // Tạo một đối tượng lịch phỏng vấn mới
+            const newInterview = {
+                tutorId: tutorInfo.id,
+                tutorName: tutorInfo.name,
+                subject: tutorInfo.subject,
+                interviewDate: `${scheduleDate}T${scheduleTime}`, // Ghép ngày và giờ thành định dạng ISO
+                status: 'Đã lên lịch'
+            };
+
+            // Thêm vào mảng interviews
+            interviews.push(newInterview);
+
+            alert(`Đã lên lịch phỏng vấn cho ${tutorInfo.name} thành công!`);
+            closeScheduleModal(); // Đóng modal
+            renderInterviewSchedule(); // Cập nhật lại bảng lịch phỏng vấn để hiển thị ngay lập tức
+        });
+    }
+});
