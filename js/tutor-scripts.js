@@ -483,6 +483,36 @@ function attachAvatarChangeEvents() {
 // Navbar Tab Switching Logic
 // =============================
 
+// Hiển thị modal đăng ký làm gia sư nếu có query ?register=1
+function openRegisterTutorModal() {
+  const modal = document.getElementById('registerTutorModal');
+  if (modal) modal.style.display = 'block';
+}
+function closeRegisterTutorModal() {
+  const modal = document.getElementById('registerTutorModal');
+  if (modal) modal.style.display = 'none';
+}
+// Gắn sự kiện đóng modal
+window.addEventListener('DOMContentLoaded', function() {
+  const urlParams = new URLSearchParams(window.location.search);
+  if (urlParams.get('register') === '1') openRegisterTutorModal();
+  const closeBtn = document.getElementById('closeRegisterTutorModal');
+  if (closeBtn) closeBtn.onclick = closeRegisterTutorModal;
+  window.onclick = function(event) {
+    const modal = document.getElementById('registerTutorModal');
+    if (event.target === modal) closeRegisterTutorModal();
+  };
+  // Xử lý submit form đăng ký
+  const form = document.getElementById('registerTutorForm');
+  if (form) {
+    form.onsubmit = function(e) {
+      e.preventDefault();
+      alert('Đăng ký làm gia sư thành công! Hồ sơ của bạn sẽ được duyệt.');
+      closeRegisterTutorModal();
+    };
+  }
+});
+
 document.addEventListener('DOMContentLoaded', function() {
     // Thêm thư xác nhận vào hộp thư nếu chưa có
     let inbox = JSON.parse(localStorage.getItem('tutorInbox') || '[]');
