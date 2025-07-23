@@ -88,6 +88,33 @@ function updateSettingsForms() {
   if (profileSchool) profileSchool.value = learner.school;
   if (profileAddress) profileAddress.value = learner.address;
   if (currentAvatarDisplay) currentAvatarDisplay.textContent = learner.avatar;
+
+  // Hiển thị nút đăng ký làm gia sư nếu chưa là gia sư
+  const registerTutorBtn = document.getElementById('registerTutorBtn');
+  if (registerTutorBtn) {
+    // Giả sử có biến learner.isTutor để xác định đã là gia sư hay chưa
+    if (!learner.isTutor) {
+      registerTutorBtn.style.display = '';
+      registerTutorBtn.onclick = function() {
+        window.location.href = 'tutor-dashboard.html?register=1';
+      };
+    } else {
+      registerTutorBtn.style.display = 'none';
+    }
+  }
+  // Hiển thị khung đăng ký làm gia sư nếu chưa là gia sư
+  const registerTutorCard = document.getElementById('register-tutor-card');
+  const registerTutorBtn2 = document.getElementById('registerTutorBtn2');
+  if (registerTutorCard && registerTutorBtn2) {
+    if (!learner.isTutor) {
+      registerTutorCard.style.display = '';
+      registerTutorBtn2.onclick = function() {
+        window.location.href = 'tutor-dashboard.html?register=1';
+      };
+    } else {
+      registerTutorCard.style.display = 'none';
+    }
+  }
 }
 
 // Hiển thị thông tin học tập
@@ -188,36 +215,49 @@ function renderTutors(list) {
     return;
   }
   
-  tutorList.innerHTML = list.map(t => `
-    <div class="tutor-card">
-      <div class="tutor-header">
-        <div class="tutor-avatar">${t.avatar}</div>
-        <div class="tutor-info">
-          <div class="tutor-name">${t.name}</div>
-          <div class="tutor-subject">${t.subject}</div>
-          <div class="tutor-meeting-type">
-            <span class="meeting-badge ${t.meetingType}">${t.meetingType}</span>
-            ${t.onlineSupport ? '<span class="online-badge">🖥️ Online</span>' : ''}
+  tutorList.innerHTML = list.map(t => {
+    // Rút gọn bio nếu dài
+    let shortBio = t.bio;
+    let showSeeMore = false;
+    if (t.bio && t.bio.length > 80) {
+      shortBio = t.bio.slice(0, 80) + '...';
+      showSeeMore = true;
+    }
+    return `
+      <div class="tutor-card">
+        <div class="tutor-header">
+          <div class="tutor-avatar">${t.avatar}</div>
+          <div class="tutor-info">
+            <div class="tutor-name">${t.name}</div>
+            <div class="tutor-subject">${t.subject}</div>
+            <div class="tutor-meeting-type">
+              <span class="meeting-badge ${t.meetingType}">${t.meetingType}</span>
+              ${t.onlineSupport ? '<span class="online-badge">🖥️ Online</span>' : ''}
+            </div>
+          </div>
+          <div class="tutor-status ${t.status}">
+            ${t.status === 'busy' ? 'Đang bận' : 'Đang rảnh'}
           </div>
         </div>
-        <div class="tutor-status ${t.status}">
-          ${t.status === 'busy' ? 'Đang bận' : 'Đang rảnh'}
+        <div class="tutor-details">
+          <div class="tutor-rating">
+            <span class="stars">${'★'.repeat(Math.floor(t.rating))}${'☆'.repeat(5-Math.floor(t.rating))}</span>
+            <span class="rating-text">${t.rating}/5 (${t.ratingCount} học sinh đã đánh giá)</span>
+          </div>
+          <div class="tutor-price">${t.price.toLocaleString()}đ/buổi</div>
+          <div class="tutor-desc">${t.desc}</div>
+          <div class="tutor-bio">${shortBio}${showSeeMore ? ` <span class='see-more' onclick='showFullBio(${t.id})'>Xem thêm</span>` : ''}</div>
+          <div class="tutor-achievements">
+            ${(t.achievements||[]).map(a => `<span class='badge'>${a}</span>`).join(' ')}
+          </div>
+        </div>
+        <div class="tutor-actions">
+          <button class="btn-primary" onclick="bookTutor(${t.id})">Đặt lịch</button>
+          <button class="btn-secondary" onclick="viewTutorDetail(${t.id})">Chi tiết</button>
         </div>
       </div>
-      <div class="tutor-details">
-        <div class="tutor-rating">
-          <span class="stars">${'★'.repeat(Math.floor(t.rating))}${'☆'.repeat(5-Math.floor(t.rating))}</span>
-          <span class="rating-text">${t.rating}/5 (${t.students} học sinh)</span>
-        </div>
-        <div class="tutor-price">${t.price.toLocaleString()}đ/buổi</div>
-        <div class="tutor-desc">${t.desc}</div>
-      </div>
-      <div class="tutor-actions">
-        <button class="btn-primary" onclick="bookTutor(${t.id})">Đặt lịch</button>
-        <button class="btn-secondary" onclick="viewTutorDetail(${t.id})">Chi tiết</button>
-      </div>
-    </div>
-  `).join('');
+    `;
+  }).join('');
 }
 
 // Hiển thị tiến độ theo môn học
@@ -626,6 +666,13 @@ function renderLearnerNotifications() {
   }
   notiList.innerHTML = notifications.map(n => `<div class="notification-item">${n.time}: ${n.message}</div>`).join('');
 }
+
+// Hàm showFullBio để hiện modal hoặc alert bio đầy đủ
+function showFullBio(id) {
+  const tutor = tutors.find(t => t.id === id);
+  if (tutor) alert(tutor.bio);
+}
+window.showFullBio = showFullBio;
 
 // Khởi tạo
 window.onload = function() {

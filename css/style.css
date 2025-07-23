@@ -757,10 +757,10 @@ body {
   border: 1px solid #e9ecef;
 }
 .settings-card h3 {
-  margin: 0 0 20px 0;
-  color: #333;
-  font-size: 18px;
-  font-weight: 600;
+  font-size: 1.3rem;
+  margin-top: 0;
+  margin-bottom: 18px;
+  text-align: center;
 }
 .settings-card form {
   display: flex;
@@ -1428,4 +1428,46 @@ input:focus, textarea:focus, select:focus {
 
 #registerTutorForm input[type="file"]:hover {
   border-color: #764ba2;
+} 
+
+#register-tutor-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+#register-tutor-card .btn-primary {
+  min-width: 220px;
+  max-width: 100%;
+  margin: 16px auto 0 auto;
+  display: block;
+} 
+
+.tutor-bio {
+  color: #444;
+  margin-bottom: 8px;
+  font-size: 15px;
+}
+.tutor-achievements {
+  margin-bottom: 8px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0;
+}
+.badge {
+  background: #f5f5f5;
+  border-radius: 8px;
+  padding: 6px 14px;
+  margin-right: 10px;
+  margin-bottom: 8px;
+  display: inline-block;
+  font-size: 15px;
+  color: #333;
+  vertical-align: middle;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.04);
+}
+.see-more {
+  color: #1976d2;
+  cursor: pointer;
+  text-decoration: underline;
+  font-size: 14px;
 } 
