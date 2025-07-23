@@ -247,11 +247,19 @@
         <form id="editCourseForm">
           <div class="form-row">
             <label>Tên môn học:</label>
-            <input type="text" id="editCourseName" required />
+            <select id="editCourseName" required></select>
+          </div>
+          <div class="form-row">
+            <label>Đổi tên môn học:</label>
+            <input type="text" id="editCourseNewName" placeholder="Nhập tên mới (nếu muốn đổi)" />
           </div>
           <div class="form-row">
             <label>Thời gian:</label>
             <input type="datetime-local" id="editCourseTime" required />
+          </div>
+          <div class="form-row">
+            <label>Lý do sửa:</label>
+            <textarea id="editCourseReason" rows="2" placeholder="Nhập lý do sửa môn học..." required></textarea>
           </div>
           <button type="submit" class="btn-primary">Xác nhận</button>
         </form>

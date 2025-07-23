@@ -187,6 +187,8 @@ body.tutor-dashboard {
   width: 100%;
   position: relative;
   margin: 40px auto;
+  max-height: 90vh;
+  overflow-y: auto;
 }
 .tutor-close {
   position: absolute;
@@ -1320,4 +1322,62 @@ body.tutor-dashboard {
 .status-text {
     color: #6c757d;
     font-style: italic;
+}
+
+.modal-content form#editCourseForm {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  padding: 8px 0 0 0;
+}
+#editCourseForm .form-row {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+#editCourseForm label {
+  font-weight: 600;
+  color: #222;
+  margin-bottom: 2px;
+}
+#editCourseForm input,
+#editCourseForm select,
+#editCourseForm textarea {
+  width: 100%;
+  padding: 12px 14px;
+  border-radius: 8px;
+  border: 1.5px solid #e1e5e9;
+  font-size: 15px;
+  margin-bottom: 0;
+  box-sizing: border-box;
+  background: #fafbfc;
+  transition: border-color 0.2s;
+}
+#editCourseForm input:focus,
+#editCourseForm select:focus,
+#editCourseForm textarea:focus {
+  border-color: #764ba2;
+  outline: none;
+}
+#editCourseForm button[type="submit"] {
+  margin: 12px auto 0 auto;
+  display: block;
+  min-width: 180px;
+  font-size: 1.1rem;
+  font-weight: 700;
+  border-radius: 24px;
+  padding: 14px 0;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: #fff;
+  border: none;
+  box-shadow: 0 2px 8px rgba(118,75,162,0.10);
+  transition: background 0.2s, box-shadow 0.2s;
+}
+#editCourseForm button[type="submit"]:hover {
+  background: linear-gradient(135deg, #764ba2 0%, #667eea 100%);
+  box-shadow: 0 4px 16px rgba(118,75,162,0.16);
+}
+@media (max-width: 600px) {
+  .modal-content { padding: 12px 2px; }
+  #editCourseForm button[type="submit"] { min-width: 120px; font-size: 1rem; }
 }

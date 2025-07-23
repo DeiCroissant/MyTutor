@@ -764,7 +764,21 @@ document.addEventListener('DOMContentLoaded', function() {
     const deleteSelect = document.getElementById('deleteCourseSelect');
 
     if (editBtn && editModal) {
-        editBtn.onclick = function() { editModal.style.display = 'block'; };
+        editBtn.onclick = function() {
+            // Populate select options cho sửa môn học
+            const editSelect = document.getElementById('editCourseName');
+            if (editSelect) {
+                editSelect.innerHTML = '';
+                const subjects = [...new Set(schedule.map(l => l.subject))];
+                subjects.forEach(sub => {
+                    const opt = document.createElement('option');
+                    opt.value = sub;
+                    opt.textContent = sub;
+                    editSelect.appendChild(opt);
+                });
+            }
+            editModal.style.display = 'block';
+        };
     }
     if (closeEditModal && editModal) {
         closeEditModal.onclick = function() { editModal.style.display = 'none'; };
@@ -792,13 +806,15 @@ document.addEventListener('DOMContentLoaded', function() {
     if (editForm) {
         editForm.onsubmit = function(e) {
             e.preventDefault();
-            const name = document.getElementById('editCourseName').value.trim();
+            const name = document.getElementById('editCourseName').value;
+            const newName = document.getElementById('editCourseNewName').value.trim();
             const time = document.getElementById('editCourseTime').value;
-            if (!name || !time) return alert('Vui lòng nhập đủ thông tin!');
+            const reason = document.getElementById('editCourseReason').value.trim();
+            if (!name || !time || !reason) return alert('Vui lòng nhập đủ thông tin!');
             let inbox = JSON.parse(localStorage.getItem('supportcenterInbox') || '[]');
             inbox.unshift({
                 type: 'edit',
-                content: `Yêu cầu sửa môn học: ${name}, thời gian: ${time}`,
+                content: `Yêu cầu sửa môn học: ${name}${newName ? `, đổi tên thành: ${newName}` : ''}, thời gian: ${time}, lý do: ${reason}`,
                 time: new Date().toLocaleString('vi-VN')
             });
             localStorage.setItem('supportcenterInbox', JSON.stringify(inbox));
