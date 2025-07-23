@@ -752,6 +752,79 @@ document.addEventListener('DOMContentLoaded', function() {
             if (event.target === inboxModal) inboxModal.style.display = 'none';
         };
     }
+    // Logic cho 2 button Sửa/Xóa môn học
+    const editBtn = document.getElementById('editCourseBtn');
+    const deleteBtn = document.getElementById('deleteCourseBtn');
+    const editModal = document.getElementById('editCourseModal');
+    const deleteModal = document.getElementById('deleteCourseModal');
+    const closeEditModal = document.getElementById('closeEditCourseModal');
+    const closeDeleteModal = document.getElementById('closeDeleteCourseModal');
+    const editForm = document.getElementById('editCourseForm');
+    const deleteForm = document.getElementById('deleteCourseForm');
+    const deleteSelect = document.getElementById('deleteCourseSelect');
+
+    if (editBtn && editModal) {
+        editBtn.onclick = function() { editModal.style.display = 'block'; };
+    }
+    if (closeEditModal && editModal) {
+        closeEditModal.onclick = function() { editModal.style.display = 'none'; };
+    }
+    if (deleteBtn && deleteModal) {
+        deleteBtn.onclick = function() {
+            // Populate select options
+            if (deleteSelect) {
+                deleteSelect.innerHTML = '';
+                const subjects = [...new Set(schedule.map(l => l.subject))];
+                subjects.forEach(sub => {
+                    const opt = document.createElement('option');
+                    opt.value = sub;
+                    opt.textContent = sub;
+                    deleteSelect.appendChild(opt);
+                });
+            }
+            deleteModal.style.display = 'block';
+        };
+    }
+    if (closeDeleteModal && deleteModal) {
+        closeDeleteModal.onclick = function() { deleteModal.style.display = 'none'; };
+    }
+    // Gửi thông báo sửa môn học
+    if (editForm) {
+        editForm.onsubmit = function(e) {
+            e.preventDefault();
+            const name = document.getElementById('editCourseName').value.trim();
+            const time = document.getElementById('editCourseTime').value;
+            if (!name || !time) return alert('Vui lòng nhập đủ thông tin!');
+            let inbox = JSON.parse(localStorage.getItem('supportcenterInbox') || '[]');
+            inbox.unshift({
+                type: 'edit',
+                content: `Yêu cầu sửa môn học: ${name}, thời gian: ${time}`,
+                time: new Date().toLocaleString('vi-VN')
+            });
+            localStorage.setItem('supportcenterInbox', JSON.stringify(inbox));
+            editModal.style.display = 'none';
+            alert('Đã gửi yêu cầu sửa môn học đến Trung tâm Hỗ trợ Văn Lang!');
+            editForm.reset();
+        };
+    }
+    // Gửi thông báo xóa môn học
+    if (deleteForm) {
+        deleteForm.onsubmit = function(e) {
+            e.preventDefault();
+            const subject = deleteSelect.value;
+            if (!subject) return alert('Vui lòng chọn môn học!');
+            let inbox = JSON.parse(localStorage.getItem('supportcenterInbox') || '[]');
+            inbox.unshift({
+                type: 'delete',
+                content: `Yêu cầu xóa môn học: ${subject}`,
+                time: new Date().toLocaleString('vi-VN')
+            });
+            localStorage.setItem('supportcenterInbox', JSON.stringify(inbox));
+            deleteModal.style.display = 'none';
+            alert('Đã gửi yêu cầu xóa môn học đến Trung tâm Hỗ trợ Văn Lang!');
+            deleteForm.reset();
+        };
+    }
 });
 
 function renderTutorSettings() {
