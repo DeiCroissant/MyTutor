@@ -53,6 +53,10 @@
                 </div>
             </section>
             <section id="section-schedule" class="tutor-section" style="display:none;">
+                <div style="display: flex; gap: 12px; margin-bottom: 18px;">
+                    <button id="editCourseBtn" class="tutor-btn-primary">Sửa môn học</button>
+                    <button id="deleteCourseBtn" class="tutor-btn-danger">Xóa môn học</button>
+                </div>
                 <div class="accordion" id="schedule-accordion">
                     <!-- Lịch dạy sẽ được render ở đây -->
                 </div>
@@ -232,6 +236,38 @@
           <div class="form-row"><label>Bằng chứng (ảnh):</label><input type="file" id="regTutorProof" accept="image/*"></div>
           <div class="form-row"><label>Thời gian phỏng vấn <span style="color:red">*</span>:</label><input type="datetime-local" id="regTutorInterviewTime" required></div>
           <button type="submit" class="btn-primary" style="width:100%;margin-top:10px;">Gửi đăng ký</button>
+        </form>
+      </div>
+    </div>
+    <!-- Modal sửa môn học -->
+    <div id="editCourseModal" class="modal" style="display:none;">
+      <div class="modal-content">
+        <span class="close" id="closeEditCourseModal">&times;</span>
+        <h3>Sửa môn học</h3>
+        <form id="editCourseForm">
+          <div class="form-row">
+            <label>Tên môn học:</label>
+            <input type="text" id="editCourseName" required />
+          </div>
+          <div class="form-row">
+            <label>Thời gian:</label>
+            <input type="datetime-local" id="editCourseTime" required />
+          </div>
+          <button type="submit" class="btn-primary">Xác nhận</button>
+        </form>
+      </div>
+    </div>
+    <!-- Modal xóa môn học -->
+    <div id="deleteCourseModal" class="modal" style="display:none;">
+      <div class="modal-content">
+        <span class="close" id="closeDeleteCourseModal">&times;</span>
+        <h3>Xóa môn học</h3>
+        <form id="deleteCourseForm">
+          <div class="form-row">
+            <label>Chọn môn học muốn xóa:</label>
+            <select id="deleteCourseSelect" required></select>
+          </div>
+          <button type="submit" class="btn-danger">Xác nhận</button>
         </form>
       </div>
     </div>

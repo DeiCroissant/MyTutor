@@ -227,6 +227,51 @@ function attachSettingsEvents() {
     });
 }
 
+// ========== HỘP THƯ TRUNG TÂM HỖ TRỢ VĂN LANG =============
+
+// Danh sách thông báo từ tutor (giả lập, thực tế sẽ lấy từ server hoặc localStorage)
+let supportcenterInbox = JSON.parse(localStorage.getItem('supportcenterInbox') || '[]');
+
+function renderSupportcenterInbox() {
+  const inboxDiv = document.getElementById('supportcenterInboxList');
+  if (!inboxDiv) return;
+  if (!supportcenterInbox.length) {
+    inboxDiv.innerHTML = '<p style="text-align:center; color:#888;">Chưa có thông báo mới.</p>';
+    return;
+  }
+  inboxDiv.innerHTML = supportcenterInbox.map((msg, idx) => `
+    <div class="inbox-item" style="border-bottom:1px solid #eee; padding:16px 0;">
+      <div><b>Loại yêu cầu:</b> ${msg.type === 'edit' ? 'Sửa môn học' : 'Xóa môn học'}</div>
+      <div><b>Nội dung:</b> ${msg.content}</div>
+      <div><b>Thời gian:</b> ${msg.time}</div>
+      <div style="margin-top:10px;">
+        <button class="btn-primary" onclick="replyToTutor(${idx}, true)">Xác nhận</button>
+        <button class="btn-danger" onclick="replyToTutor(${idx}, false)">Từ chối</button>
+      </div>
+    </div>
+  `).join('');
+}
+
+window.renderSupportcenterInbox = renderSupportcenterInbox;
+
+function replyToTutor(idx, isAccept) {
+  const msg = supportcenterInbox[idx];
+  if (!msg) return;
+  // Gửi thư phản hồi cho tutor (giả lập: lưu vào localStorage)
+  let tutorInbox = JSON.parse(localStorage.getItem('tutorInbox') || '[]');
+  tutorInbox.unshift({
+    sender: 'SUPPORT CENTER',
+    content: isAccept ? `Yêu cầu ${msg.type === 'edit' ? 'sửa' : 'xóa'} môn học của bạn đã được xác nhận.` : `Yêu cầu ${msg.type === 'edit' ? 'sửa' : 'xóa'} môn học của bạn đã bị từ chối.`,
+    date: new Date().toLocaleDateString('vi-VN', { month: 'short', day: 'numeric' })
+  });
+  localStorage.setItem('tutorInbox', JSON.stringify(tutorInbox));
+  // Xóa thông báo khỏi hộp thư trung tâm
+  supportcenterInbox.splice(idx, 1);
+  localStorage.setItem('supportcenterInbox', JSON.stringify(supportcenterInbox));
+  renderSupportcenterInbox();
+  alert('Đã gửi phản hồi cho tutor!');
+}
+
 // =================================================================
 // SỰ KIỆN CHÍNH KHI TRANG ĐƯỢC TẢI
 // =================================================================
@@ -292,5 +337,12 @@ document.addEventListener('DOMContentLoaded', function() {
             closeScheduleModal(); // Đóng modal
             renderInterviewSchedule(); // Cập nhật lại bảng lịch phỏng vấn để hiển thị ngay lập tức
         });
+    }
+
+    // Gọi hàm renderSupportcenterInbox khi chuyển tab hộp thư
+    if (document.getElementById('inbox-supportcenter-menu')) {
+      document.getElementById('inbox-supportcenter-menu').addEventListener('click', function() {
+        setTimeout(renderSupportcenterInbox, 100);
+      });
     }
 });
