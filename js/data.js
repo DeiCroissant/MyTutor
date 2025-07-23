@@ -31,11 +31,13 @@ const learner = {
 
 // Dữ liệu lịch học
 const schedule = [
-  { id: 1, date: '2025-01-17', time: '10:30-11:30', subject: 'Lập trình OOP cơ bản', tutor: 'Nguyễn Văn A', status: 'upcoming', notes: 'Đã đổi lịch. Lý do: ngủ', meetingType: '1-1', onlineMeeting: true, meetingLink: 'https://teams.microsoft.com/l/meetup-join/example1', courseStatus: 'Sắp tới' },
+  { id: 1, date: '2025-01-17', time: '10:30-11:30', subject: 'Lập trình hướng đối tượng', tutor: 'Nguyễn Văn A', status: 'upcoming', notes: 'Đã đổi lịch. Lý do: ngủ', meetingType: '1-1', onlineMeeting: true, meetingLink: 'https://teams.microsoft.com/l/meetup-join/example1', courseStatus: 'Sắp tới' },
   { id: 2, date: '2024-01-22', time: '19:00-20:00', subject: 'Lập trình hướng đối tượng', tutor: 'Nguyễn Văn A', status: 'upcoming', notes: 'Thiết kế giao diện và trừu tượng', meetingType: '1-1', onlineMeeting: true, meetingLink: 'https://teams.microsoft.com/l/meetup-join/example4', courseStatus: 'Đang thực hiện' },
   { id: 3, date: '2024-01-24', time: '08:00-09:00', subject: 'Cấu trúc dữ liệu', tutor: 'Nguyễn Văn A', status: 'upcoming', notes: 'Học về danh sách liên kết và cây', meetingType: '1-1', onlineMeeting: true, meetingLink: 'https://teams.microsoft.com/l/meetup-join/example5', courseStatus: 'Kết thúc' },
-  { id: 4, date: '2024-01-26', time: '10:00-11:00', subject: 'Phân tích thiết kế hệ thống', tutor: 'Nguyễn Văn A', status: 'upcoming', notes: 'Học về UML và use case', meetingType: '1-1', onlineMeeting: true, meetingLink: 'https://teams.microsoft.com/l/meetup-join/example6', courseStatus: 'Chưa bắt đầu' },
-  { id: 5, date: '2024-01-28', time: '13:00-14:00', subject: 'Mạng máy tính', tutor: 'Nguyễn Văn A', status: 'upcoming', notes: 'Học về TCP/IP và mô hình OSI', meetingType: '1-1', onlineMeeting: true, meetingLink: 'https://teams.microsoft.com/l/meetup-join/example7', courseStatus: 'Chưa bắt đầu' }
+  { id: 4, date: '2024-01-26', time: '10:00-11:00', subject: 'Phân tích thiết kế hệ thống', tutor: 'Nguyễn Văn A', status: 'upcoming', notes: 'Học về UML và use case', meetingType: '1-1', onlineMeeting: true, meetingLink: 'https://teams.microsoft.com/l/meetup-join/example6', courseStatus: 'Mở đăng ký' },
+  { id: 5, date: '2024-01-28', time: '13:00-14:00', subject: 'Mạng máy tính', tutor: 'Nguyễn Văn A', status: 'upcoming', notes: 'Học về TCP/IP và mô hình OSI', meetingType: '1-1', onlineMeeting: true, meetingLink: 'https://teams.microsoft.com/l/meetup-join/mangmaytinh', courseStatus: 'Đã đăng ký (bởi Ngô Minh Học)' },
+  { id: 6, date: '2024-02-02', time: '09:00-10:00', subject: 'Triết học Mác-Lênin', tutor: 'Nguyễn Văn A', status: 'upcoming', notes: '', meetingType: '1-1', onlineMeeting: true, meetingLink: '', courseStatus: 'Chưa bắt đầu' },
+  { id: 7, date: '2024-02-05', time: '15:00-16:00', subject: 'Kinh tế vĩ mô', tutor: 'Nguyễn Văn A', status: 'upcoming', notes: '', meetingType: '1-1', onlineMeeting: true, meetingLink: '', courseStatus: 'Chưa bắt đầu' }
 ];
 
 // Dữ liệu thống kê học tập với GPA

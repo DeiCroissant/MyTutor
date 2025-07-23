@@ -189,7 +189,11 @@ tr:hover {
   cursor: pointer;
 }
 #tutor-approval-tbody .btn-secondary { background-color: #e9ecef; color: #343a40; }
-#tutor-approval-tbody .btn-primary { background-color: #d1e7dd; color: #0f5132; }
+#tutor-approval-tbody .btn-primary {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: #fff;
+  font-weight: 600;
+}
 #tutor-approval-tbody .btn-danger { background-color: #f8d7da; color: #842029; }
 
 /* CSS cho modal chi tiết */
