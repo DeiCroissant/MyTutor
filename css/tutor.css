@@ -1321,3 +1321,29 @@ body.tutor-dashboard {
     color: #6c757d;
     font-style: italic;
 }
+
+/* === TUTOR DASHBOARD CUSTOMIZATION === */
+
+/* Readonly field styling for tutor registration form */
+.readonly {
+  background-color: #f5f5f5 !important;
+  color: #666 !important;
+  cursor: not-allowed !important;
+  border: 1px solid #ddd !important;
+}
+
+.readonly-field-container {
+  position: relative;
+}
+
+.readonly-field-container::after {
+  content: "(Thông tin do trường cấp)";
+  position: absolute;
+  top: -20px;
+  right: 0;
+  font-size: 11px;
+  color: #999;
+  font-style: italic;
+}
+
+/* === END TUTOR DASHBOARD CUSTOMIZATION === */

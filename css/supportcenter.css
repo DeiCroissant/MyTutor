@@ -98,6 +98,38 @@ tr:hover {
   color: #f57c00; 
 }
 /* Huy hiệu trạng thái cho bảng môn học */
+
+/* Styling cho cột ngày nộp hồ sơ */
+#tutor-approval-tbody td:nth-child(4) {
+  font-family: 'Courier New', monospace;
+  font-weight: 600;
+  color: #2c3e50;
+  text-align: center;
+  font-size: 13px;
+  letter-spacing: 0.5px;
+}
+
+#tutor-approval-tbody td:nth-child(4):hover {
+  color: #1a252f;
+  background-color: #ecf0f1;
+  border-radius: 4px;
+}
+
+/* Styling cho cột ngày nộp hồ sơ trong bảng ứng viên chờ lên lịch */
+#unscheduled-tutors-tbody td:nth-child(3) {
+  font-family: 'Courier New', monospace;
+  font-weight: 600;
+  color: #2c3e50;
+  text-align: center;
+  font-size: 13px;
+  letter-spacing: 0.5px;
+}
+
+#unscheduled-tutors-tbody td:nth-child(3):hover {
+  color: #1a252f;
+  background-color: #ecf0f1;
+  border-radius: 4px;
+}
 .status-badge.available {
   background-color: #e8f5e8;
   color: #2e7d32;
@@ -201,6 +233,8 @@ tr:hover {
   padding: 10px 0;
   border-bottom: 1px solid #f0f2f5;
   display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
 }
 #modalDetailContent .profile-item:last-child {
   border-bottom: none;
@@ -208,10 +242,32 @@ tr:hover {
 #modalDetailContent .profile-label {
   font-weight: 600;
   color: #667eea;
-  min-width: 120px;
+  min-width: 140px;
 }
 #modalDetailContent .profile-value {
   color: #333;
+  text-align: right;
+  flex: 1;
+  margin-left: 16px;
+  word-wrap: break-word;
+  max-width: 300px;
+}
+
+/* Styling cho các trường thông tin đặc biệt */
+#modalDetailContent .profile-item:nth-child(8) .profile-value {
+  font-style: italic;
+  color: #666;
+  text-align: left;
+}
+
+#modalDetailContent .profile-item:nth-child(9) .profile-value {
+  color: #1976d2;
+  font-weight: 500;
+}
+
+#modalDetailContent .profile-item:nth-child(10) .profile-value {
+  color: #2e7d32;
+  font-weight: 500;
 }
 
 /* CSS cho các huy hiệu trạng thái trong bảng lịch phỏng vấn */

@@ -1,13 +1,13 @@
 // DỮ LIỆU MỚI: DANH SÁCH GIA SƯ CHỜ XÉT DUYỆT
 const pendingTutors = [
-  { id: 101, name: 'Lê Thị Mai', subject: 'Kinh tế vĩ mô', gpa: 3.5, applyDate: '2025-07-20', phone: '0909123456', mssv: '2274802010111' },
-  { id: 102, name: 'Trần Anh Tuấn', subject: 'Kiến trúc máy tính', gpa: 3.7, applyDate: '2025-07-19', phone: '0909654321', mssv: '2174802010222' },
-  { id: 103, name: 'Phạm Huyền Trang', subject: 'Luật kinh doanh', gpa: 3.8, applyDate: '2025-07-21', phone: '0909789123', mssv: '2374802010333' },
-  { id: 105, name: 'Vũ Hoàng Yến', subject: 'Thiết kế đồ họa', gpa: 3.6, applyDate: '2025-07-22', phone: '0912987654', mssv: '2272102010555'},
-  { id: 106, name: 'Hoàng Quốc Bảo', subject: 'Quản trị Marketing', gpa: 3.4, applyDate: '2025-07-22', phone: '0988111222', mssv: '2375102010666'},
+  { id: 101, name: 'Lê Thị Mai', subject: 'Kinh tế vĩ mô', gpa: 3.5, applyDate: '2025-01-20', phone: '0909123456', mssv: '2274802010111', gender: 'Nữ', bio: 'Sinh viên năm 3 Kinh tế, có kinh nghiệm dạy kèm 2 năm, chuyên về các môn kinh tế học.', url: 'https://lethimai.edu.vn', certificate: 'IELTS 7.0', interviewTime: 'Chưa chọn' },
+  { id: 102, name: 'Trần Anh Tuấn', subject: 'Kiến trúc máy tính', gpa: 3.7, applyDate: '2025-01-20', phone: '0909654321', mssv: '2174802010222', gender: 'Nam', bio: 'Sinh viên năm 4 CNTT, GPA cao, có kinh nghiệm thực tế trong lập trình và thiết kế hệ thống.', url: 'https://trananhtuan.dev', certificate: 'TOEIC 850', interviewTime: 'Chưa chọn' },
+  { id: 103, name: 'Phạm Huyền Trang', subject: 'Luật kinh doanh', gpa: 3.8, applyDate: '2025-01-20', phone: '0909789123', mssv: '2374802010333', gender: 'Nữ', bio: 'Sinh viên năm 3 Luật, chuyên ngành Luật kinh doanh, có kiến thức sâu về các vấn đề pháp lý.', url: 'https://phamhuyentrang.law', certificate: 'Chứng chỉ sư phạm', interviewTime: 'Chưa chọn' },
+  { id: 105, name: 'Vũ Hoàng Yến', subject: 'Thiết kế đồ họa', gpa: 3.6, applyDate: '2025-01-20', phone: '0912987654', mssv: '2272102010555', gender: 'Nữ', bio: 'Sinh viên năm 3 Thiết kế, có portfolio đẹp, chuyên về thiết kế UI/UX và đồ họa kỹ thuật số.', url: 'https://vuhoangyen.design', certificate: 'Chứng chỉ tin học', interviewTime: 'Chưa chọn'},
+  { id: 106, name: 'Hoàng Quốc Bảo', subject: 'Quản trị Marketing', gpa: 3.4, applyDate: '2025-01-20', phone: '0988111222', mssv: '2375102010666', gender: 'Nam', bio: 'Sinh viên năm 4 Marketing, có kinh nghiệm thực tế trong các chiến dịch quảng cáo và nghiên cứu thị trường.', url: 'https://hoangquocbao.marketing', certificate: 'TOEFL 95', interviewTime: 'Chưa chọn'},
   // --- ỨNG VIÊN MỚI THÊM VÀO ---
-  { id: 107, name: 'Trịnh Thảo Nguyên', subject: 'Ngôn ngữ Anh', gpa: 3.75, applyDate: '2025-07-22', phone: '0934567890', mssv: '2273401010777'},
-  { id: 108, name: 'Lý Thành Đạt', subject: 'An toàn thông tin', gpa: 3.85, applyDate: '2025-07-22', phone: '0918765432', mssv: '2174801010888'}
+  { id: 107, name: 'Trịnh Thảo Nguyên', subject: 'Ngôn ngữ Anh', gpa: 3.75, applyDate: '2025-01-20', phone: '0934567890', mssv: '2273401010777', gender: 'Nữ', bio: 'Sinh viên năm 3 Ngôn ngữ Anh, có chứng chỉ quốc tế, chuyên về giao tiếp và ngữ pháp tiếng Anh.', url: 'https://trinhthaonguyen.english', certificate: 'IELTS 8.0', interviewTime: 'Chưa chọn'},
+  { id: 108, name: 'Lý Thành Đạt', subject: 'An toàn thông tin', gpa: 3.85, applyDate: '2025-01-20', phone: '0918765432', mssv: '2174801010888', gender: 'Nam', bio: 'Sinh viên năm 4 CNTT chuyên ngành An toàn thông tin, có kinh nghiệm về bảo mật hệ thống và mạng.', url: 'https://lythanhdat.security', certificate: 'Chứng chỉ ngoại ngữ', interviewTime: 'Chưa chọn'}
 ];
 
 // Dữ liệu gia sư

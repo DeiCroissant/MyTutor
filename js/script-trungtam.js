@@ -45,12 +45,43 @@ function logout() {
   }
 }
 
+/**
+ * Format ngày tháng từ YYYY-MM-DD sang DD/MM/YYYY
+ * @param {string} dateString Chuỗi ngày tháng dạng YYYY-MM-DD
+ * @returns {string} Chuỗi ngày tháng dạng DD/MM/YYYY
+ */
+function formatDate(dateString) {
+    if (!dateString) return 'N/A';
+    const date = new Date(dateString);
+    if (isNaN(date.getTime())) return 'N/A';
+    return date.toLocaleDateString('vi-VN', {
+        day: '2-digit',
+        month: '2-digit',
+        year: 'numeric'
+    });
+}
+
+/**
+ * Format ngày tháng đẹp cho hiển thị trong bảng
+ * @param {string} dateString Chuỗi ngày tháng dạng YYYY-MM-DD
+ * @returns {string} Chuỗi ngày tháng dạng "DD/MM/YYYY"
+ */
+function formatDateForDisplay(dateString) {
+    if (!dateString) return 'N/A';
+    const date = new Date(dateString);
+    if (isNaN(date.getTime())) return 'N/A';
+    const day = date.getDate().toString().padStart(2, '0');
+    const month = (date.getMonth() + 1).toString().padStart(2, '0');
+    const year = date.getFullYear();
+    return `${day}/${month}/${year}`;
+}
+
 // --- CÁC HÀM XỬ LÝ CHO TAB "XÉT DUYỆT GIA SƯ" ---
 function renderTutorApprovalList() {
     const tbody = document.getElementById('tutor-approval-tbody');
     if (!tbody) return;
     if (typeof pendingTutors === 'undefined' || pendingTutors.length === 0) {
-        tbody.innerHTML = `<tr><td colspan="4" style="text-align:center; padding: 20px;">Không có hồ sơ mới nào.</td></tr>`;
+        tbody.innerHTML = `<tr><td colspan="5" style="text-align:center; padding: 20px;">Không có hồ sơ mới nào.</td></tr>`;
         return;
     }
     tbody.innerHTML = pendingTutors.map(tutor => `
@@ -58,6 +89,7 @@ function renderTutorApprovalList() {
             <td>${tutor.id}</td>
             <td>${tutor.name}</td>
             <td>${tutor.subject}</td>
+            <td>${formatDateForDisplay(tutor.applyDate)}</td>
             <td>
                 <button class="btn-secondary" onclick="viewTutorDetails(${tutor.id})">Xem</button>
                 <button class="btn-primary" onclick="approveTutor(${tutor.id})">Duyệt</button>
@@ -77,11 +109,16 @@ function viewTutorDetails(tutorId) {
             <h3>Chi tiết hồ sơ ứng viên</h3>
             <div class="profile-item"><span class="profile-label">ID:</span><span class="profile-value">${tutor.id}</span></div>
             <div class="profile-item"><span class="profile-label">Họ tên:</span><span class="profile-value">${tutor.name}</span></div>
+            <div class="profile-item"><span class="profile-label">Giới tính:</span><span class="profile-value">${tutor.gender || 'Nam'}</span></div>
             <div class="profile-item"><span class="profile-label">MSSV:</span><span class="profile-value">${tutor.mssv}</span></div>
-            <div class="profile-item"><span class="profile-label">Môn đăng ký:</span><span class="profile-value">${tutor.subject}</span></div>
             <div class="profile-item"><span class="profile-label">GPA:</span><span class="profile-value">${tutor.gpa} / 4.0</span></div>
             <div class="profile-item"><span class="profile-label">Số điện thoại:</span><span class="profile-value">${tutor.phone}</span></div>
-            <div class="profile-item"><span class="profile-label">Ngày nộp:</span><span class="profile-value">${tutor.applyDate}</span></div>
+            <div class="profile-item"><span class="profile-label">Bio:</span><span class="profile-value">${tutor.bio || 'Giới thiệu về bản thân, kinh nghiệm, phong cách dạy...'}</span></div>
+            <div class="profile-item"><span class="profile-label">URL Link:</span><span class="profile-value">${tutor.url || 'https://example.com'}</span></div>
+            <div class="profile-item"><span class="profile-label">Chứng chỉ:</span><span class="profile-value">${tutor.certificate || 'IELTS'}</span></div>
+            <div class="profile-item"><span class="profile-label">Môn đăng ký:</span><span class="profile-value">${tutor.subject}</span></div>
+            <div class="profile-item"><span class="profile-label">Thời gian phỏng vấn:</span><span class="profile-value">${tutor.interviewTime || 'Chưa chọn'}</span></div>
+            <div class="profile-item"><span class="profile-label">Ngày nộp hồ sơ:</span><span class="profile-value">${formatDateForDisplay(tutor.applyDate)}</span></div>
         `;
         modal.classList.add('show');
     }
@@ -167,7 +204,7 @@ function renderUnscheduledTutors() {
         <tr>
             <td>${tutor.name}</td>
             <td>${tutor.subject}</td>
-            <td>${tutor.applyDate}</td>
+            <td>${formatDateForDisplay(tutor.applyDate)}</td>
             <td>
                 <button class="btn-schedule" onclick="openScheduleModal(${tutor.id})">Lên lịch</button>
             </td>

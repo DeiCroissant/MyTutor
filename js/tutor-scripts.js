@@ -486,11 +486,82 @@ function attachAvatarChangeEvents() {
 // Hiển thị modal đăng ký làm gia sư nếu có query ?register=1
 function openRegisterTutorModal() {
   const modal = document.getElementById('registerTutorModal');
-  if (modal) modal.style.display = 'block';
+  if (modal) {
+    modal.style.display = 'block';
+    // Tự động điền và khóa các trường thông tin cố định
+    const fixedName = 'Trần Minh Khoa';
+    const fixedGender = 'Nam';
+    const fixedMSSV = '2374802010241';
+    const fixedPhone = '0911728117';
+    const nameInput = document.getElementById('regTutorName');
+    const genderInput = document.getElementById('regTutorGender');
+    const mssvInput = document.getElementById('regTutorMSSV');
+    const phoneInput = document.getElementById('regTutorPhone');
+    
+    // Apply readonly styling and add container for note
+    if (nameInput) {
+        nameInput.value = fixedName;
+        nameInput.readOnly = true;
+        nameInput.classList.add('readonly');
+        nameInput.parentElement.classList.add('readonly-field-container');
+    }
+    if (genderInput) {
+        genderInput.value = fixedGender;
+        genderInput.disabled = true;
+        genderInput.classList.add('readonly');
+        genderInput.parentElement.classList.add('readonly-field-container');
+    }
+    if (mssvInput) {
+        mssvInput.value = fixedMSSV;
+        mssvInput.readOnly = true;
+        mssvInput.classList.add('readonly');
+        mssvInput.parentElement.classList.add('readonly-field-container');
+    }
+    if (phoneInput) {
+        phoneInput.value = fixedPhone;
+        phoneInput.readOnly = true;
+        phoneInput.classList.add('readonly');
+        phoneInput.parentElement.classList.add('readonly-field-container');
+    }
+    // GPA field is not readonly - remove any existing readonly styling
+    const gpaInput = document.getElementById('regTutorGPA');
+    if (gpaInput) {
+        gpaInput.classList.remove('readonly');
+        gpaInput.readOnly = false;
+        gpaInput.disabled = false;
+        gpaInput.parentElement.classList.remove('readonly-field-container');
+    }
+  }
 }
 function closeRegisterTutorModal() {
   const modal = document.getElementById('registerTutorModal');
-  if (modal) modal.style.display = 'none';
+  if (modal) {
+    modal.style.display = 'none';
+    // Reset form and remove readonly styling when closing modal
+    const form = document.getElementById('registerTutorForm');
+    if (form) {
+      form.reset();
+      // Remove readonly styling
+      const readonlyInputs = form.querySelectorAll('.readonly');
+      readonlyInputs.forEach(input => {
+        input.classList.remove('readonly');
+        input.readOnly = false;
+        input.disabled = false;
+      });
+      // Remove readonly container styling
+      const readonlyContainers = form.querySelectorAll('.readonly-field-container');
+      readonlyContainers.forEach(container => {
+        container.classList.remove('readonly-field-container');
+      });
+      // Reset suggestion buttons highlighting
+      const suggestionBtns = document.querySelectorAll('.suggestion-btn');
+      suggestionBtns.forEach(btn => {
+        btn.style.background = '#fff';
+        btn.style.borderColor = '#ddd';
+        btn.style.color = '#555';
+      });
+    }
+  }
 }
 // Gắn sự kiện đóng modal
 window.addEventListener('DOMContentLoaded', function() {
@@ -645,32 +716,118 @@ document.addEventListener('DOMContentLoaded', function() {
             const genderInput = document.getElementById('regTutorGender');
             const mssvInput = document.getElementById('regTutorMSSV');
             const phoneInput = document.getElementById('regTutorPhone');
+            
+            // Apply readonly styling and add container for note
             if (nameInput) {
                 nameInput.value = fixedName;
                 nameInput.readOnly = true;
                 nameInput.classList.add('readonly');
+                nameInput.parentElement.classList.add('readonly-field-container');
             }
             if (genderInput) {
                 genderInput.value = fixedGender;
                 genderInput.disabled = true;
                 genderInput.classList.add('readonly');
+                genderInput.parentElement.classList.add('readonly-field-container');
             }
             if (mssvInput) {
                 mssvInput.value = fixedMSSV;
                 mssvInput.readOnly = true;
                 mssvInput.classList.add('readonly');
+                mssvInput.parentElement.classList.add('readonly-field-container');
             }
             if (phoneInput) {
                 phoneInput.value = fixedPhone;
                 phoneInput.readOnly = true;
                 phoneInput.classList.add('readonly');
+                phoneInput.parentElement.classList.add('readonly-field-container');
+            }
+            // GPA field is not readonly - remove any existing readonly styling
+            const gpaInput = document.getElementById('regTutorGPA');
+            if (gpaInput) {
+                gpaInput.classList.remove('readonly');
+                gpaInput.readOnly = false;
+                gpaInput.disabled = false;
+                gpaInput.parentElement.classList.remove('readonly-field-container');
             }
         };
-        closeRegisterModal.onclick = function() { registerModal.style.display = 'none'; };
+        closeRegisterModal.onclick = function() { 
+            registerModal.style.display = 'none';
+            // Reset form and remove readonly styling when closing modal
+            const form = document.getElementById('registerTutorForm');
+            if (form) {
+                form.reset();
+                // Remove readonly styling
+                const readonlyInputs = form.querySelectorAll('.readonly');
+                readonlyInputs.forEach(input => {
+                    input.classList.remove('readonly');
+                    input.readOnly = false;
+                    input.disabled = false;
+                });
+                // Remove readonly container styling
+                const readonlyContainers = form.querySelectorAll('.readonly-field-container');
+                readonlyContainers.forEach(container => {
+                    container.classList.remove('readonly-field-container');
+                });
+                // Reset suggestion buttons highlighting
+                const suggestionBtns = document.querySelectorAll('.suggestion-btn');
+                suggestionBtns.forEach(btn => {
+                    btn.style.background = '#fff';
+                    btn.style.borderColor = '#ddd';
+                    btn.style.color = '#555';
+                });
+            }
+        };
         window.onclick = function(event) {
-            if (event.target === registerModal) registerModal.style.display = 'none';
+            if (event.target === registerModal) {
+                registerModal.style.display = 'none';
+                // Reset form and remove readonly styling when closing modal
+                const form = document.getElementById('registerTutorForm');
+                if (form) {
+                    form.reset();
+                    // Remove readonly styling
+                    const readonlyInputs = form.querySelectorAll('.readonly');
+                    readonlyInputs.forEach(input => {
+                        input.classList.remove('readonly');
+                        input.readOnly = false;
+                        input.disabled = false;
+                    });
+                    // Remove readonly container styling
+                    const readonlyContainers = form.querySelectorAll('.readonly-field-container');
+                    readonlyContainers.forEach(container => {
+                        container.classList.remove('readonly-field-container');
+                    });
+                    // Reset suggestion buttons highlighting
+                    const suggestionBtns = document.querySelectorAll('.suggestion-btn');
+                    suggestionBtns.forEach(btn => {
+                        btn.style.background = '#fff';
+                        btn.style.borderColor = '#ddd';
+                        btn.style.color = '#555';
+                    });
+                }
+            }
         };
     }
+    
+    // Xử lý các nút đề xuất thời gian phỏng vấn
+    const suggestionBtns = document.querySelectorAll('.suggestion-btn');
+    suggestionBtns.forEach(btn => {
+        btn.addEventListener('click', function() {
+            const suggestedTime = this.getAttribute('data-time');
+            const interviewTimeInput = document.getElementById('regTutorInterviewTime');
+            if (interviewTimeInput) {
+                interviewTimeInput.value = suggestedTime;
+                // Highlight the selected button
+                suggestionBtns.forEach(b => b.style.background = '#fff');
+                suggestionBtns.forEach(b => b.style.borderColor = '#ddd');
+                suggestionBtns.forEach(b => b.style.color = '#555');
+                this.style.background = '#e3f2fd';
+                this.style.borderColor = '#1976d2';
+                this.style.color = '#1976d2';
+            }
+        });
+    });
+    
     // Xử lý submit form đăng ký
     const regForm = document.getElementById('registerTutorForm');
     if (regForm) {
@@ -682,10 +839,11 @@ document.addEventListener('DOMContentLoaded', function() {
             const mssv = document.getElementById('regTutorMSSV').value.trim();
             const gpa = document.getElementById('regTutorGPA').value.trim();
             const phone = document.getElementById('regTutorPhone').value.trim();
-            const hobby = document.getElementById('regTutorHobby').value.trim();
-            const achievement = document.getElementById('regTutorAchievement').value.trim();
+            const bio = document.getElementById('regTutorBio').value.trim();
+            const url = document.getElementById('regTutorUrl').value.trim();
+            const achievement = document.getElementById('regTutorAchievement').value;
             const interviewTime = document.getElementById('regTutorInterviewTime').value;
-            if (!name || !gender || !mssv || !gpa || !interviewTime) {
+            if (!name || !gender || !mssv || !gpa) {
                 alert('Vui lòng nhập đầy đủ các trường bắt buộc!');
                 return;
             }
@@ -703,28 +861,61 @@ document.addEventListener('DOMContentLoaded', function() {
                   <b>MSSV:</b> ${mssv}<br/>
                   <b>GPA:</b> ${gpa}<br/>
                   <b>Số điện thoại:</b> ${phone}<br/>
-                  <b>Sở thích:</b> ${hobby}<br/>
-                  <b>Thành tựu cá nhân:</b> ${achievement}<br/>
-                  <b>Thời gian phỏng vấn:</b> ${interviewTime}<br/>
+                  <b>Bio:</b> ${bio || 'Chưa nhập'}<br/>
+                  <b>URL Link:</b> ${url || 'Chưa nhập'}<br/>
+                  <b>Chứng chỉ:</b> ${achievement || 'Chưa chọn'}<br/>
+                  <b>Thời gian phỏng vấn:</b> ${interviewTime || 'Chưa chọn'}<br/>
                 </div>
                 <button id="confirmSendRegister" class="btn-primary" style="width:100%;margin-bottom:8px;">Xác nhận gửi đăng ký</button>
                 <button id="cancelSendRegister" class="btn-secondary" style="width:100%;">Quay lại chỉnh sửa</button>
               </div>
             `;
             document.body.appendChild(reviewModal);
+            // Đóng modal review khi click bên ngoài
+            const originalWindowClick = window.onclick;
+            window.onclick = function(event) {
+                if (event.target === reviewModal) {
+                    document.body.removeChild(reviewModal);
+                    // Restore original window click handler
+                    window.onclick = originalWindowClick;
+                    // Don't reset form when closing review modal, just close it
+                } else if (originalWindowClick) {
+                    originalWindowClick(event);
+                }
+            };
             // Đóng modal review
             document.getElementById('closeReviewModal').onclick = function() {
                 document.body.removeChild(reviewModal);
+                // Restore original window click handler
+                window.onclick = originalWindowClick;
+                // Don't reset form when closing review modal, just close it
             };
             document.getElementById('cancelSendRegister').onclick = function() {
                 document.body.removeChild(reviewModal);
+                // Restore original window click handler
+                window.onclick = originalWindowClick;
+                // Don't reset form when canceling, just close the review modal
             };
             document.getElementById('confirmSendRegister').onclick = function() {
                 // Thực hiện gửi đăng ký như cũ
-                alert('Đăng ký thành công!\nTên: ' + name + '\nGiới tính: ' + gender + '\nMSSV: ' + mssv + '\nGPA: ' + gpa + '\nThời gian phỏng vấn: ' + interviewTime);
+                alert('Đăng ký thành công!\nTên: ' + name + '\nGiới tính: ' + gender + '\nMSSV: ' + mssv + '\nGPA: ' + gpa + '\nBio: ' + (bio || 'Chưa nhập') + '\nURL: ' + (url || 'Chưa nhập') + '\nChứng chỉ: ' + (achievement || 'Chưa chọn') + '\nThời gian phỏng vấn: ' + (interviewTime || 'Chưa chọn'));
                 document.getElementById('registerTutorModal').style.display = 'none';
                 regForm.reset();
+                // Remove readonly styling after successful submission
+                const readonlyInputs = regForm.querySelectorAll('.readonly');
+                readonlyInputs.forEach(input => {
+                    input.classList.remove('readonly');
+                    input.readOnly = false;
+                    input.disabled = false;
+                });
+                // Remove readonly container styling
+                const readonlyContainers = regForm.querySelectorAll('.readonly-field-container');
+                readonlyContainers.forEach(container => {
+                    container.classList.remove('readonly-field-container');
+                });
                 document.body.removeChild(reviewModal);
+                // Restore original window click handler
+                window.onclick = originalWindowClick;
                 // Gửi thư xác nhận vào hộp thư
                 let inbox = JSON.parse(localStorage.getItem('tutorInbox') || '[]');
                 inbox.unshift({

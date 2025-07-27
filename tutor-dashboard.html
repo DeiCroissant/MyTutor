@@ -231,10 +231,33 @@
           <div class="form-row"><label>GPA <span style="color:red">*</span>:</label><input type="number" step="0.01" min="0" max="4" id="regTutorGPA" required></div>
           <div class="form-row"><label>Số điện thoại:</label><input type="text" id="regTutorPhone"></div>
           <div class="form-row"><label>Bio:</label><textarea id="regTutorBio" rows="3" placeholder="Giới thiệu về bản thân, kinh nghiệm, phong cách dạy..."></textarea></div>
+          <div class="form-row"><label>URL Link:</label><input type="url" id="regTutorUrl" placeholder="https://example.com"></div>
           <div class="form-row"><label>Media cho Bio (ảnh/video):</label><input type="file" id="regTutorBioMedia" accept="image/*,video/*" multiple></div>
-          <div class="form-row"><label>Chứng chỉ:</label><textarea id="regTutorAchievement" rows="3"></textarea></div>
+          <div class="form-row"><label>Chứng chỉ:</label>
+            <select id="regTutorAchievement">
+              <option value="">-- Chọn chứng chỉ --</option>
+              <option value="IELTS">IELTS</option>
+              <option value="TOEIC">TOEIC</option>
+              <option value="TOEFL">TOEFL</option>
+              <option value="Chứng chỉ tin học">Chứng chỉ tin học</option>
+              <option value="Chứng chỉ ngoại ngữ">Chứng chỉ ngoại ngữ</option>
+              <option value="Chứng chỉ sư phạm">Chứng chỉ sư phạm</option>
+              <option value="Chứng chỉ khác">Chứng chỉ khác</option>
+            </select>
+          </div>
           <div class="form-row"><label>Bằng chứng (ảnh):</label><input type="file" id="regTutorProof" accept="image/*"></div>
-          <div class="form-row"><label>Thời gian phỏng vấn <span style="color:red">*</span>:</label><input type="datetime-local" id="regTutorInterviewTime" required></div>
+          <div class="form-row">
+            <label>Thời gian phỏng vấn:</label>
+            <input type="datetime-local" id="regTutorInterviewTime">
+            <div class="interview-suggestions">
+              <span class="suggestion-label">Đề xuất:</span>
+              <div class="suggestion-buttons">
+                <button type="button" class="suggestion-btn" data-time="2025-01-20T09:00">Sáng (9:00)</button>
+                <button type="button" class="suggestion-btn" data-time="2025-01-20T14:00">Chiều (14:00)</button>
+                <button type="button" class="suggestion-btn" data-time="2025-01-20T19:00">Tối (19:00)</button>
+              </div>
+            </div>
+          </div>
           <button type="submit" class="btn-primary" style="width:100%;margin-top:10px;">Gửi đăng ký</button>
         </form>
       </div>

@@ -231,7 +231,7 @@ function renderTutors(list) {
             <div class="tutor-name">${t.name}</div>
             <div class="tutor-subject">${t.subject}</div>
             <div class="tutor-meeting-type">
-              <span class="meeting-badge ${t.meetingType}">${t.meetingType}</span>
+              <span class="meeting-badge" data-type="${t.meetingType}">${t.meetingType}</span>
               ${t.onlineSupport ? '<span class="online-badge">🖥️ Online</span>' : ''}
             </div>
           </div>
@@ -248,7 +248,7 @@ function renderTutors(list) {
           <div class="tutor-desc">${t.desc}</div>
           <div class="tutor-bio">${shortBio}${showSeeMore ? ` <span class='see-more' onclick='showFullBio(${t.id})'>Xem thêm</span>` : ''}</div>
           <div class="tutor-achievements">
-            ${(t.achievements||[]).map(a => `<span class='badge'>${a}</span>`).join(' ')}
+            ${Array.isArray(t.achievements) ? t.achievements.map(a => `<span class='badge'>${a}</span>`).join(' ') : ''}
           </div>
         </div>
         <div class="tutor-actions">

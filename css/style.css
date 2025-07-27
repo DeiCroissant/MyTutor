@@ -435,7 +435,7 @@ body {
   font-size: 12px;
   font-weight: 500;
 }
-.meeting-badge.1-1 {
+.meeting-badge[data-type="1-1"] {
   background: #e8f5e8;
   color: #2e7d32;
 }
@@ -1420,6 +1420,7 @@ input:focus, textarea:focus, select:focus {
 #registerTutorForm input[type="text"],
 #registerTutorForm input[type="number"],
 #registerTutorForm input[type="datetime-local"],
+#registerTutorForm input[type="url"],
 #registerTutorForm select,
 #registerTutorForm textarea {
   width: 100%;
@@ -1486,3 +1487,80 @@ input:focus, textarea:focus, select:focus {
   text-decoration: underline;
   font-size: 14px;
 } 
+
+/* === READONLY FIELD STYLING === */
+
+/* Readonly field styling for forms */
+.readonly {
+  background-color: #f5f5f5 !important;
+  color: #666 !important;
+  cursor: not-allowed !important;
+  border: 1px solid #ddd !important;
+}
+
+.readonly-field-container {
+  position: relative;
+}
+
+.readonly-field-container::after {
+  content: "(Thông tin do trường cấp)";
+  position: absolute;
+  top: -20px;
+  right: 0;
+  font-size: 11px;
+  color: #999;
+  font-style: italic;
+}
+
+/* === INTERVIEW SUGGESTIONS STYLING === */
+
+.interview-suggestions {
+  margin-top: 8px;
+  padding: 12px;
+  background: #f8f9fa;
+  border-radius: 8px;
+  border: 1px solid #e9ecef;
+}
+
+.suggestion-label {
+  display: block;
+  font-size: 13px;
+  color: #666;
+  margin-bottom: 8px;
+  font-weight: 500;
+}
+
+.suggestion-buttons {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.suggestion-btn {
+  padding: 6px 12px;
+  background: #fff;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  font-size: 12px;
+  color: #555;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-weight: 500;
+}
+
+.suggestion-btn:hover {
+  background: #e3f2fd;
+  border-color: #1976d2;
+  color: #1976d2;
+  transform: translateY(-1px);
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.suggestion-btn:active {
+  transform: translateY(0);
+  box-shadow: 0 1px 2px rgba(0,0,0,0.1);
+}
+
+/* === END INTERVIEW SUGGESTIONS STYLING === */
+
+/* === END READONLY FIELD STYLING === */ 
