@@ -57,20 +57,28 @@ function renderTeachingSchedule() {
             
             <div class="calendar-legend">
                 <div class="legend-item">
-                    <div class="legend-color online"></div>
-                    <span>Online</span>
+                    <div class="legend-color not-started"></div>
+                    <span>Chưa bắt đầu</span>
                 </div>
                 <div class="legend-item">
-                    <div class="legend-color offline"></div>
-                    <span>Offline</span>
+                    <div class="legend-color upcoming"></div>
+                    <span>Sắp tới</span>
                 </div>
                 <div class="legend-item">
-                    <div class="legend-color cancelled"></div>
-                    <span>Đã hủy</span>
+                    <div class="legend-color in-progress"></div>
+                    <span>Đang thực hiện</span>
                 </div>
                 <div class="legend-item">
-                    <div class="legend-color completed"></div>
-                    <span>Hoàn thành</span>
+                    <div class="legend-color finished"></div>
+                    <span>Kết thúc</span>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-color open-register"></div>
+                    <span>Mở đăng ký</span>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-color registered"></div>
+                    <span>Đã đăng ký</span>
                 </div>
             </div>
             
@@ -209,6 +217,12 @@ function renderListView(tutorLessons) {
             courseStatus = 'Đang thực hiện';
         } else if (subject === 'Cấu trúc dữ liệu') {
             courseStatus = 'Kết thúc';
+        } else if (subject === 'Phân tích thiết kế hệ thống') {
+            courseStatus = 'Mở đăng ký';
+        } else if (subject === 'Mạng máy tính') {
+            courseStatus = 'Đã đăng ký (bởi Ngô Minh Học)';
+        } else if (subject === 'A') {
+            courseStatus = 'Chưa bắt đầu';
         }
 
         let statusClass = '';
@@ -221,6 +235,12 @@ function renderListView(tutorLessons) {
                 break;
             case 'Kết thúc':
                 statusClass = 'status-finished';
+                break;
+            case 'Mở đăng ký':
+                statusClass = 'status-open-register';
+                break;
+            case 'Đã đăng ký (bởi Ngô Minh Học)':
+                statusClass = 'status-registered';
                 break;
             default:
                 statusClass = 'status-not-started';
