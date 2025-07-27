@@ -1,6 +1,8 @@
-// js/script-trungtam.js
+// =================================================================
+// SCRIPT CHO TRUNG TÂM HỖ TRỢ VĂN LANG
+// =================================================================
 
-// DỮ LIỆU CÀI ĐẶT (Phần này nhỏ nên có thể giữ lại ở đây)
+// DỮ LIỆU CÀI ĐẶT
 const supportCenterSettings = {
     avatar: 'TT',
     name: 'Nguyễn Thiện D',
@@ -9,259 +11,134 @@ const supportCenterSettings = {
     supportEmail: 'support.mytutor@vanlanguni.edu.vn'
 };
 
-// =================================================================
-// ĐỊNH NGHĨA CÁC HÀM
-// =================================================================
-
-/**
- * Chuyển đổi giữa các tab (section)
- * @param {string} targetId ID của section cần hiển thị
- */
-function switchTab(targetId) {
-    document.querySelectorAll('.section').forEach(sec => {
-        sec.style.display = 'none';
-    });
+// Khởi tạo khi trang load
+document.addEventListener('DOMContentLoaded', function() {
+  console.log('DOM loaded');
+  
+  // Đảm bảo tab đầu tiên được active
+  const firstTab = document.querySelector('.nav a.active');
+  if (firstTab) {
+    const targetId = firstTab.getAttribute('href').substring(1);
     const targetSection = document.getElementById(targetId);
     if (targetSection) {
-        targetSection.style.display = 'block';
+      targetSection.classList.add('active');
+      console.log('Activated section:', targetId);
     }
-}
-
-// ... (Toàn bộ các hàm xử lý khác như changePassword, renderTutorApprovalList, renderInterviewSchedule, v.v... giữ nguyên như phiên bản trước)
-// --- CÁC HÀM XỬ LÝ CHUNG ---
-function changePassword() {
-  const modal = document.getElementById('passwordModal');
-  if (modal) modal.classList.add('show');
-}
-
-function closePasswordModal() {
-  const modal = document.getElementById('passwordModal');
-  if (modal) modal.classList.remove('show');
-}
-
-function logout() {
-  if (confirm('Bạn có chắc chắn muốn đăng xuất?')) {
-    window.location.href = './index.html';
   }
-}
+  
+  renderTutorApprovalTable();
+  renderUnscheduledTutorsTable();
+  renderInterviewScheduleTable();
+  renderSupportcenterInbox();
+  
+  // Khởi tạo charts nếu đang ở tab báo cáo
+  if (document.getElementById('bao-cao-thong-ke').classList.contains('active')) {
+    initializeCharts();
+    renderReports();
+  }
+});
 
-/**
- * Format ngày tháng từ YYYY-MM-DD sang DD/MM/YYYY
- * @param {string} dateString Chuỗi ngày tháng dạng YYYY-MM-DD
- * @returns {string} Chuỗi ngày tháng dạng DD/MM/YYYY
- */
-function formatDate(dateString) {
-    if (!dateString) return 'N/A';
-    const date = new Date(dateString);
-    if (isNaN(date.getTime())) return 'N/A';
-    return date.toLocaleDateString('vi-VN', {
-        day: '2-digit',
-        month: '2-digit',
-        year: 'numeric'
-    });
-}
+// ========== XÉT DUYỆT GIA SƯ ==========
 
-/**
- * Format ngày tháng đẹp cho hiển thị trong bảng
- * @param {string} dateString Chuỗi ngày tháng dạng YYYY-MM-DD
- * @returns {string} Chuỗi ngày tháng dạng "DD/MM/YYYY"
- */
-function formatDateForDisplay(dateString) {
-    if (!dateString) return 'N/A';
-    const date = new Date(dateString);
-    if (isNaN(date.getTime())) return 'N/A';
-    const day = date.getDate().toString().padStart(2, '0');
-    const month = (date.getMonth() + 1).toString().padStart(2, '0');
-    const year = date.getFullYear();
-    return `${day}/${month}/${year}`;
-}
-
-// --- CÁC HÀM XỬ LÝ CHO TAB "XÉT DUYỆT GIA SƯ" ---
-function renderTutorApprovalList() {
+function renderTutorApprovalTable() {
     const tbody = document.getElementById('tutor-approval-tbody');
     if (!tbody) return;
-    if (typeof pendingTutors === 'undefined' || pendingTutors.length === 0) {
-        tbody.innerHTML = `<tr><td colspan="5" style="text-align:center; padding: 20px;">Không có hồ sơ mới nào.</td></tr>`;
-        return;
-    }
-    tbody.innerHTML = pendingTutors.map(tutor => `
+  
+  tbody.innerHTML = tutorApplications.map(tutor => `
         <tr>
             <td>${tutor.id}</td>
             <td>${tutor.name}</td>
             <td>${tutor.subject}</td>
-            <td>${formatDateForDisplay(tutor.applyDate)}</td>
+      <td>${tutor.submitDate}</td>
             <td>
-                <button class="btn-secondary" onclick="viewTutorDetails(${tutor.id})">Xem</button>
-                <button class="btn-primary" onclick="approveTutor(${tutor.id})">Duyệt</button>
+        <button class="btn-primary" onclick="viewTutorDetail(${tutor.id})">Xem chi tiết</button>
+        <button class="btn-secondary" onclick="scheduleInterview(${tutor.id})">Lên lịch PV</button>
                 <button class="btn-danger" onclick="rejectTutor(${tutor.id})">Từ chối</button>
             </td>
         </tr>
     `).join('');
 }
 
-function viewTutorDetails(tutorId) {
-    const tutor = pendingTutors.find(t => t.id === tutorId);
+function viewTutorDetail(id) {
+  const tutor = tutorApplications.find(t => t.id === id);
     if (!tutor) return;
+  
     const modal = document.getElementById('approvalDetailModal');
-    const modalContent = document.getElementById('modalDetailContent');
-    if (modal && modalContent) {
-        modalContent.innerHTML = `
-            <h3>Chi tiết hồ sơ ứng viên</h3>
-            <div class="profile-item"><span class="profile-label">ID:</span><span class="profile-value">${tutor.id}</span></div>
-            <div class="profile-item"><span class="profile-label">Họ tên:</span><span class="profile-value">${tutor.name}</span></div>
-            <div class="profile-item"><span class="profile-label">Giới tính:</span><span class="profile-value">${tutor.gender || 'Nam'}</span></div>
-            <div class="profile-item"><span class="profile-label">MSSV:</span><span class="profile-value">${tutor.mssv}</span></div>
-            <div class="profile-item"><span class="profile-label">GPA:</span><span class="profile-value">${tutor.gpa} / 4.0</span></div>
-            <div class="profile-item"><span class="profile-label">Số điện thoại:</span><span class="profile-value">${tutor.phone}</span></div>
-            <div class="profile-item"><span class="profile-label">Bio:</span><span class="profile-value">${tutor.bio || 'Giới thiệu về bản thân, kinh nghiệm, phong cách dạy...'}</span></div>
-            <div class="profile-item"><span class="profile-label">URL Link:</span><span class="profile-value">${tutor.url || 'https://example.com'}</span></div>
-            <div class="profile-item"><span class="profile-label">Chứng chỉ:</span><span class="profile-value">${tutor.certificate || 'IELTS'}</span></div>
-            <div class="profile-item"><span class="profile-label">Môn đăng ký:</span><span class="profile-value">${tutor.subject}</span></div>
-            <div class="profile-item"><span class="profile-label">Thời gian phỏng vấn:</span><span class="profile-value">${tutor.interviewTime || 'Chưa chọn'}</span></div>
-            <div class="profile-item"><span class="profile-label">Ngày nộp hồ sơ:</span><span class="profile-value">${formatDateForDisplay(tutor.applyDate)}</span></div>
-        `;
-        modal.classList.add('show');
-    }
+  const content = document.getElementById('modalDetailContent');
+  
+  content.innerHTML = `
+    <h3>Chi tiết hồ sơ gia sư</h3>
+    <div class="profile-item">
+      <span class="profile-label">Tên:</span>
+      <span class="profile-value">${tutor.name}</span>
+    </div>
+    <div class="profile-item">
+      <span class="profile-label">Môn đăng ký:</span>
+      <span class="profile-value">${tutor.subject}</span>
+    </div>
+    <div class="profile-item">
+      <span class="profile-label">Ngày nộp hồ sơ:</span>
+      <span class="profile-value">${tutor.submitDate}</span>
+    </div>
+    <div class="profile-item">
+      <span class="profile-label">Trạng thái:</span>
+      <span class="profile-value">Chờ duyệt</span>
+    </div>
+  `;
+  
+  modal.style.display = 'flex';
 }
 
-function closeDetailModal() {
-    document.getElementById('approvalDetailModal').classList.remove('show');
+function scheduleInterview(id) {
+  const tutor = tutorApplications.find(t => t.id === id);
+  if (!tutor) return;
+  
+  document.getElementById('scheduleTutorId').value = id;
+  document.getElementById('scheduleInterviewModal').style.display = 'flex';
 }
 
-function approveTutor(tutorId) {
-    if (!confirm('Bạn có chắc chắn muốn DUYỆT hồ sơ này?')) return;
-    const index = pendingTutors.findIndex(t => t.id === tutorId);
-    if (index > -1) {
-        const approvedTutorData = pendingTutors.splice(index, 1)[0];
-        tutors.push({
-            id: tutors.length + 1, name: approvedTutorData.name, status: 'available',
-            subject: approvedTutorData.subject, price: 150000, desc: `Gia sư mới, GPA: ${approvedTutorData.gpa}.`,
-            rating: 0, students: 0, avatar: '🧑‍🏫', meetingType: '1-1', onlineSupport: true
-        });
-        alert('Đã duyệt hồ sơ thành công!');
-        renderTutorApprovalList();
-    }
-    renderUnscheduledTutors(); // THÊM DÒNG NÀY
+function rejectTutor(id) {
+  if (confirm('Bạn có chắc chắn muốn từ chối hồ sơ này?')) {
+    tutorApplications = tutorApplications.filter(t => t.id !== id);
+    renderTutorApprovalTable();
+    alert('Đã từ chối hồ sơ!');
+  }
 }
 
-function rejectTutor(tutorId) {
-    const reason = prompt('Vui lòng nhập lý do từ chối hồ sơ này:');
-    if (reason) {
-        const index = pendingTutors.findIndex(t => t.id === tutorId);
-        if (index > -1) {
-            pendingTutors.splice(index, 1);
-            alert(`Đã từ chối hồ sơ. Lý do: ${reason}`);
-            renderTutorApprovalList();
-        }
-    }
-    renderUnscheduledTutors(); // THÊM DÒNG NÀY
-}
+// ========== LỊCH PHỎNG VẤN ==========
 
-/**
- * Mở modal để lên lịch phỏng vấn cho một ứng viên
- * @param {number} tutorId ID của ứng viên
- */
-function openScheduleModal(tutorId) {
-    const modal = document.getElementById('scheduleInterviewModal');
-    if (modal) {
-        // Gán ID của gia sư vào một trường ẩn trong form
-        document.getElementById('scheduleTutorId').value = tutorId;
-        modal.classList.add('show');
-    }
-}
-
-/**
- * Đóng modal lên lịch phỏng vấn
- */
-function closeScheduleModal() {
-    const modal = document.getElementById('scheduleInterviewModal');
-    if (modal) {
-        modal.classList.remove('show');
-        // Xóa các giá trị đã nhập trong form
-        document.getElementById('scheduleInterviewForm').reset();
-    }
-}
-
-/**
- * Hiển thị danh sách các ứng viên chưa được lên lịch phỏng vấn
- */
-function renderUnscheduledTutors() {
+function renderUnscheduledTutorsTable() {
     const tbody = document.getElementById('unscheduled-tutors-tbody');
     if (!tbody) return;
-
-    // Lấy ID của tất cả các ứng viên đã có lịch phỏng vấn
-    const scheduledTutorIds = interviews.map(interview => interview.tutorId);
-
-    // Lọc ra những ứng viên trong danh sách chờ duyệt NHƯNG chưa có trong danh sách đã lên lịch
-    const unscheduledTutors = pendingTutors.filter(tutor => !scheduledTutorIds.includes(tutor.id));
-
-    if (unscheduledTutors.length === 0) {
-        tbody.innerHTML = `<tr><td colspan="4" style="text-align:center; padding: 20px;">Tất cả ứng viên đã được lên lịch.</td></tr>`;
-        return;
-    }
 
     tbody.innerHTML = unscheduledTutors.map(tutor => `
         <tr>
             <td>${tutor.name}</td>
             <td>${tutor.subject}</td>
-            <td>${formatDateForDisplay(tutor.applyDate)}</td>
+      <td>${tutor.submitDate}</td>
             <td>
-                <button class="btn-schedule" onclick="openScheduleModal(${tutor.id})">Lên lịch</button>
+        <button class="btn-schedule" onclick="scheduleInterview(${tutor.id})">Lên lịch phỏng vấn</button>
             </td>
         </tr>
     `).join('');
 }
 
-// --- CÁC HÀM XỬ LÝ CHO TAB "LỊCH PHỎNG VẤN" ---
-function renderInterviewSchedule() {
+function renderInterviewScheduleTable() {
     const tbody = document.getElementById('interview-schedule-tbody');
     if (!tbody) return;
-    if (typeof interviews === 'undefined' || interviews.length === 0) {
-        tbody.innerHTML = `<tr><td colspan="4" style="text-align:center; padding: 20px;">Chưa có lịch phỏng vấn nào.</td></tr>`;
-        return;
-    }
-    const sortedInterviews = [...interviews].sort((a, b) => new Date(a.interviewDate) - new Date(b.interviewDate));
-    tbody.innerHTML = sortedInterviews.map(interview => {
-        const interviewDate = new Date(interview.interviewDate);
-        const formattedDate = interviewDate.toLocaleDateString('vi-VN');
-        const formattedTime = interviewDate.toLocaleTimeString('vi-VN', { hour: '2-digit', minute: '2-digit' });
-        let statusClass = interview.status === 'Đã hoàn thành' ? 'status-completed' : 'status-scheduled';
-        return `
-            <tr>
-                <td>${interview.tutorName}</td>
+  
+  tbody.innerHTML = interviewSchedule.map(interview => `
+    <tr>
+      <td>${interview.name}</td>
                 <td>${interview.subject}</td>
-                <td>${formattedTime} - ${formattedDate}</td>
-                <td><span class="status ${statusClass}">${interview.status}</span></td>
+      <td>${interview.interviewTime}</td>
+      <td>
+        <span class="status status-${interview.status}">
+          ${interview.status === 'scheduled' ? 'Đã lên lịch' : 'Đã hoàn thành'}
+        </span>
+      </td>
             </tr>
-        `;
-    }).join('');
-}
-
-// --- CÁC HÀM XỬ LÝ CHO TAB "CÀI ĐẶT" ---
-function handleAvatarChange(newAvatar) {
-    supportCenterSettings.avatar = newAvatar;
-    document.getElementById('currentAvatarDisplay').textContent = newAvatar;
-    document.querySelector('.header .avatar').textContent = newAvatar;
-    document.querySelectorAll('.avatar-option').forEach(option => {
-        option.classList.remove('selected');
-        if (option.dataset.avatar === newAvatar) {
-            option.classList.add('selected');
-        }
-    });
-}
-
-function attachSettingsEvents() {
-    document.querySelectorAll('.avatar-option').forEach(option => {
-        option.addEventListener('click', () => handleAvatarChange(option.dataset.avatar));
-    });
-
-    document.getElementById('switchRoleBtn').addEventListener('click', function() {
-        const selectedRole = document.getElementById('role-switcher').value;
-        const targetPage = selectedRole === 'learner' ? './dashboard.html' : './tutor-dashboard.html';
-        if (confirm(`Bạn có muốn chuyển sang giao diện ${selectedRole === 'learner' ? 'Sinh Viên' : 'Gia Sư'}?`)) {
-            window.open(targetPage, '_blank');
-        }
-    });
+  `).join('');
 }
 
 // ========== HỘP THƯ TRUNG TÂM HỖ TRỢ VĂN LANG =============
@@ -309,77 +186,401 @@ function replyToTutor(idx, isAccept) {
   alert('Đã gửi phản hồi cho tutor!');
 }
 
-// =================================================================
-// SỰ KIỆN CHÍNH KHI TRANG ĐƯỢC TẢI
-// =================================================================
-document.addEventListener('DOMContentLoaded', function() {
-    const navLinks = document.querySelectorAll('.nav a');
-    navLinks.forEach(link => {
-        link.addEventListener('click', function(event) {
-            event.preventDefault();
-            navLinks.forEach(l => l.classList.remove('active'));
-            this.classList.add('active');
-            const targetId = this.getAttribute('href').substring(1);
-            switchTab(targetId);
-        });
-    });
+// ========== BÁO CÁO & THỐNG KÊ ==========
 
+// Khởi tạo các chart
+function initializeCharts() {
+  // Chart môn học theo trạng thái
+  const courseStatusCtx = document.getElementById('courseStatusChart');
+  if (courseStatusCtx) {
+    new Chart(courseStatusCtx, {
+      type: 'doughnut',
+      data: courseStatusData,
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+          legend: {
+            position: 'bottom'
+          }
+        }
+      }
+    });
+  }
+
+  // Chart phân bố gia sư theo khoa
+  const tutorDistributionCtx = document.getElementById('tutorDistributionChart');
+  if (tutorDistributionCtx) {
+    new Chart(tutorDistributionCtx, {
+      type: 'bar',
+      data: tutorDistributionData,
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+          legend: {
+            display: false
+          }
+        },
+        scales: {
+          y: {
+            beginAtZero: true
+          }
+        }
+      }
+    });
+  }
+
+  // Chart đánh giá từ sinh viên
+  const studentFeedbackCtx = document.getElementById('studentFeedbackChart');
+  if (studentFeedbackCtx) {
+    new Chart(studentFeedbackCtx, {
+      type: 'bar',
+      data: studentFeedbackData,
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+          legend: {
+            display: false
+          }
+        },
+        scales: {
+          y: {
+            beginAtZero: true
+          }
+        }
+      }
+    });
+  }
+
+  // Chart thống kê theo tháng
+  const monthlyStatsCtx = document.getElementById('monthlyStatsChart');
+  if (monthlyStatsCtx) {
+    new Chart(monthlyStatsCtx, {
+      type: 'line',
+      data: monthlyStatsData,
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+          legend: {
+            position: 'top'
+          }
+        },
+        scales: {
+          y: {
+            beginAtZero: true
+          }
+        }
+      }
+    });
+  }
+
+  // Khởi tạo chart môn học phổ biến
+  const popularSubjectsCtx = document.getElementById('popularSubjectsChart');
+  if (popularSubjectsCtx) {
+    new Chart(popularSubjectsCtx, {
+      type: 'bar',
+      data: popularSubjectsData,
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+          legend: {
+            display: false
+          },
+          title: {
+            display: true,
+            text: 'Top môn học được đăng ký nhiều nhất'
+          }
+        },
+        scales: {
+          y: {
+            beginAtZero: true,
+            title: {
+              display: true,
+              text: 'Số sinh viên đăng ký'
+            }
+          },
+          x: {
+            title: {
+              display: true,
+              text: 'Môn học'
+            }
+          }
+        }
+      }
+    });
+  }
+}
+
+// Render báo cáo feedback
+function renderReports() {
+  renderStudentFeedback();
+  renderTutorFeedback();
+  renderActiveCourses();
+  renderCompletedCourses();
+  renderPopularSubjectsTable();
+}
+
+function renderStudentFeedback() {
+  const container = document.getElementById('studentFeedbackList');
+  if (!container) return;
+  
+  container.innerHTML = studentFeedback.map(feedback => `
+    <div class="feedback-item">
+      <div class="feedback-header">
+        <span class="feedback-author">${feedback.author}</span>
+        <span class="feedback-date">${feedback.date}</span>
+      </div>
+      <div class="feedback-content">${feedback.content}</div>
+      <div class="feedback-rating">
+        ${'★'.repeat(feedback.rating)}${'☆'.repeat(5 - feedback.rating)}
+      </div>
+    </div>
+  `).join('');
+}
+
+function renderTutorFeedback() {
+  const container = document.getElementById('tutorFeedbackList');
+  if (!container) return;
+  
+  container.innerHTML = tutorFeedback.map(feedback => `
+    <div class="feedback-item">
+      <div class="feedback-header">
+        <span class="feedback-author">${feedback.author}</span>
+        <span class="feedback-date">${feedback.date}</span>
+      </div>
+      <div class="feedback-content">${feedback.content}</div>
+      <div class="feedback-rating">
+        ${'★'.repeat(feedback.rating)}${'☆'.repeat(5 - feedback.rating)}
+      </div>
+    </div>
+  `).join('');
+}
+
+function renderActiveCourses() {
+  const container = document.getElementById('activeCoursesList');
+  if (!container) return;
+  
+  container.innerHTML = activeCourses.map(course => `
+    <div class="course-item">
+      <div class="course-info">
+        <div class="course-name">${course.name}</div>
+        <div class="course-details">${course.department} • ${course.tutorCount} gia sư</div>
+      </div>
+      <div class="course-stats">
+        <div class="course-count">${course.studentCount}</div>
+        <div class="course-label">sinh viên</div>
+      </div>
+    </div>
+  `).join('');
+}
+
+// Render bảng thống kê môn học phổ biến
+function renderPopularSubjectsTable() {
+  const popularSubjectsTable = document.getElementById('popularSubjectsTable');
+  if (!popularSubjectsTable) return;
+  
+  popularSubjectsTable.innerHTML = `
+    <table class="stats-table">
+      <thead>
+        <tr>
+          <th>Xếp hạng</th>
+          <th>Môn học</th>
+          <th>Số sinh viên</th>
+          <th>Số buổi học</th>
+          <th>Đánh giá TB</th>
+          <th>Số gia sư</th>
+          <th>Tỷ lệ hoàn thành</th>
+        </tr>
+      </thead>
+      <tbody>
+        ${popularSubjectsDetail.map(subject => `
+          <tr>
+            <td class="rank-cell">
+              <span class="rank-badge rank-${subject.rank <= 3 ? 'top' : 'normal'}">${subject.rank}</span>
+            </td>
+            <td class="subject-name">${subject.subject}</td>
+            <td class="students-count">${subject.students}</td>
+            <td class="lessons-count">${subject.lessons}</td>
+            <td class="rating-cell">
+              <span class="rating-stars">${'★'.repeat(Math.floor(subject.avgRating))}${'☆'.repeat(5-Math.floor(subject.avgRating))}</span>
+              <span class="rating-text">${subject.avgRating}</span>
+            </td>
+            <td class="tutors-count">${subject.tutors}</td>
+            <td class="completion-rate">
+              <div class="progress-bar">
+                <div class="progress-fill" style="width: ${subject.completionRate}%"></div>
+              </div>
+              <span class="rate-text">${subject.completionRate}%</span>
+            </td>
+          </tr>
+        `).join('')}
+      </tbody>
+    </table>
+  `;
+}
+
+function renderCompletedCourses() {
+  const container = document.getElementById('completedCoursesList');
+  if (!container) return;
+  
+  container.innerHTML = completedCourses.map(course => `
+    <div class="course-item">
+      <div class="course-info">
+        <div class="course-name">${course.name}</div>
+        <div class="course-details">${course.department} • Kết thúc: ${course.endDate}</div>
+      </div>
+      <div class="course-stats">
+        <div class="course-count">${course.completionRate}%</div>
+        <div class="course-label">hoàn thành</div>
+      </div>
+    </div>
+  `).join('');
+}
+
+// ========== NAVIGATION ==========
+
+// Xử lý chuyển đổi tab
+document.addEventListener('click', function(e) {
+  if (e.target.matches('.nav a')) {
+    e.preventDefault();
+    console.log('Tab clicked:', e.target.getAttribute('href'));
+    
+    // Xóa active class từ tất cả tab và section
+    document.querySelectorAll('.nav a').forEach(link => link.classList.remove('active'));
+    document.querySelectorAll('.section').forEach(section => section.classList.remove('active'));
+    
+    // Thêm active class cho tab được click
+    e.target.classList.add('active');
+    
+    // Hiển thị section tương ứng
+    const targetId = e.target.getAttribute('href').substring(1);
+    const targetSection = document.getElementById(targetId);
+    if (targetSection) {
+      targetSection.classList.add('active');
+      console.log('Activated section:', targetId);
+      
+      // Khởi tạo charts nếu đang ở tab báo cáo
+      if (targetId === 'bao-cao-thong-ke') {
+        setTimeout(() => {
+          initializeCharts();
+          renderReports();
+        }, 100);
+      }
+    }
+  }
+});
+
+// Khởi tạo tab đầu tiên khi trang load
+document.addEventListener('DOMContentLoaded', function() {
+  // Đảm bảo tab "Tổng quan" được active mặc định
     const firstTab = document.querySelector('.nav a.active');
     if (firstTab) {
-        switchTab(firstTab.getAttribute('href').substring(1));
+    const targetId = firstTab.getAttribute('href').substring(1);
+    const targetSection = document.getElementById(targetId);
+    if (targetSection) {
+      targetSection.classList.add('active');
     }
+  }
+});
 
-    attachSettingsEvents();
-    renderTutorApprovalList();
-    renderInterviewSchedule();
-    renderUnscheduledTutors();
+// ========== MODAL FUNCTIONS ==========
 
-    const initialAvatar = document.querySelector(`.avatar-option[data-avatar="${supportCenterSettings.avatar}"]`);
-    if (initialAvatar) initialAvatar.classList.add('selected');
-    // Xử lý sự kiện submit form lên lịch phỏng vấn
+function closeDetailModal() {
+  document.getElementById('approvalDetailModal').style.display = 'none';
+}
+
+function closeScheduleModal() {
+  document.getElementById('scheduleInterviewModal').style.display = 'none';
+}
+
+// Xử lý form lên lịch phỏng vấn
+document.addEventListener('DOMContentLoaded', function() {
     const scheduleForm = document.getElementById('scheduleInterviewForm');
     if (scheduleForm) {
-        scheduleForm.addEventListener('submit', function(event) {
-            event.preventDefault(); // Ngăn form tải lại trang
-
-            const tutorId = parseInt(document.getElementById('scheduleTutorId').value);
-            const scheduleDate = document.getElementById('scheduleDate').value;
-            const scheduleTime = document.getElementById('scheduleTime').value;
-
-            if (!scheduleDate || !scheduleTime) {
-                alert('Vui lòng chọn đầy đủ ngày và giờ phỏng vấn.');
+    scheduleForm.addEventListener('submit', function(e) {
+      e.preventDefault();
+      
+      const tutorId = document.getElementById('scheduleTutorId').value;
+      const date = document.getElementById('scheduleDate').value;
+      const time = document.getElementById('scheduleTime').value;
+      
+      if (!date || !time) {
+        alert('Vui lòng chọn đầy đủ ngày và giờ phỏng vấn!');
                 return;
             }
 
-            // Tìm thông tin ứng viên từ danh sách chờ
-            const tutorInfo = pendingTutors.find(t => t.id === tutorId);
-            if (!tutorInfo) {
-                alert('Không tìm thấy thông tin ứng viên!');
-                return;
-            }
-
-            // Tạo một đối tượng lịch phỏng vấn mới
-            const newInterview = {
-                tutorId: tutorInfo.id,
-                tutorName: tutorInfo.name,
-                subject: tutorInfo.subject,
-                interviewDate: `${scheduleDate}T${scheduleTime}`, // Ghép ngày và giờ thành định dạng ISO
-                status: 'Đã lên lịch'
-            };
-
-            // Thêm vào mảng interviews
-            interviews.push(newInterview);
-
-            alert(`Đã lên lịch phỏng vấn cho ${tutorInfo.name} thành công!`);
-            closeScheduleModal(); // Đóng modal
-            renderInterviewSchedule(); // Cập nhật lại bảng lịch phỏng vấn để hiển thị ngay lập tức
+      // Thêm vào lịch phỏng vấn
+      const tutor = tutorApplications.find(t => t.id == tutorId) || 
+                   unscheduledTutors.find(t => t.id == tutorId);
+      
+      if (tutor) {
+        interviewSchedule.push({
+          id: interviewSchedule.length + 1,
+          name: tutor.name,
+          subject: tutor.subject,
+          interviewTime: `${date} ${time}`,
+          status: 'scheduled'
         });
-    }
+        
+        // Xóa khỏi danh sách chờ
+        tutorApplications = tutorApplications.filter(t => t.id != tutorId);
+        unscheduledTutors = unscheduledTutors.filter(t => t.id != tutorId);
+        
+        // Cập nhật UI
+        renderTutorApprovalTable();
+        renderUnscheduledTutorsTable();
+        renderInterviewScheduleTable();
+        closeScheduleModal();
+        
+        alert('Đã lên lịch phỏng vấn thành công!');
+      }
+    });
+  }
+});
 
-    // Gọi hàm renderSupportcenterInbox khi chuyển tab hộp thư
-    if (document.getElementById('inbox-supportcenter-menu')) {
-      document.getElementById('inbox-supportcenter-menu').addEventListener('click', function() {
-        setTimeout(renderSupportcenterInbox, 100);
+// ========== UTILITY FUNCTIONS ==========
+
+function changePassword() {
+  const newPassword = prompt('Nhập mật khẩu mới:');
+  if (newPassword) {
+    alert('Đã đổi mật khẩu thành công!');
+  }
+}
+
+function logout() {
+  if (confirm('Bạn có chắc chắn muốn đăng xuất?')) {
+    window.location.href = 'index.html';
+  }
+}
+
+// Xử lý chuyển đổi vai trò
+document.addEventListener('DOMContentLoaded', function() {
+  const switchRoleBtn = document.getElementById('switchRoleBtn');
+  const roleSwitcher = document.getElementById('role-switcher');
+  
+  if (switchRoleBtn && roleSwitcher) {
+    switchRoleBtn.addEventListener('click', function() {
+      const selectedRole = roleSwitcher.value;
+      let targetPage = '';
+      
+      switch(selectedRole) {
+        case 'learner':
+          targetPage = 'dashboard.html';
+          break;
+        case 'tutor':
+          targetPage = 'tutor-dashboard.html';
+          break;
+        default:
+          targetPage = 'dashboard.html';
+      }
+      
+      if (targetPage) {
+        window.open(targetPage, '_blank');
+      }
       });
     }
 });

@@ -92,11 +92,21 @@ function updateSettingsForms() {
   // Hiển thị nút đăng ký làm gia sư nếu chưa là gia sư
   const registerTutorBtn = document.getElementById('registerTutorBtn');
   if (registerTutorBtn) {
-    // Giả sử có biến learner.isTutor để xác định đã là gia sư hay chưa
-    if (!learner.isTutor) {
+    // Kiểm tra xem đã đăng ký làm gia sư chưa
+    const savedTutors = localStorage.getItem('tutors');
+    const isRegisteredAsTutor = savedTutors && JSON.parse(savedTutors).some(tutor => 
+      tutor.email === 'khoa.2374802010241@vanlanguni.vn' || 
+      tutor.mssv === '2374802010241'
+    );
+    
+    if (!isRegisteredAsTutor) {
       registerTutorBtn.style.display = '';
       registerTutorBtn.onclick = function() {
-        window.location.href = 'tutor-dashboard.html?register=1';
+        // Mở modal đăng ký thay vì chuyển trang
+        const modal = document.getElementById('registerTutorModal');
+        if (modal) {
+          modal.style.display = 'block';
+        }
       };
     } else {
       registerTutorBtn.style.display = 'none';
@@ -106,10 +116,21 @@ function updateSettingsForms() {
   const registerTutorCard = document.getElementById('register-tutor-card');
   const registerTutorBtn2 = document.getElementById('registerTutorBtn2');
   if (registerTutorCard && registerTutorBtn2) {
-    if (!learner.isTutor) {
+    // Kiểm tra xem đã đăng ký làm gia sư chưa
+    const savedTutors = localStorage.getItem('tutors');
+    const isRegisteredAsTutor = savedTutors && JSON.parse(savedTutors).some(tutor => 
+      tutor.email === 'khoa.2374802010241@vanlanguni.vn' || 
+      tutor.mssv === '2374802010241'
+    );
+    
+    if (!isRegisteredAsTutor) {
       registerTutorCard.style.display = '';
       registerTutorBtn2.onclick = function() {
-        window.location.href = 'tutor-dashboard.html?register=1';
+        // Mở modal đăng ký thay vì chuyển trang
+        const modal = document.getElementById('registerTutorModal');
+        if (modal) {
+          modal.style.display = 'block';
+        }
       };
     } else {
       registerTutorCard.style.display = 'none';
@@ -244,7 +265,7 @@ function renderTutors(list) {
             <span class="stars">${'★'.repeat(Math.floor(t.rating))}${'☆'.repeat(5-Math.floor(t.rating))}</span>
             <span class="rating-text">${t.rating}/5 (${t.ratingCount} học sinh đã đánh giá)</span>
           </div>
-          <div class="tutor-price">${t.price.toLocaleString()}đ/buổi</div>
+
           <div class="tutor-desc">${t.desc}</div>
           <div class="tutor-bio">${shortBio}${showSeeMore ? ` <span class='see-more' onclick='showFullBio(${t.id})'>Xem thêm</span>` : ''}</div>
           <div class="tutor-achievements">
@@ -393,16 +414,14 @@ function filterTutors() {
   const meetingTypeFilter = document.getElementById('filterMeetingType').value;
   const nameFilter = document.getElementById('filterName').value.toLowerCase();
   const subjectFilter = document.getElementById('filterSubject').value.toLowerCase();
-  const priceFilter = parseFloat(document.getElementById('filterPrice').value) || 0;
   
   let filteredTutors = tutors.filter(tutor => {
     const statusMatch = !statusFilter || tutor.status === statusFilter;
     const meetingTypeMatch = !meetingTypeFilter || tutor.meetingType === meetingTypeFilter;
     const nameMatch = !nameFilter || tutor.name.toLowerCase().includes(nameFilter);
     const subjectMatch = !subjectFilter || tutor.subject.toLowerCase().includes(subjectFilter);
-    const priceMatch = !priceFilter || tutor.price <= priceFilter;
     
-    return statusMatch && meetingTypeMatch && nameMatch && subjectMatch && priceMatch;
+    return statusMatch && meetingTypeMatch && nameMatch && subjectMatch;
   });
   
   renderTutors(filteredTutors);
@@ -493,7 +512,6 @@ function attachFilterEvents() {
   document.getElementById('filterMeetingType').onchange = filterTutors;
   document.getElementById('filterName').oninput = filterTutors;
   document.getElementById('filterSubject').oninput = filterTutors;
-  document.getElementById('filterPrice').oninput = filterTutors;
 }
 
 // Chuyển tab nav
@@ -655,6 +673,292 @@ function attachPasswordForm() {
   }
 }
 
+// Gắn sự kiện modal đăng ký làm gia sư
+function attachRegisterTutorModal() {
+  const registerTutorForm = document.getElementById('registerTutorForm');
+  if (registerTutorForm) {
+    registerTutorForm.addEventListener('submit', handleRegisterTutor);
+  }
+  
+  // Đóng modal khi click bên ngoài
+  const modal = document.getElementById('registerTutorModal');
+  if (modal) {
+    modal.addEventListener('click', function(e) {
+      if (e.target === modal) {
+        closeRegisterTutorModal();
+      }
+    });
+  }
+  
+  // Tự động điền thông tin khi mở modal
+  const registerTutorBtn = document.getElementById('registerTutorBtn');
+  const registerTutorBtn2 = document.getElementById('registerTutorBtn2');
+  
+  if (registerTutorBtn) {
+    registerTutorBtn.onclick = function() {
+      fillRegisterTutorForm();
+      const modal = document.getElementById('registerTutorModal');
+      if (modal) {
+        modal.style.display = 'flex';
+      }
+    };
+  }
+  
+  if (registerTutorBtn2) {
+    registerTutorBtn2.onclick = function() {
+      fillRegisterTutorForm();
+      const modal = document.getElementById('registerTutorModal');
+      if (modal) {
+        modal.style.display = 'flex';
+      }
+    };
+  }
+  
+  // Gắn sự kiện upload ảnh gia sư
+  const photoInput = document.getElementById('tutorPhotoInput');
+  if (photoInput) {
+    photoInput.addEventListener('change', handleTutorPhotoUpload);
+  }
+}
+
+// Điền thông tin vào form đăng ký
+function fillRegisterTutorForm() {
+  const nameInput = document.getElementById('regTutorName');
+  const genderInput = document.getElementById('regTutorGender');
+  const mssvInput = document.getElementById('regTutorMSSV');
+  const phoneInput = document.getElementById('regTutorPhone');
+  
+  if (nameInput) {
+    nameInput.value = 'Trần Minh Khoa';
+    nameInput.readOnly = true;
+    nameInput.classList.add('readonly');
+  }
+  
+  if (genderInput) {
+    genderInput.value = 'Nam';
+    genderInput.disabled = true;
+    genderInput.classList.add('readonly');
+  }
+  
+  if (mssvInput) {
+    mssvInput.value = '2374802010241';
+    mssvInput.readOnly = true;
+    mssvInput.classList.add('readonly');
+  }
+  
+  if (phoneInput) {
+    phoneInput.value = '0911728117';
+    phoneInput.readOnly = true;
+    phoneInput.classList.add('readonly');
+  }
+}
+
+// Hàm chụp ảnh chứng chỉ
+function captureCertificate(certName, side) {
+  // Kiểm tra xem trình duyệt có hỗ trợ camera không
+  if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
+    // Mở camera để chụp ảnh
+    navigator.mediaDevices.getUserMedia({ video: true })
+      .then(function(stream) {
+        // Tạo modal camera
+        const cameraModal = document.createElement('div');
+        cameraModal.className = 'camera-modal';
+        cameraModal.innerHTML = `
+          <div class="camera-container">
+            <h3>Chụp ảnh ${side === 'front' ? 'mặt trước' : 'mặt sau'} - ${certName}</h3>
+            <video id="camera-video" autoplay></video>
+            <div class="camera-controls">
+              <button type="button" class="btn-capture" onclick="takePhoto('${certName}', '${side}')">Chụp ảnh</button>
+              <button type="button" class="btn-cancel" onclick="closeCamera()">Hủy</button>
+            </div>
+          </div>
+        `;
+        
+        document.body.appendChild(cameraModal);
+        
+        const video = document.getElementById('camera-video');
+        video.srcObject = stream;
+        
+        // Lưu stream để đóng camera sau
+        window.currentStream = stream;
+      })
+      .catch(function(err) {
+        console.log('Không thể truy cập camera:', err);
+        alert('Không thể truy cập camera. Vui lòng kiểm tra quyền truy cập camera.');
+      });
+  } else {
+    alert('Trình duyệt không hỗ trợ camera. Vui lòng sử dụng trình duyệt khác.');
+  }
+}
+
+// Hàm chụp ảnh
+function takePhoto(certName, side) {
+  const video = document.getElementById('camera-video');
+  const canvas = document.createElement('canvas');
+  const context = canvas.getContext('2d');
+  
+  canvas.width = video.videoWidth;
+  canvas.height = video.videoHeight;
+  context.drawImage(video, 0, 0);
+  
+  // Chuyển canvas thành blob
+  canvas.toBlob(function(blob) {
+    // Hiển thị preview
+    showCertificatePreview(certName, side, blob);
+    
+    // Đóng camera
+    closeCamera();
+  }, 'image/jpeg');
+}
+
+// Hàm đóng camera
+function closeCamera() {
+  const cameraModal = document.querySelector('.camera-modal');
+  if (cameraModal) {
+    cameraModal.remove();
+  }
+  
+  if (window.currentStream) {
+    window.currentStream.getTracks().forEach(track => track.stop());
+    window.currentStream = null;
+  }
+}
+
+// Hàm hiển thị preview ảnh
+function showCertificatePreview(certName, side, blob) {
+  const previewId = `${certName}-${side}-preview`;
+  const preview = document.getElementById(previewId);
+  
+  if (preview) {
+    const url = URL.createObjectURL(blob);
+    preview.innerHTML = `<img src="${url}" alt="Certificate preview">`;
+    preview.style.background = 'none';
+    
+    // Thêm sự kiện click để phóng to ảnh
+    const img = preview.querySelector('img');
+    if (img) {
+      img.addEventListener('click', function() {
+        showImageZoom(url);
+      });
+    }
+  }
+}
+
+
+
+// Xử lý đăng ký làm gia sư
+function handleRegisterTutor(e) {
+  e.preventDefault();
+  
+  // Lấy dữ liệu từ form
+  const bio = document.getElementById('regTutorBio').value.trim();
+  const url = document.getElementById('regTutorURL').value.trim();
+  const gpa = document.getElementById('regTutorGPA').value;
+  
+  if (!bio) {
+    alert('Vui lòng nhập thông tin giới thiệu về bản thân!');
+    return;
+  }
+  
+  // Thu thập ảnh gia sư
+  const tutorPhotos = uploadedTutorPhotos.map(photo => ({
+    id: photo.id,
+    file: photo.file,
+    url: photo.url
+  }));
+  
+  // Thu thập thông tin chứng chỉ
+  const certificateData = [];
+  const certificateRows = document.querySelectorAll('.certificate-table tbody tr');
+  certificateRows.forEach(row => {
+    const scoreInput = row.querySelector('input[type="text"], input[type="number"]');
+    const dateInput = row.querySelector('input[type="date"]');
+    const certName = row.cells[0].textContent;
+    
+    // Kiểm tra xem có ảnh được chụp không
+    const frontPreview = document.getElementById(`${certName}-front-preview`);
+    const backPreview = document.getElementById(`${certName}-back-preview`);
+    
+    const hasFrontImage = frontPreview && frontPreview.querySelector('img');
+    const hasBackImage = backPreview && backPreview.querySelector('img');
+    
+    // Chỉ thêm chứng chỉ nếu có ít nhất một ảnh được chụp
+    if (hasFrontImage || hasBackImage) {
+      certificateData.push({
+        name: certName,
+        score: scoreInput ? scoreInput.value : '',
+        date: dateInput ? dateInput.value : '',
+        frontImage: hasFrontImage ? frontPreview.querySelector('img').src : null,
+        backImage: hasBackImage ? backPreview.querySelector('img').src : null
+      });
+    }
+  });
+  
+  // Tạo dữ liệu gia sư mới
+  const newTutor = {
+    id: tutors.length + 1,
+    name: 'Trần Minh Khoa',
+    status: 'available',
+    subject: 'Lập trình hướng đối tượng',
+    desc: bio,
+    rating: 0,
+    ratingCount: 0,
+    students: 0,
+    avatar: '👨‍🏫',
+    meetingType: '1-1',
+    onlineSupport: true,
+    bio: bio,
+    achievements: ['Gia sư mới'],
+    photos: tutorPhotos,
+    certificates: certificateData,
+    email: 'khoa.2374802010241@vanlanguni.vn',
+    phone: '0911728117',
+    mssv: '2374802010241',
+    gender: 'Nam',
+    gpa: gpa || '3.8',
+    url: url
+  };
+  
+  // Thêm vào danh sách gia sư
+  tutors.push(newTutor);
+  
+  // Lưu vào localStorage
+  localStorage.setItem('tutors', JSON.stringify(tutors));
+  
+  // Hiển thị thông báo thành công
+  alert('Đăng ký làm gia sư thành công! Bạn đã được chuyển sang giao diện gia sư.');
+  
+  // Đóng modal
+  closeRegisterTutorModal();
+  
+  // Chuyển sang giao diện gia sư
+  window.location.href = 'tutor-dashboard.html';
+}
+
+// Đóng modal đăng ký làm gia sư
+function closeRegisterTutorModal() {
+  const modal = document.getElementById('registerTutorModal');
+  if (modal) {
+    modal.style.display = 'none';
+    // Reset form
+    const form = document.getElementById('registerTutorForm');
+    if (form) {
+      form.reset();
+      // Remove readonly styling
+      const readonlyInputs = form.querySelectorAll('.readonly');
+      readonlyInputs.forEach(input => {
+        input.classList.remove('readonly');
+        input.readOnly = false;
+        input.disabled = false;
+      });
+    }
+    
+    // Reset ảnh đã upload
+    uploadedTutorPhotos = [];
+    renderTutorPhotos();
+  }
+}
+
 // Hiển thị thông báo từ localStorage
 function renderLearnerNotifications() {
   const notiList = document.getElementById('learnerNotifications');
@@ -704,10 +1008,54 @@ window.onload = function() {
   attachSettingsForms();
   attachAvatarEvents();
   attachPasswordForm();
+  attachRegisterTutorModal();
   renderLearnerNotifications();
 }
 
 document.addEventListener('DOMContentLoaded', function() {
+  // Kiểm tra xem người dùng đã đăng ký làm gia sư chưa
+  const savedTutors = localStorage.getItem('tutors');
+  const isRegisteredAsTutor = savedTutors && JSON.parse(savedTutors).some(tutor => 
+    tutor.email === 'khoa.2374802010241@vanlanguni.vn' || 
+    tutor.mssv === '2374802010241'
+  );
+  
+  // Hiển thị/ẩn nút đăng ký làm gia sư
+  const registerTutorBtn = document.getElementById('registerTutorBtn');
+  const registerTutorBtn2 = document.getElementById('registerTutorBtn2');
+  
+  if (registerTutorBtn) {
+    if (isRegisteredAsTutor) {
+      registerTutorBtn.textContent = 'Đã đăng ký làm gia sư';
+      registerTutorBtn.disabled = true;
+      registerTutorBtn.style.background = '#e9ecef';
+      registerTutorBtn.style.color = '#6c757d';
+      registerTutorBtn.style.cursor = 'not-allowed';
+    } else {
+      registerTutorBtn.textContent = 'Đăng ký làm gia sư';
+      registerTutorBtn.disabled = false;
+      registerTutorBtn.style.background = 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)';
+      registerTutorBtn.style.color = '#fff';
+      registerTutorBtn.style.cursor = 'pointer';
+    }
+  }
+  
+  if (registerTutorBtn2) {
+    if (isRegisteredAsTutor) {
+      registerTutorBtn2.textContent = 'Đã đăng ký làm gia sư';
+      registerTutorBtn2.disabled = true;
+      registerTutorBtn2.style.background = '#e9ecef';
+      registerTutorBtn2.style.color = '#6c757d';
+      registerTutorBtn2.style.cursor = 'not-allowed';
+    } else {
+      registerTutorBtn2.textContent = 'Đăng ký làm gia sư';
+      registerTutorBtn2.disabled = false;
+      registerTutorBtn2.style.background = 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)';
+      registerTutorBtn2.style.color = '#fff';
+      registerTutorBtn2.style.cursor = 'pointer';
+    }
+  }
+  
   const swapBtn = document.getElementById('swapRoleBtn');
   if (swapBtn) {
     swapBtn.onclick = function() {
@@ -715,3 +1063,109 @@ document.addEventListener('DOMContentLoaded', function() {
     };
   }
 }); 
+
+// Hàm hiển thị ảnh phóng to
+function showImageZoom(imageUrl) {
+  const zoomModal = document.createElement('div');
+  zoomModal.className = 'image-zoom-modal';
+  zoomModal.innerHTML = `
+    <div class="zoom-image-container">
+      <div class="zoom-close" onclick="closeImageZoom()">&times;</div>
+      <img src="${imageUrl}" alt="Zoomed image" class="zoom-image">
+    </div>
+  `;
+  
+  document.body.appendChild(zoomModal);
+  
+  // Đóng modal khi click bên ngoài ảnh
+  zoomModal.addEventListener('click', function(e) {
+    if (e.target === zoomModal) {
+      closeImageZoom();
+    }
+  });
+}
+
+// Hàm đóng ảnh phóng to
+function closeImageZoom() {
+  const zoomModal = document.querySelector('.image-zoom-modal');
+  if (zoomModal) {
+    zoomModal.remove();
+  }
+}
+
+// Biến lưu trữ ảnh gia sư đã upload
+let uploadedTutorPhotos = [];
+
+// Hàm xử lý upload ảnh gia sư
+function handleTutorPhotoUpload(event) {
+  const files = event.target.files;
+  const maxPhotos = 3;
+  
+  if (uploadedTutorPhotos.length + files.length > maxPhotos) {
+    alert(`Bạn chỉ có thể upload tối đa ${maxPhotos} ảnh!`);
+    return;
+  }
+  
+  for (let i = 0; i < files.length; i++) {
+    const file = files[i];
+    
+    if (!file.type.startsWith('image/')) {
+      alert('Vui lòng chỉ chọn file ảnh!');
+      continue;
+    }
+    
+    if (uploadedTutorPhotos.length >= maxPhotos) {
+      break;
+    }
+    
+    const reader = new FileReader();
+    reader.onload = function(e) {
+      const photoData = {
+        id: Date.now() + i,
+        file: file,
+        url: e.target.result
+      };
+      
+      uploadedTutorPhotos.push(photoData);
+      renderTutorPhotos();
+    };
+    
+    reader.readAsDataURL(file);
+  }
+  
+  // Reset input
+  event.target.value = '';
+}
+
+// Hàm render ảnh gia sư đã upload
+function renderTutorPhotos() {
+  const uploadedPhotosContainer = document.getElementById('uploadedPhotos');
+  const photoUploadArea = document.getElementById('photoUploadArea');
+  
+  if (!uploadedPhotosContainer) return;
+  
+  uploadedPhotosContainer.innerHTML = '';
+  
+  uploadedTutorPhotos.forEach((photo, index) => {
+    const photoElement = document.createElement('div');
+    photoElement.className = 'uploaded-photo';
+    photoElement.innerHTML = `
+      <img src="${photo.url}" alt="Tutor photo ${index + 1}" onclick="showImageZoom('${photo.url}')" style="width: 100%; height: 100%; object-fit: cover;">
+      <button type="button" class="photo-remove-btn" onclick="removeTutorPhoto(${photo.id})">&times;</button>
+    `;
+    uploadedPhotosContainer.appendChild(photoElement);
+  });
+  
+  // Ẩn/hiện upload area dựa trên số lượng ảnh
+  if (uploadedTutorPhotos.length >= 3) {
+    photoUploadArea.classList.add('hidden');
+  } else {
+    photoUploadArea.classList.remove('hidden');
+  }
+}
+
+// Hàm xóa ảnh gia sư
+function removeTutorPhoto(photoId) {
+  uploadedTutorPhotos = uploadedTutorPhotos.filter(photo => photo.id !== photoId);
+  renderTutorPhotos();
+} 

@@ -1324,7 +1324,6 @@ body.tutor-dashboard {
     font-style: italic;
 }
 
-<<<<<<< HEAD
 /* === TUTOR DASHBOARD CUSTOMIZATION === */
 
 /* Readonly field styling for tutor registration form */
@@ -1350,7 +1349,8 @@ body.tutor-dashboard {
 }
 
 /* === END TUTOR DASHBOARD CUSTOMIZATION === */
-=======
+
+/* Modal form styling for edit course */
 .modal-content form#editCourseForm {
   display: flex;
   flex-direction: column;
@@ -1408,4 +1408,3 @@ body.tutor-dashboard {
   .modal-content { padding: 12px 2px; }
   #editCourseForm button[type="submit"] { min-width: 120px; font-size: 1rem; }
 }
->>>>>>> 178d65882e7d1d0a84719f75844367f25acd8c6d

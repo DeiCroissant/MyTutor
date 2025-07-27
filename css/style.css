@@ -139,7 +139,7 @@ body {
   margin-bottom: 40px;
   display: none;
 }
-.section:first-child {
+.section.active {
   display: block;
 }
 .section h2 {
@@ -478,11 +478,7 @@ body {
   color: #666;
   font-size: 14px;
 }
-.tutor-price {
-  font-weight: 600;
-  color: #1976d2;
-  margin-bottom: 8px;
-}
+
 .tutor-desc {
   color: #666;
   font-size: 14px;
@@ -1134,6 +1130,340 @@ body {
   box-shadow: 0 2px 8px rgba(0,0,0,0.15);
 }
 
+/* Modal đăng ký làm gia sư */
+.register-tutor-modal {
+  background: white;
+  border-radius: 12px;
+  padding: 32px;
+  width: 90%;
+  max-width: 600px;
+  max-height: 90vh;
+  overflow-y: auto;
+  box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+  position: relative;
+}
+
+.register-tutor-modal h3 {
+  margin: 0 0 24px 0;
+  color: #333;
+  font-size: 20px;
+  font-weight: 600;
+  text-align: center;
+}
+
+#registerTutorForm .form-row {
+  margin-bottom: 20px;
+}
+
+#registerTutorForm label {
+  display: block;
+  margin-bottom: 6px;
+  font-weight: 600;
+  color: #333;
+  font-size: 14px;
+}
+
+#registerTutorForm input[type="text"],
+#registerTutorForm input[type="tel"],
+#registerTutorForm input[type="url"],
+#registerTutorForm input[type="number"],
+#registerTutorForm select {
+  width: 100%;
+  padding: 12px 16px;
+  border: 2px solid #e1e5e9;
+  border-radius: 8px;
+  font-size: 14px;
+  transition: border-color 0.3s;
+  box-sizing: border-box;
+}
+
+#registerTutorForm input:focus,
+#registerTutorForm select:focus,
+#registerTutorForm textarea:focus {
+  outline: none;
+  border-color: #667eea;
+}
+
+#registerTutorForm textarea {
+  width: 100%;
+  padding: 12px 16px;
+  border: 2px solid #e1e5e9;
+  border-radius: 8px;
+  font-size: 14px;
+  resize: vertical;
+  min-height: 100px;
+  box-sizing: border-box;
+}
+
+#registerTutorForm input[type="file"] {
+  width: 100%;
+  padding: 8px;
+  border: 2px dashed #e1e5e9;
+  border-radius: 8px;
+  background: #f8f9fa;
+  cursor: pointer;
+}
+
+#registerTutorForm input[type="file"]:hover {
+  border-color: #667eea;
+  background: #f0f2f5;
+}
+
+.certificate-table-container {
+  margin-top: 8px;
+  max-height: 300px;
+  overflow-y: auto;
+  border: 1px solid #e1e5e9;
+  border-radius: 8px;
+}
+
+.certificate-table {
+  width: 100%;
+  border-collapse: collapse;
+  background: #fff;
+}
+
+.certificate-table th {
+  background: #f8f9fa;
+  padding: 12px 8px;
+  text-align: left;
+  font-weight: 600;
+  color: #333;
+  font-size: 13px;
+  border-bottom: 2px solid #e1e5e9;
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+
+.certificate-table td {
+  padding: 8px;
+  border-bottom: 1px solid #f0f0f0;
+  font-size: 13px;
+  vertical-align: middle;
+}
+
+.certificate-table tr:hover {
+  background: #f8f9fa;
+}
+
+.certificate-table input[type="text"],
+.certificate-table input[type="number"],
+.certificate-table input[type="date"] {
+  width: 100%;
+  padding: 6px 8px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 12px;
+  box-sizing: border-box;
+}
+
+.certificate-table input[type="text"]:focus,
+.certificate-table input[type="number"]:focus,
+.certificate-table input[type="date"]:focus {
+  outline: none;
+  border-color: #667eea;
+}
+
+.certificate-table input[type="checkbox"] {
+  width: 16px;
+  height: 16px;
+  accent-color: #667eea;
+  cursor: pointer;
+}
+
+.certificate-table td:first-child {
+  font-weight: 500;
+  color: #333;
+  min-width: 120px;
+}
+
+.certificate-table td:nth-child(2) {
+  min-width: 100px;
+}
+
+.certificate-table td:nth-child(3) {
+  min-width: 100px;
+}
+
+.certificate-table td:last-child,
+.certificate-table td:nth-last-child(2) {
+  text-align: center;
+  width: 80px;
+}
+
+.certificate-upload {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  align-items: center;
+}
+
+.certificate-upload {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  align-items: center;
+  min-height: 80px;
+}
+
+.capture-btn {
+  padding: 4px 8px;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  border: none;
+  border-radius: 4px;
+  font-size: 10px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.capture-btn:hover {
+  background: linear-gradient(135deg, #764ba2 0%, #667eea 100%);
+  transform: translateY(-1px);
+  box-shadow: 0 2px 4px rgba(118,75,162,0.2);
+}
+
+.certificate-preview {
+  width: 60px;
+  height: 40px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  background: #f8f9fa;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 10px;
+  color: #666;
+  margin-bottom: 4px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.certificate-preview:hover {
+  border-color: #667eea;
+  background: #f0f2f5;
+  transform: scale(1.05);
+}
+
+.certificate-preview img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 3px;
+}
+
+/* Camera Modal */
+.camera-modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0,0,0,0.8);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 2000;
+}
+
+.camera-container {
+  background: white;
+  border-radius: 12px;
+  padding: 24px;
+  text-align: center;
+  max-width: 500px;
+  width: 90%;
+}
+
+.camera-container h3 {
+  margin: 0 0 20px 0;
+  color: #333;
+  font-size: 18px;
+  font-weight: 600;
+}
+
+#camera-video {
+  width: 100%;
+  max-width: 400px;
+  height: 300px;
+  border-radius: 8px;
+  margin-bottom: 20px;
+  background: #000;
+}
+
+.camera-controls {
+  display: flex;
+  gap: 12px;
+  justify-content: center;
+}
+
+.btn-capture {
+  padding: 12px 24px;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.btn-capture:hover {
+  background: linear-gradient(135deg, #764ba2 0%, #667eea 100%);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(118,75,162,0.3);
+}
+
+.camera-controls .btn-cancel {
+  padding: 12px 24px;
+  background: #f8f9fa;
+  color: #666;
+  border: 1px solid #e9ecef;
+  border-radius: 8px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.camera-controls .btn-cancel:hover {
+  background: #e9ecef;
+  color: #333;
+}
+
+/* Responsive cho modal đăng ký */
+@media (max-width: 768px) {
+  .register-tutor-modal {
+    width: 95%;
+    padding: 20px;
+    max-height: 95vh;
+  }
+  
+  .certificate-table-container {
+    max-height: 250px;
+  }
+  
+  .certificate-table th,
+  .certificate-table td {
+    padding: 6px 4px;
+    font-size: 12px;
+  }
+  
+  .certificate-table input[type="text"],
+  .certificate-table input[type="number"],
+  .certificate-table input[type="date"] {
+    padding: 4px 6px;
+    font-size: 11px;
+  }
+  
+  #registerTutorForm input,
+  #registerTutorForm select,
+  #registerTutorForm textarea {
+    font-size: 16px; /* Prevent zoom on iOS */
+  }
+}
+
 /* === TUTOR DASHBOARD CUSTOMIZATION === */
 
 /* Header Tutor */
@@ -1564,3 +1894,188 @@ input:focus, textarea:focus, select:focus {
 /* === END INTERVIEW SUGGESTIONS STYLING === */
 
 /* === END READONLY FIELD STYLING === */ 
+
+/* Image Zoom Modal Styles */
+.image-zoom-modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.9);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 3000;
+  cursor: pointer;
+}
+
+.zoom-image-container {
+  position: relative;
+  max-width: 90vw;
+  max-height: 90vh;
+  text-align: center;
+}
+
+.zoom-image {
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+  border-radius: 8px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+}
+
+.zoom-close {
+  position: absolute;
+  top: -40px;
+  right: 0;
+  color: #fff;
+  font-size: 24px;
+  cursor: pointer;
+  background: rgba(0, 0, 0, 0.5);
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.2s;
+}
+
+.zoom-close:hover {
+  background: rgba(0, 0, 0, 0.7);
+}
+
+/* Tutor Photos Upload Styles */
+.tutor-photos-container {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.photo-upload-area {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 8px;
+}
+
+.upload-placeholder {
+  width: 120px;
+  height: 120px;
+  border: 2px dashed #ddd;
+  border-radius: 8px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s;
+  background: #f8f9fa;
+  flex-shrink: 0;
+}
+
+.upload-placeholder:hover {
+  border-color: #667eea;
+  background: #f0f2f5;
+}
+
+.upload-placeholder span {
+  font-size: 24px;
+  color: #667eea;
+  margin-bottom: 4px;
+}
+
+.upload-placeholder p {
+  margin: 0;
+  font-size: 12px;
+  color: #666;
+  text-align: center;
+}
+
+.uploaded-photos {
+  display: flex;
+  gap: 12px;
+  flex-wrap: nowrap;
+  justify-content: flex-start;
+  align-items: center;
+  margin-top: 8px;
+}
+
+.uploaded-photo {
+  position: relative;
+  width: 120px;
+  height: 120px;
+  border-radius: 8px;
+  overflow: hidden;
+  border: 2px solid #e1e5e9;
+  background: #fff;
+  flex-shrink: 0;
+}
+
+.uploaded-photo img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.photo-remove-btn {
+  position: absolute;
+  top: 6px;
+  right: 6px;
+  width: 24px;
+  height: 24px;
+  background: rgba(255, 0, 0, 0.9);
+  color: white;
+  border: none;
+  border-radius: 50%;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  font-weight: bold;
+  transition: background 0.2s;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.photo-remove-btn:hover {
+  background: rgba(255, 0, 0, 1);
+}
+
+.photo-upload-area.hidden {
+  display: none;
+}
+
+/* Responsive cho upload ảnh */
+@media (max-width: 768px) {
+  .uploaded-photos {
+    gap: 8px;
+  }
+  
+  .uploaded-photo,
+  .upload-placeholder {
+    width: 100px;
+    height: 100px;
+  }
+  
+  .photo-remove-btn {
+    width: 20px;
+    height: 20px;
+    font-size: 12px;
+    top: 4px;
+    right: 4px;
+  }
+}
+
+@media (max-width: 480px) {
+  .uploaded-photos {
+    gap: 6px;
+  }
+  
+  .uploaded-photo,
+  .upload-placeholder {
+    width: 80px;
+    height: 80px;
+  }
+} 

@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Test Navigation</title>
+  <style>
+    .section {
+      display: none;
+    }
+    .section.active {
+      display: block;
+    }
+    .nav a.active {
+      background: #667eea;
+      color: white;
+    }
+  </style>
+</head>
+<body>
+  <nav class="nav">
+    <a href="#tab1" class="active">Tab 1</a>
+    <a href="#tab2">Tab 2</a>
+    <a href="#tab3">Tab 3</a>
+  </nav>
+  
+  <div id="tab1" class="section active">
+    <h2>Tab 1 Content</h2>
+    <p>This is tab 1 content</p>
+  </div>
+  
+  <div id="tab2" class="section">
+    <h2>Tab 2 Content</h2>
+    <p>This is tab 2 content</p>
+  </div>
+  
+  <div id="tab3" class="section">
+    <h2>Tab 3 Content</h2>
+    <p>This is tab 3 content</p>
+  </div>
+  
+  <script>
+    document.addEventListener('click', function(e) {
+      if (e.target.matches('.nav a')) {
+        e.preventDefault();
+        console.log('Tab clicked:', e.target.getAttribute('href'));
+        
+        // Xóa active class từ tất cả tab và section
+        document.querySelectorAll('.nav a').forEach(link => link.classList.remove('active'));
+        document.querySelectorAll('.section').forEach(section => section.classList.remove('active'));
+        
+        // Thêm active class cho tab được click
+        e.target.classList.add('active');
+        
+        // Hiển thị section tương ứng
+        const targetId = e.target.getAttribute('href').substring(1);
+        const targetSection = document.getElementById(targetId);
+        if (targetSection) {
+          targetSection.classList.add('active');
+          console.log('Activated section:', targetId);
+        }
+      }
+    });
+  </script>
+</body>
+</html> 

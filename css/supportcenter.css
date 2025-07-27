@@ -308,3 +308,317 @@ tr:hover {
 /* Modal overlay cũng sẽ được kế thừa từ style.css.
   Đảm bảo script chuyển đổi lớp 'active' hoặc 'show' hoạt động đúng.
 */
+
+/* ========== BÁO CÁO & THỐNG KÊ ========== */
+
+/* Stats Overview */
+.stats-overview {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 20px;
+  margin-bottom: 30px;
+}
+
+/* Charts Container */
+.charts-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+  gap: 24px;
+  margin-bottom: 30px;
+}
+
+.chart-card {
+  background: #fff;
+  border-radius: 16px;
+  padding: 24px;
+  border: 1px solid #e9ecef;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.05);
+}
+
+.chart-card h3 {
+  margin: 0 0 20px 0;
+  font-size: 18px;
+  font-weight: 600;
+  color: #333;
+  text-align: center;
+}
+
+.chart-card canvas {
+  width: 100% !important;
+  height: auto !important;
+  max-height: 300px;
+}
+
+/* Reports Section */
+.reports-section {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+  gap: 24px;
+  margin-bottom: 30px;
+}
+
+.report-card {
+  background: #fff;
+  border-radius: 16px;
+  padding: 24px;
+  border: 1px solid #e9ecef;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.05);
+}
+
+.report-card h3 {
+  margin: 0 0 20px 0;
+  font-size: 18px;
+  font-weight: 600;
+  color: #333;
+  border-bottom: 2px solid #f0f2f5;
+  padding-bottom: 12px;
+}
+
+.feedback-list {
+  max-height: 300px;
+  overflow-y: auto;
+}
+
+.feedback-item {
+  padding: 16px;
+  border: 1px solid #e9ecef;
+  border-radius: 8px;
+  margin-bottom: 12px;
+  background: #f8f9fa;
+}
+
+.feedback-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+.feedback-author {
+  font-weight: 600;
+  color: #333;
+}
+
+.feedback-date {
+  font-size: 12px;
+  color: #666;
+}
+
+.feedback-content {
+  color: #555;
+  line-height: 1.5;
+}
+
+.feedback-rating {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  margin-top: 8px;
+}
+
+.star {
+  color: #ffc107;
+  font-size: 14px;
+}
+
+/* Popular Subjects Section */
+.popular-subjects-section {
+  margin-bottom: 30px;
+}
+
+.stats-table {
+  width: 100%;
+  border-collapse: collapse;
+  background: #fff;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+.stats-table th {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: #fff;
+  padding: 16px 12px;
+  text-align: left;
+  font-weight: 600;
+  font-size: 14px;
+}
+
+.stats-table td {
+  padding: 12px;
+  border-bottom: 1px solid #f0f0f0;
+  font-size: 14px;
+}
+
+.stats-table tr:hover {
+  background: #f8f9fa;
+}
+
+.rank-cell {
+  text-align: center;
+  width: 60px;
+}
+
+.rank-badge {
+  display: inline-block;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  text-align: center;
+  line-height: 32px;
+  font-weight: 600;
+  font-size: 14px;
+}
+
+.rank-badge.rank-top {
+  background: linear-gradient(135deg, #ffd700 0%, #ffed4e 100%);
+  color: #333;
+}
+
+.rank-badge.rank-normal {
+  background: #f0f0f0;
+  color: #666;
+}
+
+.subject-name {
+  font-weight: 600;
+  color: #333;
+}
+
+.students-count,
+.lessons-count,
+.tutors-count {
+  text-align: center;
+  font-weight: 600;
+  color: #667eea;
+}
+
+.rating-cell {
+  text-align: center;
+}
+
+.rating-stars {
+  color: #ffc107;
+  font-size: 12px;
+  margin-right: 4px;
+}
+
+.rating-text {
+  font-weight: 600;
+  color: #333;
+}
+
+.completion-rate {
+  text-align: center;
+  width: 120px;
+}
+
+.progress-bar {
+  width: 100%;
+  height: 8px;
+  background: #f0f0f0;
+  border-radius: 4px;
+  overflow: hidden;
+  margin-bottom: 4px;
+}
+
+.progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #4CAF50 0%, #8BC34A 100%);
+  transition: width 0.3s ease;
+}
+
+.rate-text {
+  font-size: 12px;
+  color: #666;
+  font-weight: 600;
+}
+
+/* Course Status Section */
+.course-status-section {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+  gap: 24px;
+}
+
+.status-card {
+  background: #fff;
+  border-radius: 16px;
+  padding: 24px;
+  border: 1px solid #e9ecef;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.05);
+}
+
+.status-card h3 {
+  margin: 0 0 20px 0;
+  font-size: 18px;
+  font-weight: 600;
+  color: #333;
+  border-bottom: 2px solid #f0f2f5;
+  padding-bottom: 12px;
+}
+
+.course-list {
+  max-height: 300px;
+  overflow-y: auto;
+}
+
+.course-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 16px;
+  border: 1px solid #e9ecef;
+  border-radius: 8px;
+  margin-bottom: 8px;
+  background: #f8f9fa;
+}
+
+.course-info {
+  flex: 1;
+}
+
+.course-name {
+  font-weight: 600;
+  color: #333;
+  margin-bottom: 4px;
+}
+
+.course-details {
+  font-size: 12px;
+  color: #666;
+}
+
+.course-stats {
+  text-align: right;
+}
+
+.course-count {
+  font-weight: 600;
+  color: #007bff;
+  font-size: 18px;
+}
+
+.course-label {
+  font-size: 12px;
+  color: #666;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .charts-container {
+    grid-template-columns: 1fr;
+  }
+  
+  .reports-section {
+    grid-template-columns: 1fr;
+  }
+  
+  .course-status-section {
+    grid-template-columns: 1fr;
+  }
+  
+  .chart-card canvas {
+    max-height: 250px;
+  }
+}

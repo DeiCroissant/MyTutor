@@ -22,7 +22,7 @@ function renderTutorProfile() {
     if (tutors && tutors.length > 0) {
         const tutor = tutors[0];
         document.getElementById('tutorSubject').textContent = tutor.subject;
-        document.getElementById('tutorPrice').textContent = tutor.price ? tutor.price.toLocaleString() + 'đ' : '—';
+      
         document.getElementById('tutorDesc').textContent = tutor.desc;
         document.getElementById('tutorRating').innerHTML = `${'★'.repeat(Math.round(tutor.rating))}${'☆'.repeat(5-Math.round(tutor.rating))} (${tutor.rating}/5)`;
         document.getElementById('tutorStatus').textContent = tutor.status === 'available' ? 'Đang rảnh' : 'Đang bận';
@@ -578,13 +578,74 @@ window.addEventListener('DOMContentLoaded', function() {
   if (form) {
     form.onsubmit = function(e) {
       e.preventDefault();
-      alert('Đăng ký làm gia sư thành công! Hồ sơ của bạn sẽ được duyệt.');
+      
+      // Lấy dữ liệu từ form
+      const bio = document.getElementById('regTutorBio').value.trim();
+      const url = document.getElementById('regTutorURL').value.trim();
+      
+      if (!bio) {
+        alert('Vui lòng nhập thông tin giới thiệu về bản thân!');
+        return;
+      }
+      
+      // Tạo dữ liệu gia sư mới
+      const newTutor = {
+        id: tutors.length + 1,
+        name: 'Trần Minh Khoa',
+        status: 'available',
+        subject: 'Lập trình hướng đối tượng',
+        desc: bio,
+        rating: 0,
+        ratingCount: 0,
+        students: 0,
+        avatar: '👨‍🏫',
+        meetingType: '1-1',
+        onlineSupport: true,
+        bio: bio,
+        achievements: ['Gia sư mới'],
+        email: 'khoa.2374802010241@vanlanguni.vn',
+        phone: '0911728117',
+        mssv: '2374802010241',
+        gender: 'Nam',
+        gpa: document.getElementById('regTutorGPA').value || '3.8',
+        url: url
+      };
+      
+      // Thêm vào danh sách gia sư
+      tutors.push(newTutor);
+      
+      // Lưu vào localStorage
+      localStorage.setItem('tutors', JSON.stringify(tutors));
+      
+      // Hiển thị thông báo thành công
+      alert('Đăng ký làm gia sư thành công! Bạn đã được chuyển sang giao diện gia sư.');
+      
+      // Đóng modal
       closeRegisterTutorModal();
+      
+      // Chuyển sang giao diện gia sư
+      window.location.href = 'tutor-dashboard.html';
     };
   }
 });
 
 document.addEventListener('DOMContentLoaded', function() {
+    // Load dữ liệu gia sư từ localStorage nếu có
+    const savedTutors = localStorage.getItem('tutors');
+    if (savedTutors) {
+        try {
+            const parsedTutors = JSON.parse(savedTutors);
+            if (Array.isArray(parsedTutors) && parsedTutors.length > 0) {
+                // Cập nhật dữ liệu tutors với dữ liệu từ localStorage
+                tutors.length = 0;
+                parsedTutors.forEach(tutor => tutors.push(tutor));
+                console.log('Loaded tutors from localStorage:', tutors);
+            }
+        } catch (e) {
+            console.error('Error loading tutors from localStorage:', e);
+        }
+    }
+    
     // Thêm thư xác nhận vào hộp thư nếu chưa có
     let inbox = JSON.parse(localStorage.getItem('tutorInbox') || '[]');
     const confirmMsg = 'Xác nhận đã nhận được đơn đăng kí làm gia sư.';
@@ -635,38 +696,12 @@ document.addEventListener('DOMContentLoaded', function() {
             if (event.target === addModal) addModal.style.display = 'none';
         };
     }
-    // Logic hiển thị input giá tiền khi chọn Có phí/Miễn phí
-    const priceFree = document.getElementById('priceFree');
-    const pricePaid = document.getElementById('pricePaid');
-    const priceInputRow = document.getElementById('priceInputRow');
-    const addPrice = document.getElementById('addPrice');
-    if (priceFree && pricePaid && priceInputRow && addPrice) {
-        priceFree.onchange = function() {
-            if (this.checked) {
-                priceInputRow.style.display = 'none';
-                addPrice.value = '';
-            }
-        };
-        pricePaid.onchange = function() {
-            if (this.checked) {
-                priceInputRow.style.display = 'block';
-            }
-        };
-    }
     // Xử lý submit form thêm buổi học
     const addForm = document.getElementById('addLessonForm');
     if (addForm) {
         addForm.onsubmit = function(e) {
             e.preventDefault();
             const subject = document.getElementById('addSubject').value.trim();
-            let price = 0;
-            if (pricePaid && pricePaid.checked) {
-                price = parseInt(addPrice.value);
-                if (isNaN(price) || price <= 0) {
-                    alert('Vui lòng nhập giá tiền hợp lệ!');
-                    return;
-                }
-            }
             const date = document.getElementById('addDate').value;
             const time = document.getElementById('addTime').value.trim();
             const notes = document.getElementById('addNotes').value.trim();
@@ -682,7 +717,6 @@ document.addEventListener('DOMContentLoaded', function() {
                 date,
                 time,
                 subject,
-                price,
                 tutor: tutors[0].name,
                 status: 'upcoming',
                 notes,
@@ -692,9 +726,6 @@ document.addEventListener('DOMContentLoaded', function() {
             });
             addModal.style.display = 'none';
             this.reset();
-            // Reset lại radio và ẩn input giá tiền
-            if (priceFree) priceFree.checked = true;
-            if (priceInputRow) priceInputRow.style.display = 'none';
             saveScheduleToStorage();
             renderTeachingSchedule();
         };
@@ -1066,12 +1097,10 @@ function renderTutorSettings() {
     }
     // Cập nhật form thông tin dạy học
     const profileSubject = document.getElementById('profileSubject');
-    const profilePrice = document.getElementById('profilePrice');
     const profileDesc = document.getElementById('profileDesc');
     if (tutors && tutors.length > 0) {
         const tutor = tutors[0];
         if (profileSubject) profileSubject.value = tutor.subject;
-        if (profilePrice) profilePrice.value = tutor.price || '';
         if (profileDesc) profileDesc.value = tutor.desc || '';
     }
     // Cập nhật avatar hiện tại
@@ -1085,19 +1114,13 @@ function renderTutorSettings() {
         academicForm.onsubmit = function(e) {
             e.preventDefault();
             const newSubject = profileSubject.value.trim();
-            const newPrice = parseInt(profilePrice.value);
             const newDesc = profileDesc.value.trim();
             if (!newSubject) {
                 alert('Vui lòng nhập chuyên môn!');
                 return;
             }
-            if (newPrice <= 0) {
-                alert('Giá/buổi phải lớn hơn 0!');
-                return;
-            }
             // Cập nhật thông tin tutor
             tutors[0].subject = newSubject;
-            tutors[0].price = newPrice;
             tutors[0].desc = newDesc;
             renderTutorProfile();
             alert('Cập nhật thông tin dạy học thành công!');
@@ -1380,14 +1403,6 @@ if (document.getElementById('addLessonForm')) {
     document.getElementById('addLessonForm').onsubmit = function(e) {
         e.preventDefault();
         const subject = document.getElementById('addSubject').value.trim();
-        let price = 0;
-        if (pricePaid && pricePaid.checked) {
-            price = parseInt(addPrice.value);
-            if (isNaN(price) || price <= 0) {
-                alert('Vui lòng nhập giá tiền hợp lệ!');
-                return;
-            }
-        }
         const date = document.getElementById('addDate').value;
         const time = document.getElementById('addTime').value.trim();
         const notes = document.getElementById('addNotes').value.trim();
@@ -1403,7 +1418,6 @@ if (document.getElementById('addLessonForm')) {
             date,
             time,
             subject,
-            price,
             tutor: tutors[0].name,
             status: 'upcoming',
             notes,
@@ -1413,9 +1427,6 @@ if (document.getElementById('addLessonForm')) {
         });
         document.getElementById('addLessonModal').style.display = 'none';
         this.reset();
-        // Reset lại radio và ẩn input giá tiền
-        if (priceFree) priceFree.checked = true;
-        if (priceInputRow) priceInputRow.style.display = 'none';
         saveScheduleToStorage();
         renderTeachingSchedule();
     };

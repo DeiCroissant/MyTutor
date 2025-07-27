@@ -98,7 +98,6 @@
         </select>
         <input type="text" id="filterName" placeholder="Tìm theo tên">
         <input type="text" id="filterSubject" placeholder="Tìm theo môn học">
-        <input type="number" id="filterPrice" placeholder="Tìm theo giá tối đa">
         <button onclick="filterTutors()">Lọc</button>
       </div>
       <div class="tutor-list" id="tutorList">
@@ -274,6 +273,203 @@
         <div class="modal-actions">
           <button type="button" class="btn-cancel" onclick="closePasswordModal()">Hủy</button>
           <button type="submit" class="btn-save">Lưu thay đổi</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Modal đăng ký làm gia sư -->
+  <div class="modal-overlay" id="registerTutorModal">
+    <div class="register-tutor-modal">
+      <h3>Đăng ký làm gia sư</h3>
+      <form id="registerTutorForm">
+        <div class="form-row">
+          <label for="regTutorName">Tên *</label>
+          <input type="text" id="regTutorName" required>
+          <small style="color: #666; font-style: italic;">(Thông tin do trường cấp)</small>
+        </div>
+        
+        <div class="form-row">
+          <label for="regTutorGender">Giới tính *</label>
+          <select id="regTutorGender" required>
+            <option value="Nam">Nam</option>
+            <option value="Nữ">Nữ</option>
+          </select>
+          <small style="color: #666; font-style: italic;">(Thông tin do trường cấp)</small>
+        </div>
+        
+        <div class="form-row">
+          <label for="regTutorMSSV">MSSV *</label>
+          <input type="text" id="regTutorMSSV" required>
+          <small style="color: #666; font-style: italic;">(Thông tin do trường cấp)</small>
+        </div>
+        
+        <div class="form-row">
+          <label for="regTutorGPA">GPA *</label>
+          <input type="number" id="regTutorGPA" step="0.01" min="0" max="4" required>
+          <small style="color: #666; font-style: italic;">(Thông tin do trường cấp)</small>
+        </div>
+        
+        <div class="form-row">
+          <label for="regTutorPhone">Số điện thoại</label>
+          <input type="tel" id="regTutorPhone" required>
+        </div>
+        
+        <div class="form-row">
+          <label for="regTutorBio">Bio *</label>
+          <textarea id="regTutorBio" rows="4" placeholder="Giới thiệu về bản thân, kinh nghiệm, phong cách dạy..." required></textarea>
+        </div>
+        
+        <div class="form-row">
+          <label>Ảnh hồ sơ gia sư (tối đa 3 ảnh):</label>
+          <div class="tutor-photos-container">
+            <div class="photo-upload-area" id="photoUploadArea">
+              <input type="file" id="tutorPhotoInput" accept="image/*" multiple style="display: none;">
+              <div class="upload-placeholder" onclick="document.getElementById('tutorPhotoInput').click()">
+                <span>+</span>
+                <p>Chọn ảnh</p>
+              </div>
+            </div>
+            <div class="uploaded-photos" id="uploadedPhotos">
+              <!-- Ảnh đã upload sẽ hiển thị ở đây -->
+            </div>
+          </div>
+        </div>
+        
+        <div class="form-row">
+          <label for="regTutorURL">URL Link</label>
+          <input type="url" id="regTutorURL" placeholder="https://example.com">
+        </div>
+        
+        <div class="form-row">
+          <label for="regTutorMedia">Media cho Bio (ảnh/video)</label>
+          <input type="file" id="regTutorMedia" accept="image/*,video/*">
+        </div>
+        
+        <div class="form-row">
+          <label>Chứng chỉ</label>
+          <div class="certificate-table-container">
+            <table class="certificate-table">
+              <thead>
+                <tr>
+                  <th>Chứng chỉ</th>
+                  <th>Điểm/Level</th>
+                  <th>Ngày cấp</th>
+                  <th>Mặt trước</th>
+                  <th>Mặt sau</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>TOEIC</td>
+                  <td><input type="number" placeholder="Điểm" min="0" max="990"></td>
+                  <td><input type="date"></td>
+                  <td>
+                    <div class="certificate-upload">
+                      <button type="button" class="capture-btn" onclick="captureCertificate('TOEIC', 'front')">Chụp</button>
+                      <div class="certificate-preview" id="TOEIC-front-preview">Chưa có ảnh</div>
+                    </div>
+                  </td>
+                  <td>
+                    <div class="certificate-upload">
+                      <button type="button" class="capture-btn" onclick="captureCertificate('TOEIC', 'back')">Chụp</button>
+                      <div class="certificate-preview" id="TOEIC-back-preview">Chưa có ảnh</div>
+                    </div>
+                  </td>
+                </tr>
+                <tr>
+                  <td>IELTS</td>
+                  <td><input type="number" placeholder="Điểm" min="0" max="9" step="0.5"></td>
+                  <td><input type="date"></td>
+                  <td>
+                    <div class="certificate-upload">
+                      <button type="button" class="capture-btn" onclick="captureCertificate('IELTS', 'front')">Chụp</button>
+                      <div class="certificate-preview" id="IELTS-front-preview">Chưa có ảnh</div>
+                    </div>
+                  </td>
+                  <td>
+                    <div class="certificate-upload">
+                      <button type="button" class="capture-btn" onclick="captureCertificate('IELTS', 'back')">Chụp</button>
+                      <div class="certificate-preview" id="IELTS-back-preview">Chưa có ảnh</div>
+                    </div>
+                  </td>
+                </tr>
+                <tr>
+                  <td>Certified Teacher</td>
+                  <td><input type="text" placeholder="Level"></td>
+                  <td><input type="date"></td>
+                  <td>
+                    <div class="certificate-upload">
+                      <button type="button" class="capture-btn" onclick="captureCertificate('Certified Teacher', 'front')">Chụp</button>
+                      <div class="certificate-preview" id="Certified Teacher-front-preview">Chưa có ảnh</div>
+                    </div>
+                  </td>
+                  <td>
+                    <div class="certificate-upload">
+                      <button type="button" class="capture-btn" onclick="captureCertificate('Certified Teacher', 'back')">Chụp</button>
+                      <div class="certificate-preview" id="Certified Teacher-back-preview">Chưa có ảnh</div>
+                    </div>
+                  </td>
+                </tr>
+                <tr>
+                  <td>Teaching Experience</td>
+                  <td><input type="number" placeholder="Năm kinh nghiệm" min="0"></td>
+                  <td><input type="date"></td>
+                  <td>
+                    <div class="certificate-upload">
+                      <button type="button" class="capture-btn" onclick="captureCertificate('Teaching Experience', 'front')">Chụp</button>
+                      <div class="certificate-preview" id="Teaching Experience-front-preview">Chưa có ảnh</div>
+                    </div>
+                  </td>
+                  <td>
+                    <div class="certificate-upload">
+                      <button type="button" class="capture-btn" onclick="captureCertificate('Teaching Experience', 'back')">Chụp</button>
+                      <div class="certificate-preview" id="Teaching Experience-back-preview">Chưa có ảnh</div>
+                    </div>
+                  </td>
+                </tr>
+                <tr>
+                  <td>Programming Certificate</td>
+                  <td><input type="text" placeholder="Level"></td>
+                  <td><input type="date"></td>
+                  <td>
+                    <div class="certificate-upload">
+                      <button type="button" class="capture-btn" onclick="captureCertificate('Programming Certificate', 'front')">Chụp</button>
+                      <div class="certificate-preview" id="Programming Certificate-front-preview">Chưa có ảnh</div>
+                    </div>
+                  </td>
+                  <td>
+                    <div class="certificate-upload">
+                      <button type="button" class="capture-btn" onclick="captureCertificate('Programming Certificate', 'back')">Chụp</button>
+                      <div class="certificate-preview" id="Programming Certificate-back-preview">Chưa có ảnh</div>
+                    </div>
+                  </td>
+                </tr>
+                <tr>
+                  <td>Academic Achievement</td>
+                  <td><input type="text" placeholder="Thành tích"></td>
+                  <td><input type="date"></td>
+                  <td>
+                    <div class="certificate-upload">
+                      <button type="button" class="capture-btn" onclick="captureCertificate('Academic Achievement', 'front')">Chụp</button>
+                      <div class="certificate-preview" id="Academic Achievement-front-preview">Chưa có ảnh</div>
+                    </div>
+                  </td>
+                  <td>
+                    <div class="certificate-upload">
+                      <button type="button" class="capture-btn" onclick="captureCertificate('Academic Achievement', 'back')">Chụp</button>
+                      <div class="certificate-preview" id="Academic Achievement-back-preview">Chưa có ảnh</div>
+                    </div>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+        
+        <div class="modal-actions">
+          <button type="button" class="btn-cancel" onclick="closeRegisterTutorModal()">Hủy</button>
+          <button type="submit" class="btn-save">Đăng ký</button>
         </div>
       </form>
     </div>
