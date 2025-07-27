@@ -21,16 +21,22 @@ function renderTutorProfile() {
     // Các thông tin còn lại lấy từ tutor như cũ
     if (tutors && tutors.length > 0) {
         const tutor = tutors[0];
-        document.getElementById('tutorSubject').textContent = tutor.subject;
+        
+        // Hiển thị tất cả chuyên môn trong mục "Chuyên môn"
+        if (tutor.specialties && tutor.specialties.length > 0) {
+            document.getElementById('tutorSubject').textContent = tutor.specialties.join(', ');
+        } else {
+            document.getElementById('tutorSubject').textContent = tutor.subject;
+        }
       
         document.getElementById('tutorDesc').textContent = tutor.desc;
-        document.getElementById('tutorRating').innerHTML = `${'★'.repeat(Math.round(tutor.rating))}${'☆'.repeat(5-Math.round(tutor.rating))} (${tutor.rating}/5)`;
+        document.getElementById('tutorRating').innerHTML = `<span class="rating-stars"><span class="star-filled">${'★'.repeat(Math.round(tutor.rating))}</span><span class="star-empty">${'☆'.repeat(5-Math.round(tutor.rating))}</span></span> (${tutor.rating}/5)`;
         document.getElementById('tutorStatus').textContent = tutor.status === 'available' ? 'Đang rảnh' : 'Đang bận';
         document.getElementById('tutorOnline').textContent = tutor.onlineSupport ? 'Có' : 'Không';
     }
 }
 
-// 2. Hiển thị lịch dạy của gia sư
+// 2. Hiển thị lịch dạy của gia sư với Calendar
 function renderTeachingSchedule() {
     const accordion = document.getElementById('schedule-accordion');
     if (!accordion || !tutors || !schedule) return;
@@ -40,9 +46,146 @@ function renderTeachingSchedule() {
 
     const tutorLessons = schedule.filter(lesson => lesson.tutor === tutor.name);
 
+    // Tạo calendar view
+    accordion.innerHTML = `
+        <div class="calendar-container">
+            <div class="calendar-controls">
+                <button onclick="showCalendarView()" class="active">Calendar View</button>
+                <button onclick="showListView()">List View</button>
+                <button onclick="showQuickAddForm()" class="primary">Thêm lịch nhanh</button>
+            </div>
+            
+            <div class="calendar-legend">
+                <div class="legend-item">
+                    <div class="legend-color online"></div>
+                    <span>Online</span>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-color offline"></div>
+                    <span>Offline</span>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-color cancelled"></div>
+                    <span>Đã hủy</span>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-color completed"></div>
+                    <span>Hoàn thành</span>
+                </div>
+            </div>
+            
+            <div id="calendar-view">
+                ${renderCalendar()}
+            </div>
+            
+            <div id="list-view" style="display: none;">
+                ${renderListView(tutorLessons)}
+            </div>
+            
+            <div id="quick-add-form" style="display: none;">
+                ${renderQuickAddForm()}
+            </div>
+        </div>
+    `;
+
+    // Thêm modal cho chi tiết lesson
+    if (!document.getElementById('lesson-detail-modal')) {
+        const modal = document.createElement('div');
+        modal.id = 'lesson-detail-modal';
+        modal.className = 'lesson-detail-modal';
+        modal.innerHTML = `
+            <div class="lesson-detail-content">
+                <div class="lesson-detail-header">
+                    <div class="lesson-detail-title">Chi tiết buổi học</div>
+                    <button class="lesson-detail-close">&times;</button>
+                </div>
+                <div class="lesson-detail-info" id="lesson-detail-info">
+                    <!-- Lesson details will be populated here -->
+                </div>
+                <div class="lesson-detail-actions" id="lesson-detail-actions">
+                    <!-- Action buttons will be populated here -->
+                </div>
+            </div>
+        `;
+        document.body.appendChild(modal);
+        
+        // Close modal events
+        modal.querySelector('.lesson-detail-close').onclick = () => {
+            modal.style.display = 'none';
+        };
+        modal.onclick = (e) => {
+            if (e.target === modal) modal.style.display = 'none';
+        };
+    }
+}
+
+// Render calendar view
+function renderCalendar() {
+    const firstDay = new Date(currentCalendarYear, currentCalendarMonth, 1);
+    const lastDay = new Date(currentCalendarYear, currentCalendarMonth + 1, 0);
+    const startDate = new Date(firstDay);
+    startDate.setDate(startDate.getDate() - firstDay.getDay());
+    
+    const tutor = tutors[0];
+    const tutorLessons = schedule.filter(lesson => lesson.tutor === tutor.name);
+    
+    let calendarHTML = `
+        <div class="calendar-header">
+            <div class="calendar-nav">
+                <button onclick="changeMonth(-1)">&lt;</button>
+                <span class="calendar-title">${getMonthName(currentCalendarMonth)} ${currentCalendarYear}</span>
+                <button onclick="changeMonth(1)">&gt;</button>
+            </div>
+        </div>
+        <div class="calendar-grid">
+    `;
+    
+    // Add day headers
+    const dayNames = ['CN', 'T2', 'T3', 'T4', 'T5', 'T6', 'T7'];
+    dayNames.forEach(day => {
+        calendarHTML += `<div class="calendar-day-header">${day}</div>`;
+    });
+    
+    // Add calendar days
+    const today = new Date();
+    let calendarDate = new Date(startDate);
+    
+    for (let i = 0; i < 42; i++) {
+        const isToday = calendarDate.toDateString() === today.toDateString();
+        const isOtherMonth = calendarDate.getMonth() !== currentCalendarMonth;
+        const dayLessons = tutorLessons.filter(lesson => {
+            const lessonDate = new Date(lesson.date);
+            return lessonDate.toDateString() === calendarDate.toDateString();
+        });
+        
+        const hasLessons = dayLessons.length > 0;
+        
+        calendarHTML += `
+            <div class="calendar-day ${isOtherMonth ? 'other-month' : ''} ${isToday ? 'today' : ''} ${hasLessons ? 'has-lessons' : ''}" 
+                 onclick="showDayLessons('${calendarDate.toISOString().split('T')[0]}')">
+                <div class="calendar-day-number">${calendarDate.getDate()}</div>
+                <div class="calendar-lessons">
+                    ${dayLessons.map(lesson => `
+                        <div class="calendar-lesson-item ${lesson.onlineMeeting ? 'online' : ''} ${lesson.status === 'cancelled' ? 'cancelled' : ''} ${lesson.status === 'completed' ? 'completed' : ''}"
+                             onclick="showLessonDetail(${lesson.id}); event.stopPropagation();">
+                            ${lesson.subject.substring(0, 8)}...
+                        </div>
+                    `).join('')}
+                </div>
+            </div>
+        `;
+        
+        calendarDate.setDate(calendarDate.getDate() + 1);
+    }
+    
+    calendarHTML += '</div>';
+    return calendarHTML;
+}
+
+// Render list view
+function renderListView(tutorLessons) {
     if (tutorLessons.length === 0) {
-        accordion.innerHTML = '<p class="no-data">Chưa có lịch dạy nào.</p>';
-        return;
+        return '<p class="no-data">Chưa có lịch dạy nào.</p>';
     }
 
     // Group lessons by subject
@@ -54,7 +197,7 @@ function renderTeachingSchedule() {
         return acc;
     }, {});
 
-    accordion.innerHTML = Object.keys(lessonsBySubject).map(subject => {
+    return Object.keys(lessonsBySubject).map(subject => {
         const lessons = lessonsBySubject[subject];
         const firstLesson = lessons[0];
         let courseStatus = firstLesson.courseStatus || 'Chưa bắt đầu';
@@ -94,7 +237,7 @@ function renderTeachingSchedule() {
                         <div class="schedule-item">
                             <div class="schedule-date">
                                 <div class="date">${lesson.date}</div>
-                                <div class="time">${lesson.time.split('-')[0]}</div>
+                                <div class="time">${lesson.time.includes('-') ? lesson.time.split('-')[0] : lesson.time}</div>
                             </div>
                             <div class="schedule-info">
                                 ${lesson.onlineMeeting ? `<div class="online-indicator">🖥️ Online</div>` : ''}
@@ -115,13 +258,410 @@ function renderTeachingSchedule() {
             </div>
         `;
     }).join('');
+}
 
-    // Add event listeners for accordion functionality
+// Render quick add form
+function renderQuickAddForm() {
+    // Lấy danh sách môn học từ schedule hiện tại
+    const tutor = tutors[0];
+    const tutorLessons = schedule.filter(lesson => lesson.tutor === tutor.name);
+    const existingSubjects = [...new Set(tutorLessons.map(lesson => lesson.subject))];
+    
+    // Thêm các môn học từ specialties của tutor
+    const allSubjects = [...new Set([...existingSubjects, ...tutor.specialties])];
+    
+    // Đếm số lượng lịch dạy cho mỗi môn học
+    const subjectCounts = {};
+    tutorLessons.forEach(lesson => {
+        subjectCounts[lesson.subject] = (subjectCounts[lesson.subject] || 0) + 1;
+    });
+    
+    return `
+        <div class="quick-add-form">
+            <h4>Thêm lịch dạy nhanh</h4>
+            <form id="quick-add-lesson-form">
+                <div class="quick-add-grid">
+                    <div>
+                        <label>Môn học:</label>
+                        <select id="quick-subject" required>
+                            <option value="">-- Chọn môn học --</option>
+                            ${allSubjects.map(subject => {
+                                const count = subjectCounts[subject] || 0;
+                                const countText = count > 0 ? ` (${count} lịch)` : '';
+                                return `<option value="${subject}">${subject}${countText}</option>`;
+                            }).join('')}
+                            <option value="other">+ Thêm môn học mới</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label>Ngày:</label>
+                        <input type="date" id="quick-date" required>
+                    </div>
+                </div>
+                <div class="quick-add-grid">
+                    <div>
+                        <label>Giờ bắt đầu:</label>
+                        <input type="time" id="quick-time-start" required>
+                    </div>
+                    <div>
+                        <label>Giờ kết thúc:</label>
+                        <input type="time" id="quick-time-end" required>
+                    </div>
+                </div>
+                <div class="quick-add-grid">
+                    <div>
+                        <label>Thời gian meeting:</label>
+                        <span id="meeting-duration" style="color: #666; font-size: 12px;">--</span>
+                    </div>
+                    <div>
+                        <label>Ghi chú:</label>
+                        <textarea id="quick-notes" placeholder="Nhập ghi chú cho buổi học..."></textarea>
+                    </div>
+                </div>
+                <div class="quick-add-grid full-width" id="new-subject-row" style="display: none;">
+                    <div>
+                        <label>Tên môn học mới:</label>
+                        <input type="text" id="new-subject-name" placeholder="Nhập tên môn học mới">
+                    </div>
+                </div>
+                <button type="submit">Thêm lịch</button>
+            </form>
+        </div>
+    `;
+}
+
+// Calendar helper functions
+function getMonthName(month) {
+    const months = [
+        'Tháng 1', 'Tháng 2', 'Tháng 3', 'Tháng 4', 'Tháng 5', 'Tháng 6',
+        'Tháng 7', 'Tháng 8', 'Tháng 9', 'Tháng 10', 'Tháng 11', 'Tháng 12'
+    ];
+    return months[month];
+}
+
+// Global variables for calendar navigation
+let currentCalendarMonth = new Date().getMonth();
+let currentCalendarYear = new Date().getFullYear();
+
+function changeMonth(direction) {
+    currentCalendarMonth += direction;
+    if (currentCalendarMonth > 11) {
+        currentCalendarMonth = 0;
+        currentCalendarYear++;
+    } else if (currentCalendarMonth < 0) {
+        currentCalendarMonth = 11;
+        currentCalendarYear--;
+    }
+    renderTeachingSchedule();
+}
+
+function showCalendarView() {
+    document.getElementById('calendar-view').style.display = 'block';
+    document.getElementById('list-view').style.display = 'none';
+    document.getElementById('quick-add-form').style.display = 'none';
+    
+    // Update button states
+    document.querySelectorAll('.calendar-controls button').forEach(btn => btn.classList.remove('active'));
+    document.querySelector('[onclick="showCalendarView()"]').classList.add('active');
+}
+
+function showListView() {
+    document.getElementById('calendar-view').style.display = 'none';
+    document.getElementById('list-view').style.display = 'block';
+    document.getElementById('quick-add-form').style.display = 'none';
+    
+    // Update button states
+    document.querySelectorAll('.calendar-controls button').forEach(btn => btn.classList.remove('active'));
+    document.querySelector('[onclick="showListView()"]').classList.add('active');
+    
+    // Add accordion functionality
     document.querySelectorAll('.accordion-header').forEach(header => {
         header.addEventListener('click', () => {
             header.parentElement.classList.toggle('active');
         });
     });
+}
+
+function showQuickAddForm() {
+    document.getElementById('calendar-view').style.display = 'none';
+    document.getElementById('list-view').style.display = 'none';
+    document.getElementById('quick-add-form').style.display = 'block';
+    
+    // Update button states
+    document.querySelectorAll('.calendar-controls button').forEach(btn => btn.classList.remove('active'));
+    document.querySelector('[onclick="showQuickAddForm()"]').classList.add('active');
+    
+    // Set default date to today
+    const today = new Date().toISOString().split('T')[0];
+    const dateInput = document.getElementById('quick-date');
+    if (dateInput) dateInput.value = today;
+    
+    // Add event listener for subject dropdown
+    const subjectSelect = document.getElementById('quick-subject');
+    const newSubjectRow = document.getElementById('new-subject-row');
+    const newSubjectInput = document.getElementById('new-subject-name');
+    
+    if (subjectSelect) {
+        subjectSelect.onchange = function() {
+            if (this.value === 'other') {
+                newSubjectRow.style.display = 'block';
+                newSubjectRow.classList.add('show');
+                newSubjectInput.required = true;
+                newSubjectInput.focus();
+            } else {
+                newSubjectRow.classList.remove('show');
+                setTimeout(() => {
+                    newSubjectRow.style.display = 'none';
+                }, 300);
+                newSubjectInput.required = false;
+                newSubjectInput.value = '';
+            }
+        };
+    }
+    
+    // Add event listeners for time inputs
+    const timeStartInput = document.getElementById('quick-time-start');
+    const timeEndInput = document.getElementById('quick-time-end');
+    const durationSpan = document.getElementById('meeting-duration');
+    
+    function calculateDuration() {
+        const startTime = timeStartInput.value;
+        const endTime = timeEndInput.value;
+        
+        if (startTime && endTime) {
+            const start = new Date(`2000-01-01T${startTime}`);
+            const end = new Date(`2000-01-01T${endTime}`);
+            
+            if (end <= start) {
+                durationSpan.textContent = 'Giờ kết thúc phải sau giờ bắt đầu!';
+                durationSpan.className = 'invalid';
+                return false;
+            }
+            
+            const diffMs = end - start;
+            const diffMinutes = Math.round(diffMs / (1000 * 60));
+            
+            if (diffMinutes > 60) {
+                durationSpan.textContent = `Quá 60 phút (${diffMinutes} phút)`;
+                durationSpan.className = 'invalid';
+                return false;
+            }
+            
+            durationSpan.textContent = `${diffMinutes} phút`;
+            durationSpan.className = 'valid';
+            return true;
+        } else {
+            durationSpan.textContent = '--';
+            durationSpan.className = '';
+            return false;
+        }
+    }
+    
+    if (timeStartInput && timeEndInput) {
+        timeStartInput.onchange = calculateDuration;
+        timeEndInput.onchange = calculateDuration;
+        
+        // Set default end time to 1 hour after start time
+        timeStartInput.onchange = function() {
+            if (this.value) {
+                const startTime = new Date(`2000-01-01T${this.value}`);
+                const endTime = new Date(startTime.getTime() + 60 * 60 * 1000); // +1 hour
+                timeEndInput.value = endTime.toTimeString().slice(0, 5);
+            }
+            calculateDuration();
+        };
+    }
+    
+    // Add form submit handler
+    const form = document.getElementById('quick-add-lesson-form');
+    if (form) {
+        form.onsubmit = function(e) {
+            e.preventDefault();
+            const subjectSelect = document.getElementById('quick-subject');
+            const newSubjectInput = document.getElementById('new-subject-name');
+            const date = document.getElementById('quick-date').value;
+            const timeStart = document.getElementById('quick-time-start').value;
+            const timeEnd = document.getElementById('quick-time-end').value;
+            const notes = document.getElementById('quick-notes').value.trim();
+            
+            let subject = '';
+            if (subjectSelect.value === 'other') {
+                subject = newSubjectInput.value.trim();
+                if (!subject) {
+                    alert('Vui lòng nhập tên môn học mới!');
+                    return;
+                }
+            } else {
+                subject = subjectSelect.value.trim();
+            }
+            
+            if (!subject || !date || !timeStart || !timeEnd) {
+                alert('Vui lòng nhập đầy đủ thông tin bắt buộc!');
+                return;
+            }
+            
+            // Validate time duration
+            const start = new Date(`2000-01-01T${timeStart}`);
+            const end = new Date(`2000-01-01T${timeEnd}`);
+            
+            if (end <= start) {
+                alert('Giờ kết thúc phải sau giờ bắt đầu!');
+                return;
+            }
+            
+            const diffMs = end - start;
+            const diffMinutes = Math.round(diffMs / (1000 * 60));
+            
+            if (diffMinutes > 60) {
+                alert(`Thời gian meeting không được quá 60 phút! (Hiện tại: ${diffMinutes} phút)`);
+                return;
+            }
+            
+            const timeRange = `${timeStart}-${timeEnd}`;
+            const newId = Math.max(0, ...schedule.map(l => l.id)) + 1;
+            const tutor = tutors[0];
+            
+            schedule.push({
+                id: newId,
+                date,
+                time: timeRange,
+                subject,
+                tutor: tutor.name,
+                status: 'upcoming',
+                notes,
+                meetingType: '1-1',
+                onlineMeeting: true, // Mặc định là online MS Teams
+                meetingLink: 'https://teams.microsoft.com/l/meetup-join/example'
+            });
+            
+            saveScheduleToStorage();
+            renderTeachingSchedule();
+            showCalendarView();
+            alert('Đã thêm lịch dạy thành công!');
+        };
+    }
+}
+
+function showDayLessons(date) {
+    const tutor = tutors[0];
+    const dayLessons = schedule.filter(lesson => 
+        lesson.tutor === tutor.name && lesson.date === date
+    );
+    
+    if (dayLessons.length === 0) {
+        alert(`Không có lịch dạy nào vào ngày ${date}`);
+        return;
+    }
+    
+    let message = `Lịch dạy ngày ${date}:\n\n`;
+    dayLessons.forEach(lesson => {
+        message += `• ${lesson.time} - ${lesson.subject}\n`;
+        if (lesson.onlineMeeting) message += '  (Online)\n';
+        if (lesson.notes) message += `  Ghi chú: ${lesson.notes}\n`;
+        message += '\n';
+    });
+    
+    alert(message);
+}
+
+function showLessonDetail(lessonId) {
+    const lesson = schedule.find(l => l.id === lessonId);
+    if (!lesson) return;
+    
+    const modal = document.getElementById('lesson-detail-modal');
+    const infoDiv = document.getElementById('lesson-detail-info');
+    const actionsDiv = document.getElementById('lesson-detail-actions');
+    
+    infoDiv.innerHTML = `
+        <div class="lesson-info-item">
+            <span class="lesson-info-label">Môn học:</span>
+            <span class="lesson-info-value">${lesson.subject}</span>
+        </div>
+        <div class="lesson-info-item">
+            <span class="lesson-info-label">Ngày:</span>
+            <span class="lesson-info-value">${lesson.date}</span>
+        </div>
+        <div class="lesson-info-item">
+            <span class="lesson-info-label">Thời gian:</span>
+            <span class="lesson-info-value">${lesson.time.includes('-') ? lesson.time : lesson.time + ' (1 giờ)'}</span>
+        </div>
+        <div class="lesson-info-item">
+            <span class="lesson-info-label">Loại meeting:</span>
+            <span class="lesson-info-value">${lesson.onlineMeeting ? 'Online' : 'Offline'}</span>
+        </div>
+        <div class="lesson-info-item">
+            <span class="lesson-info-label">Trạng thái:</span>
+            <span class="lesson-info-value">${lesson.status === 'cancelled' ? 'Đã hủy' : lesson.status === 'completed' ? 'Hoàn thành' : 'Sắp tới'}</span>
+        </div>
+        ${lesson.notes ? `
+        <div class="lesson-info-item">
+            <span class="lesson-info-label">Ghi chú:</span>
+            <span class="lesson-info-value">${lesson.notes}</span>
+        </div>
+        ` : ''}
+    `;
+    
+    actionsDiv.innerHTML = `
+        ${lesson.status !== 'cancelled' && lesson.status !== 'completed' ? `
+            <button class="primary" onclick="editLesson(${lesson.id})">Sửa lịch</button>
+            <button class="danger" onclick="cancelLesson(${lesson.id})">Hủy lịch</button>
+        ` : ''}
+        ${lesson.onlineMeeting && lesson.status !== 'cancelled' ? `
+            <button class="secondary" onclick="joinMeeting(${lesson.id})">Tham gia meeting</button>
+        ` : ''}
+        <button class="secondary" onclick="closeLessonDetail()">Đóng</button>
+    `;
+    
+    modal.style.display = 'block';
+}
+
+function editLesson(lessonId) {
+    const lesson = schedule.find(l => l.id === lessonId);
+    if (!lesson) return;
+    
+    const newDate = prompt('Nhập ngày mới (YYYY-MM-DD):', lesson.date);
+    if (!newDate) return;
+    
+    const newTime = prompt('Nhập giờ mới (HH:MM):', lesson.time);
+    if (!newTime) return;
+    
+    if (confirm(`Bạn có chắc muốn thay đổi lịch dạy sang ngày ${newDate}, giờ ${newTime}?`)) {
+        lesson.date = newDate;
+        lesson.time = newTime;
+        saveScheduleToStorage();
+        renderTeachingSchedule();
+        closeLessonDetail();
+        notifyLearner(`Gia sư đã thay đổi lịch dạy: ${lesson.subject} vào ngày ${newDate}, giờ ${newTime}`);
+    }
+}
+
+function cancelLesson(lessonId) {
+    const lesson = schedule.find(l => l.id === lessonId);
+    if (!lesson) return;
+    
+    const reason = prompt('Nhập lý do hủy lịch:');
+    if (!reason) return;
+    
+    if (confirm(`Bạn có chắc muốn hủy lịch dạy này?`)) {
+        lesson.status = 'cancelled';
+        lesson.notes = `Đã hủy. Lý do: ${reason}`;
+        saveScheduleToStorage();
+        renderTeachingSchedule();
+        closeLessonDetail();
+        notifyLearner(`Gia sư đã hủy lịch dạy: ${lesson.subject} vào ngày ${lesson.date}, giờ ${lesson.time}`);
+    }
+}
+
+function joinMeeting(lessonId) {
+    const lesson = schedule.find(l => l.id === lessonId);
+    if (!lesson) return;
+    
+    const meetingLink = lesson.meetingLink || 'https://meet.google.com/xxx-yyyy-zzz';
+    window.open(meetingLink, '_blank');
+}
+
+function closeLessonDetail() {
+    document.getElementById('lesson-detail-modal').style.display = 'none';
 }
 
 // Hàm chuyển trạng thái khoá học
@@ -685,51 +1225,7 @@ document.addEventListener('DOMContentLoaded', function() {
     // Mặc định render hồ sơ khi load trang
     renderTutorProfile();
 
-    // Thêm logic cho nút Thêm buổi học
-    const addBtn = document.getElementById('addLessonBtn');
-    const addModal = document.getElementById('addLessonModal');
-    const closeAddModal = document.getElementById('closeAddLessonModal');
-    if (addBtn && addModal && closeAddModal) {
-        addBtn.onclick = function() { addModal.style.display = 'block'; };
-        closeAddModal.onclick = function() { addModal.style.display = 'none'; };
-        window.onclick = function(event) {
-            if (event.target === addModal) addModal.style.display = 'none';
-        };
-    }
-    // Xử lý submit form thêm buổi học
-    const addForm = document.getElementById('addLessonForm');
-    if (addForm) {
-        addForm.onsubmit = function(e) {
-            e.preventDefault();
-            const subject = document.getElementById('addSubject').value.trim();
-            const date = document.getElementById('addDate').value;
-            const time = document.getElementById('addTime').value.trim();
-            const notes = document.getElementById('addNotes').value.trim();
-            const meetingLink = document.getElementById('addMeetingLink').value.trim();
-            const onlineMeeting = document.getElementById('addOnlineMeeting').checked;
-            if (!subject || !date || !time) {
-                alert('Vui lòng nhập đầy đủ thông tin bắt buộc!');
-                return;
-            }
-            const newId = Math.max(0, ...schedule.map(l => l.id)) + 1;
-            schedule.push({
-                id: newId,
-                date,
-                time,
-                subject,
-                tutor: tutors[0].name,
-                status: 'upcoming',
-                notes,
-                meetingType: '1-1',
-                onlineMeeting,
-                meetingLink
-            });
-            addModal.style.display = 'none';
-            this.reset();
-            saveScheduleToStorage();
-            renderTeachingSchedule();
-        };
-    }
+
 
     // Đăng ký làm gia sư
     const registerBtn = document.getElementById('registerTutorBtn');

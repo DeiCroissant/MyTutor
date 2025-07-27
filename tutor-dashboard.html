@@ -11,9 +11,11 @@
     <div class="tutor-container">
         <!-- Header -->
         <header class="tutor-header">
-            <div class="tutor-avatar" id="tutor-avatar"></div>
+            <div class="tutor-avatar" id="tutor-avatar">
+                <img src="./asset/002f5cd1f568d8252b2ca8a3ab24ff55.jpg" alt="Gia sư Trần Minh Khoa" class="tutor-avatar-img">
+            </div>
             <div class="tutor-welcome">
-                <span id="tutor-greeting">Chào, <b>Gia sư</b></span>
+                <span id="tutor-greeting">Chào, <b>Minh Khoa</b></span>
                 <span class="tutor-role">(Gia sư)</span>
             </div>
             <nav class="tutor-navbar">
@@ -28,10 +30,24 @@
         <!-- Main Content Sections -->
         <main class="tutor-sections">
             <section id="section-profile" class="tutor-section">
-                <div style="text-align:left; margin-bottom: 20px;">
-                    <button id="addLessonBtn" class="btn-primary">Đặt lịch học</button>
-                </div>
                 <div class="profile-grid">
+                  <div class="profile-card profile-photos">
+                    <h3>Ảnh cá nhân</h3>
+                    <div class="tutor-photos-grid">
+                      <div class="tutor-photo-item">
+                        <img src="./asset/002f5cd1f568d8252b2ca8a3ab24ff55.jpg" alt="Gia sư Trần Minh Khoa - Ảnh 1" class="tutor-photo">
+                        <div class="photo-caption">Chuyên gia lập trình</div>
+                      </div>
+                      <div class="tutor-photo-item">
+                        <img src="./asset/2b5ddffd52b5d7a01dc605d5264106df.jpg" alt="Gia sư Trần Minh Khoa - Ảnh 2" class="tutor-photo">
+                        <div class="photo-caption">Giảng dạy trực tuyến</div>
+                      </div>
+                      <div class="tutor-photo-item">
+                        <img src="./asset/af17cb951001f60ba69c8196d97a9442.jpg" alt="Gia sư Trần Minh Khoa - Ảnh 3" class="tutor-photo">
+                        <div class="photo-caption">Hỗ trợ học viên</div>
+                      </div>
+                    </div>
+                  </div>
                   <div class="profile-card profile-info">
                     <h3>Thông tin cơ bản</h3>
                     <div class="profile-item"><span class="profile-label">Họ tên:</span> <span class="profile-value" id="tutorName"></span></div>
@@ -49,6 +65,53 @@
                   <div class="profile-card profile-info">
                     <h3>Khác</h3>
                     <div class="profile-item"><span class="profile-label">Hỗ trợ online:</span> <span class="profile-value" id="tutorOnline"></span></div>
+                  </div>
+                  <div class="profile-card profile-info">
+                    <h3>Huy hiệu & Thành tựu</h3>
+                    <div class="achievements-grid">
+                      <div class="achievement-item">
+                        <div class="achievement-icon">🏆</div>
+                        <div class="achievement-info">
+                          <div class="achievement-title">Gia sư xuất sắc</div>
+                          <div class="achievement-desc">Top 5% gia sư được đánh giá cao nhất</div>
+                        </div>
+                      </div>
+                      <div class="achievement-item">
+                        <div class="achievement-icon">⭐</div>
+                        <div class="achievement-info">
+                          <div class="achievement-title">Đánh giá 5 sao</div>
+                          <div class="achievement-desc">Nhận được 50+ đánh giá 5 sao từ học viên</div>
+                        </div>
+                      </div>
+                      <div class="achievement-item">
+                        <div class="achievement-icon">📚</div>
+                        <div class="achievement-info">
+                          <div class="achievement-title">Chuyên gia lập trình</div>
+                          <div class="achievement-desc">Thành thạo 5+ ngôn ngữ lập trình</div>
+                        </div>
+                      </div>
+                      <div class="achievement-item">
+                        <div class="achievement-icon">🎯</div>
+                        <div class="achievement-info">
+                          <div class="achievement-title">Tỷ lệ thành công cao</div>
+                          <div class="achievement-desc">95% học viên đạt mục tiêu học tập</div>
+                        </div>
+                      </div>
+                      <div class="achievement-item">
+                        <div class="achievement-icon">⏰</div>
+                        <div class="achievement-info">
+                          <div class="achievement-title">Đúng giờ</div>
+                          <div class="achievement-desc">100% buổi học đúng giờ trong 6 tháng</div>
+                        </div>
+                      </div>
+                      <div class="achievement-item">
+                        <div class="achievement-icon">💡</div>
+                        <div class="achievement-info">
+                          <div class="achievement-title">Sáng tạo</div>
+                          <div class="achievement-desc">Phương pháp dạy học đổi mới</div>
+                        </div>
+                      </div>
+                    </div>
                   </div>
                 </div>
             </section>
@@ -155,35 +218,7 @@
             </section>
         </main>
     </div>
-    <!-- Modal đặt lịch học -->
-    <div id="addLessonModal" class="modal" style="display:none;">
-      <div class="modal-content">
-        <span class="close" id="closeAddLessonModal">&times;</span>
-        <h3>Đặt lịch học mới</h3>
-        <form id="addLessonForm">
-          <div class="form-row">
-            <label>Môn học:</label>
-            <input type="text" id="addSubject" required />
-          </div>
-          <div class="form-row">
-            <label>Chọn ngày:</label>
-            <input type="date" id="addDate" required />
-          </div>
-          <div class="form-row">
-            <label>Chọn giờ:</label>
-            <input type="time" id="addTime" required />
-          </div>
-          <div class="form-row">
-            <label>Ghi chú cho buổi meeting:</label>
-            <textarea id="addNotes" placeholder="Nhập thông tin buổi meeting..." rows="2"></textarea>
-          </div>
-          <div class="form-row">
-            <label><input type="checkbox" id="addOnlineMeeting" checked /> Online</label>
-          </div>
-          <button type="submit" class="btn-primary">Đặt lịch</button>
-        </form>
-      </div>
-    </div>
+
     <!-- Modal đổi/huỷ lịch dạy -->
     <div id="rescheduleModal" class="modal" style="display:none;">
       <div class="modal-content">

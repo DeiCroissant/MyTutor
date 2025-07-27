@@ -853,10 +853,23 @@ function handleRegisterTutor(e) {
   // Lấy dữ liệu từ form
   const bio = document.getElementById('regTutorBio').value.trim();
   const url = document.getElementById('regTutorURL').value.trim();
+  const customSpecialty = document.getElementById('regTutorCustomSpecialty').value.trim();
   const gpa = document.getElementById('regTutorGPA').value;
   
-  if (!bio) {
-    alert('Vui lòng nhập thông tin giới thiệu về bản thân!');
+  // Thu thập chuyên môn từ checkboxes
+  const selectedSpecialties = [];
+  const specialtyCheckboxes = document.querySelectorAll('.specialty-checkbox input[type="checkbox"]:checked');
+  specialtyCheckboxes.forEach(checkbox => {
+    selectedSpecialties.push(checkbox.value);
+  });
+  
+  // Thêm chuyên môn tùy chỉnh nếu có
+  if (customSpecialty) {
+    selectedSpecialties.push(customSpecialty);
+  }
+  
+  if (!bio || selectedSpecialties.length === 0) {
+    alert('Vui lòng nhập thông tin giới thiệu về bản thân và chọn ít nhất một chuyên môn dạy!');
     return;
   }
   
@@ -899,7 +912,8 @@ function handleRegisterTutor(e) {
     id: tutors.length + 1,
     name: 'Trần Minh Khoa',
     status: 'available',
-    subject: 'Lập trình hướng đối tượng',
+    subject: selectedSpecialties[0], // Chuyên môn chính
+    specialties: selectedSpecialties, // Tất cả chuyên môn
     desc: bio,
     rating: 0,
     ratingCount: 0,
